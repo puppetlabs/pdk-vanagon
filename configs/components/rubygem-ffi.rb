@@ -4,6 +4,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.md5sum "37284a51e5464443f7122b388329a2a0"
   pkg.url "http://buildsources.delivery.puppetlabs.net/#{gemname}-#{pkg.get_version}.gem"
 
+  pkg.build_requires "ruby-2.1.9"
   pkg.build_requires "cmake"
 
   if platform.is_rpm?

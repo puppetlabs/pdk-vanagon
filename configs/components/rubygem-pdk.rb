@@ -2,6 +2,8 @@ component "rubygem-pdk" do |pkg, settings, platform|
 	# Set version, url, and ref from json file.
   pkg.load_from_json('configs/components/rubygem-pdk.json')
 
+  pkg.build_requires "ruby-2.1.9"
+
   if platform.name =~ /ubuntu/
     pkg.build_requires "git-core"
   else

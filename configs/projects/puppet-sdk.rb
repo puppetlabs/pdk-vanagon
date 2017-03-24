@@ -39,7 +39,20 @@ project "puppet-sdk" do |proj|
   proj.homepage "https://www.puppet.com"
 
   # What to build?
+  # --------------
+
+  # Ruby
   proj.component "ruby-2.1.9"
+
+  # Cri and deps
+  proj.component "rubygem-colored"
+  proj.component "rubygem-cri"
+
+  # Childprocess and deps
+  proj.component "rubygem-ffi"
+  proj.component "rubygem-childprocess"
+
+  # PDK
   proj.component "rubygem-pdk"
 
   # What to include in package?

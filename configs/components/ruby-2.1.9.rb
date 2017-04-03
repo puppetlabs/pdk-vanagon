@@ -33,7 +33,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   end
 
   if platform.is_macos?
-    pkg.environment "optflags" => settings[:cflags]
+    pkg.environment "optflags", settings[:cflags]
   end
 
   if platform.is_windows?
@@ -42,10 +42,10 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.build_requires "pl-libffi-#{platform.architecture}"
     pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 
-    pkg.environment "PATH" => "$$(cygpath -u #{settings[:gcc_bindir]}):$$(cygpath -u #{settings[:tools_root]}/bin):$$(cygpath -u #{settings[:tools_root]}/include):$$(cygpath -u #{settings[:bindir]}):$$(cygpath -u #{settings[:ruby_bindir]}):$$(cygpath -u #{settings[:includedir]}):$$PATH"
-    pkg.environment "CYGWIN" => settings[:cygwin]
-    pkg.environment "optflags" => settings[:cflags] + " -O3"
-    pkg.environment "LDFLAGS" => settings[:ldflags]
+    pkg.environment "PATH", "$$(cygpath -u #{settings[:gcc_bindir]}):$$(cygpath -u #{settings[:tools_root]}/bin):$$(cygpath -u #{settings[:tools_root]}/include):$$(cygpath -u #{settings[:bindir]}):$$(cygpath -u #{settings[:ruby_bindir]}):$$(cygpath -u #{settings[:includedir]}):$$PATH"
+    pkg.environment "CYGWIN", settings[:cygwin]
+    pkg.environment "optflags", settings[:cflags] + " -O3"
+    pkg.environment "LDFLAGS", settings[:ldflags]
 
     special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
   end

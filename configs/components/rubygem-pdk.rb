@@ -13,7 +13,7 @@ component "rubygem-pdk" do |pkg, settings, platform|
 
   pkg.install do
     [
-      "gem build pdk.gemspec",
+      "#{settings[:host_gem]} build pdk.gemspec",
       "#{settings[:gem_install]} pdk-#{pkg.get_version}.gem",
     ]
   end

@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Purpose: copy over shared object files for libgcc, libssp and libstdc++ into
-# the lib directory of the puppet agent. The files and links are determined
+# the lib directory of the Puppet SDK. The files and links are determined
 # dynamically because different versions of GCC produce different library
 # versions and filenames. This script should apply cleanly on any Linux that
-# requires a runtime setup for client-tools builds. If the libraries are being
+# requires a runtime setup for Puppet SDK builds. If the libraries are being
 # linked in statically, this script will be a no-op.
 
 set -e
@@ -20,7 +20,7 @@ else
   fi
 fi
 
-RUNTIMEDIR=/opt/puppetlabs/client-tools/lib
+RUNTIMEDIR=/opt/puppetlabs/sdk/lib
 
 mkdir -p "$RUNTIMEDIR"
 

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <!--
+    Puppet Development Kit Specific Registry Entries
+    This overrides the generic file in the vanagon directory
+  -->
+  <Fragment>
+    <ComponentGroup Id="RegistryComponentGroup">
+      <Component Id="RegistryEntries"
+        Guid="DECE9777-5B15-43E7-AF28-B7374DF784C3"
+        Directory="TARGETDIR"
+        Win64="no">
+
+        <RegistryKey
+          Root="HKLM"
+          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
+          Action="create" >
+          <!-- This is the default (aka 'unnamed') key value of this path -->
+          <RegistryValue
+            Type="integer"
+            Value="0"/>
+          <!-- This is the specified value of a key at this path -->
+          <RegistryValue
+            Name="InstalledFlag"
+            Value="1"
+            Type="integer"
+            KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+
+      <Component
+        Id="RegistryEntriesArchitectureDependent"
+        Directory="TARGETDIR"
+        Guid="7E5DEA40-19E8-4829-99C3-C33FBBC0B89B"
+        Win64="<%= settings[:win64] %>"
+        Permanent="yes">
+
+        <RegistryKey
+          Root="HKLM"
+          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
+          ForceCreateOnInstall="yes" >
+
+          <RegistryValue
+            Type="integer"
+            Value="0"/>
+          <!-- Platform specific registry keys -->
+          <%- if @platform.architecture == "x64" -%>
+            <RegistryValue
+              Name="RememberedInstallDir"
+              Type="string"
+              Value="[INSTALLDIR_X86]" />
+            <RegistryValue
+              Name="RememberedInstallDir64"
+              Type="string"
+              Value="[INSTALLDIR]"
+              KeyPath="yes" />
+          <%- else %>
+            <RegistryValue
+              Name="RememberedInstallDir"
+              Type="string"
+              Value="[INSTALLDIR]"
+              KeyPath="yes" />
+          <%- end -%>
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

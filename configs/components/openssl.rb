@@ -17,7 +17,7 @@ component "openssl" do |pkg, settings, platform|
   ## BUILD CONFIGURATION
   install_prefix = "INSTALL_PREFIX=/" unless platform.is_windows?
 
-  if platform.is_osx?
+  if platform.is_macos?
     target = 'darwin64-x86_64-cc'
     cflags = settings[:cflags]
     ldflags = ''
@@ -25,15 +25,15 @@ component "openssl" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
     target = platform.architecture == "x64" ? "mingw64" : "mingw"
-    pkg.environment "PATH" => "$$(cygpath -u #{settings[:gcc_bindir]}):$$PATH"
-    pkg.environment "CYGWIN" => settings[:cygwin]
-    pkg.environment "CC" => settings[:cc]
-    pkg.environment "CXX" => settings[:cxx]
-    pkg.environment "MAKE" => platform[:make]
+    pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+    pkg.environment "CYGWIN", settings[:cygwin]
+    pkg.environment "CC", settings[:cc]
+    pkg.environment "CXX", settings[:cxx]
+    pkg.environment "MAKE", platform[:make]
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
   else # Linux Platforms
-    pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH:/usr/local/bin"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin"
     target = 'linux-x86_64'
     cflags = settings[:cflags]
     ldflags = "#{settings[:ldflags]} -Wl,-z,relro"

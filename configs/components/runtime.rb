@@ -6,11 +6,10 @@ component "runtime" do |pkg, settings, platform|
       pkg.install_file File.join(settings[:gcc_bindir], dll), File.join(settings[:bindir], dll)
     end
 
-    # Curl is dynamically linking against zlib, so we need to include this file until we
-    # update curl to statically link against zlib
+    # Ruby needs zlib
     pkg.build_requires "pl-zlib-#{platform.architecture}"
     pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:bindir]}/zlib1.dll"
-  elsif platform.is_osx?
+  elsif platform.is_macos?
 
     # Do nothing
 

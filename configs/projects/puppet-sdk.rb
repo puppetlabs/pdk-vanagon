@@ -6,15 +6,15 @@ project "puppet-sdk" do |proj|
     proj.setting(:company_name, "Puppet Inc")
     proj.setting(:pl_company_name, "Puppet Labs")
     proj.setting(:company_id, "PuppetLabs")
-    proj.setting(:common_product_id, "PuppetDeveloperKit")
-    proj.setting(:product_id, "DeveloperKit")
-    proj.setting(:shortcut_name, "Puppet Developer Kit")
+    proj.setting(:common_product_id, "PuppetDevelopmentKit")
+    proj.setting(:product_id, "DevelopmentKit")
+    proj.setting(:shortcut_name, "Puppet Development Kit")
     proj.setting(:upgrade_code, "2F79F42E-955C-4E69-AB87-DB4ED9EDF2D9")
 
-		proj.setting(:product_name, "Developer Kit (64-bit)")
-		proj.setting(:win64, "yes")
-		proj.setting(:base_dir, "ProgramFiles64Folder")
-		proj.setting(:RememberedInstallDirRegKey, "RememberedInstallDir64")
+    proj.setting(:product_name, "Puppet Development Kit")
+    proj.setting(:win64, "yes")
+    proj.setting(:base_dir, "ProgramFiles64Folder")
+    proj.setting(:RememberedInstallDirRegKey, "RememberedInstallDir64")
 
     proj.setting(:links, {
       :HelpLink => "http://puppet.com/services/customer-support",
@@ -36,16 +36,12 @@ project "puppet-sdk" do |proj|
     proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
     proj.setting(:sysconfdir, File.join("C:", "CommonAppDataFolder", proj.company_id))
     proj.setting(:tmpfilesdir, "C:/Windows/Temp")
-    #proj.setting(:prefix, "#{proj.install_root}/sdk")
-    #proj.setting(:main_bin, "#{proj.install_root}/bin")
-    #? proj.setting(:service_dir, File.join(proj.install_root, "service"))
+    proj.setting(:main_bin, "#{proj.install_root}/bin")
     proj.setting(:windows_tools, File.join(proj.install_root, "sys/tools/bin"))
     proj.setting(:ruby_dir, File.join(proj.install_root, "sys/ruby"))
     proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
   else
     proj.setting(:install_root, "/opt/puppetlabs")
-    #proj.setting(:prefix, File.join(proj.install_root, 'sdk'))
-    #proj.setting(:link_bindir, File.join(proj.install_root, 'bin'))
 
     if platform.is_macos?
       proj.setting(:sysconfdir, "/private/etc/puppetlabs")
@@ -53,15 +49,11 @@ project "puppet-sdk" do |proj|
       proj.setting(:sysconfdir, "/etc/puppetlabs")
     end
 
-    #proj.setting(:logdir, "/var/log/puppetlabs")
-    #proj.setting(:piddir, "/var/run/puppetlabs")
     proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
   end
 
   proj.setting(:miscdir, File.join(proj.install_root, "misc"))
-  proj.setting(:prefix, File.join(proj.install_root, "puppet"))
-  #proj.setting(:puppet_configdir, File.join(proj.sysconfdir, 'puppet'))
-  #proj.setting(:puppet_codedir, File.join(proj.sysconfdir, 'code'))
+  proj.setting(:prefix, File.join(proj.install_root, "sdk"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
   proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
   proj.setting(:includedir, File.join(proj.prefix, "include"))
@@ -78,14 +70,14 @@ project "puppet-sdk" do |proj|
     proj.setting(:libdir, File.join(proj.prefix, "lib"))
   end
 
-  #if !platform.is_windows?
-  #  proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.1.0"))
-  #  proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local ")
-  #end
-
   proj.setting(:ruby_version, "2.1.9")
   proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.1.0"))
   proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
+
+  gem_install = "#{proj.host_gem} install --no-rdoc --no-ri --local "
+  # Add --bindir option for Windows...
+  gem_install << "--bindir #{proj.ruby_bindir} " if platform.is_windows?
+  proj.setting(:gem_install, gem_install)
 
   if platform.is_windows?
     # For windows, we need to ensure we are building for mingw not cygwin
@@ -93,13 +85,9 @@ project "puppet-sdk" do |proj|
     host = "--host #{platform_triple}"
   end
 
-  proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local ")
-  if platform.is_windows?
-    proj.setting(:gem_install, "#{proj.gem_install} --bindir #{proj.ruby_bindir} ")
-  end
-
   proj.setting(:platform_triple, platform_triple)
   proj.setting(:host, host)
+
 
   proj.description "Puppet SDK"
   proj.version_from_git
@@ -166,8 +154,6 @@ project "puppet-sdk" do |proj|
   proj.directory proj.prefix
   proj.directory proj.sysconfdir
   proj.directory proj.link_bindir
-  #proj.directory proj.logdir unless platform.is_windows?
-  #proj.directory proj.piddir unless platform.is_windows?
 
   proj.timeout 7200 if platform.is_windows?
 

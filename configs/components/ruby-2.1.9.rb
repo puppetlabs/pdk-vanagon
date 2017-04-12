@@ -42,7 +42,16 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.build_requires "pl-libffi-#{platform.architecture}"
     pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 
-    pkg.environment "PATH", "$$(cygpath -u #{settings[:gcc_bindir]}):$$(cygpath -u #{settings[:tools_root]}/bin):$$(cygpath -u #{settings[:tools_root]}/include):$$(cygpath -u #{settings[:bindir]}):$$(cygpath -u #{settings[:ruby_bindir]}):$$(cygpath -u #{settings[:includedir]}):$$PATH"
+    pkg.environment "PATH", [
+      "$(shell cygpath -u #{settings[:gcc_bindir]})",
+      "$(shell cygpath -u #{settings[:tools_root]}/bin)",
+      "$(shell cygpath -u #{settings[:tools_root]}/include)",
+      "$(shell cygpath -u #{settings[:bindir]})",
+      "$(shell cygpath -u #{settings[:ruby_bindir]})",
+      "$(shell cygpath -u #{settings[:includedir]})",
+      "$(PATH)",
+    ].join(':')
+
     pkg.environment "CYGWIN", settings[:cygwin]
     pkg.environment "optflags", settings[:cflags] + " -O3"
     pkg.environment "LDFLAGS", settings[:ldflags]
@@ -110,6 +119,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
         "cp #{settings[:prefix]}/bin/libeay32.dll #{settings[:ruby_bindir]}",
       ]
     end
+
     pkg.directory settings[:ruby_dir]
+    pkg.directory settings[:ruby_bindir]
   end
 end

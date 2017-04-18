@@ -136,6 +136,7 @@ project "puppet-sdk" do |proj|
   # Ruby and deps
   proj.component "runtime"
   proj.component "openssl"
+  proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 
   # Cri and deps

@@ -11,12 +11,10 @@ SET PATH=%DEVKIT_BASEDIR%\bin;%RUBY_DIR%\bin;%DEVKIT_BASEDIR%\sdk\bin;%PATH%
 REM Translate all slashes to / style to avoid issue #11930
 SET RUBYLIB=%RUBYLIB:\=/%
 
+REM Set SSL variables to ensure trusted locations are used
+SET SSL_CERT_FILE=%DEVKIT_BASEDIR%\sdk\ssl\cert.pem
+SET SSL_CERT_DIR=%DEVKIT_BASEDIR%\sdk\ssl\certs
 
 REM Enable rubygems support
 SET RUBYOPT=rubygems
 REM Now return to the caller.
-
-REM Set SSL variables to ensure trusted locations are used
-REM SET SSL_CERT_FILE=%PUPPET_DIR%\ssl\cert.pem
-REM SET SSL_CERT_DIR=%PUPPET_DIR%\ssl\certs
-

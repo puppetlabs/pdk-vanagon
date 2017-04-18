@@ -7,4 +7,4 @@ echo.
 echo For more information, run: pdk --help
 echo.
 
-cd /D "%UserProfile%"
+cd /D "%UserProfile%\Documents"

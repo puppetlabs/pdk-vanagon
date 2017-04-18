@@ -1,12 +1,12 @@
 @ECHO OFF
 REM This is the parent directory of the directory containing this script.
-SET PL_BASEDIR=%~dp0..
+SET DEVKIT_BASEDIR=%~dp0..
 REM Avoid the nasty \..\ littering the paths.
-SET PL_BASEDIR=%PL_BASEDIR:\bin\..=%
+SET DEVKIT_BASEDIR=%DEVKIT_BASEDIR:\bin\..=%
 
-SET RUBY_DIR=%PL_BASEDIR%\sys\ruby
+SET RUBY_DIR=%DEVKIT_BASEDIR%\sys\ruby
 
-SET PATH=%PL_BASEDIR%\bin;%RUBY_DIR%\bin;%PL_BASEDIR%\sys\tools\bin;%PATH%
+SET PATH=%DEVKIT_BASEDIR%\bin;%RUBY_DIR%\bin;%DEVKIT_BASEDIR%\sdk\bin;%PATH%
 
 REM Translate all slashes to / style to avoid issue #11930
 SET RUBYLIB=%RUBYLIB:\=/%

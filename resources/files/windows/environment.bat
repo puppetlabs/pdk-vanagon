@@ -1,6 +1,6 @@
 @ECHO OFF
 REM This is the parent directory of the directory containing this script.
-SET DEVKIT_BASEDIR=%~dp0..
+SET DEVKIT_BASEDIR=%~dps0..
 REM Avoid the nasty \..\ littering the paths.
 SET DEVKIT_BASEDIR=%DEVKIT_BASEDIR:\bin\..=%
 

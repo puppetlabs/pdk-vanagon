@@ -139,6 +139,9 @@ project "puppet-sdk" do |proj|
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 
+  # Bundler
+  proj.component "rubygem-bundler"
+
   # Cri and deps
   proj.component "rubygem-colored"
   proj.component "rubygem-cri"

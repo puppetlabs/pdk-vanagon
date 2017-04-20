@@ -4,8 +4,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.url "https://cache.ruby-lang.org/pub/ruby/2.1/ruby-#{pkg.get_version}.tar.gz"
 
   if platform.is_windows?
-    pkg.add_source "http://buildsources.delivery.puppetlabs.net/windows/elevate/elevate.exe", sum: "bd81807a5c13da32dd2a7157f66fa55d"
-    pkg.add_source "file://resources/files/windows/elevate.exe.config", sum: "a5aecf3f7335fa1250a0f691d754d561"
     pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
   end
 
@@ -42,7 +40,16 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.build_requires "pl-libffi-#{platform.architecture}"
     pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 
-    pkg.environment "PATH", "$$(cygpath -u #{settings[:gcc_bindir]}):$$(cygpath -u #{settings[:tools_root]}/bin):$$(cygpath -u #{settings[:tools_root]}/include):$$(cygpath -u #{settings[:bindir]}):$$(cygpath -u #{settings[:ruby_bindir]}):$$(cygpath -u #{settings[:includedir]}):$$PATH"
+    pkg.environment "PATH", [
+      "$(shell cygpath -u #{settings[:gcc_bindir]})",
+      "$(shell cygpath -u #{settings[:tools_root]}/bin)",
+      "$(shell cygpath -u #{settings[:tools_root]}/include)",
+      "$(shell cygpath -u #{settings[:bindir]})",
+      "$(shell cygpath -u #{settings[:ruby_bindir]})",
+      "$(shell cygpath -u #{settings[:includedir]})",
+      "$(PATH)",
+    ].join(':')
+
     pkg.environment "CYGWIN", settings[:cygwin]
     pkg.environment "optflags", settings[:cflags] + " -O3"
     pkg.environment "LDFLAGS", settings[:ldflags]
@@ -91,8 +98,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   end
 
   if platform.is_windows?
-    pkg.install_file "../elevate.exe", "#{settings[:windows_tools]}/elevate.exe"
-    pkg.install_file "../elevate.exe.config", "#{settings[:windows_tools]}/elevate.exe.config"
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
 
     # As things stand right now, ssl should build under [INSTALLDIR]\Puppet\puppet on
@@ -110,6 +115,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
         "cp #{settings[:prefix]}/bin/libeay32.dll #{settings[:ruby_bindir]}",
       ]
     end
+
     pkg.directory settings[:ruby_dir]
+    pkg.directory settings[:ruby_bindir]
   end
 end

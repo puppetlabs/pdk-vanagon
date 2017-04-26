@@ -4,20 +4,13 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.md5sum "37284a51e5464443f7122b388329a2a0"
   pkg.url "http://buildsources.delivery.puppetlabs.net/#{gemname}-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-2.1.9"
+  pkg.build_requires "ruby-#{settings[:ruby_version]}"
 
   if platform.is_windows?
     pkg.md5sum "664afc6a316dd648f497fbda3be87137"
     pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x64-mingw32.gem"
 
-    pkg.environment "PATH", [
-      "$(shell cygpath -u #{settings[:gcc_bindir]})",
-      "$(shell cygpath -u #{settings[:bindir]})",
-      "$(shell cygpath -u #{settings[:ruby_bindir]})",
-      "/cygdrive/c/Windows/system32",
-      "/cygdrive/c/Windows",
-      "/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0",
-    ].join(':')
+    pkg.environment "PATH", settings[:gem_path_env]
 
     pkg.install do
       ["#{settings[:gem_install]} ffi-#{pkg.get_version}-x64-mingw32.gem"]

@@ -116,6 +116,16 @@ project "puppet-sdk" do |proj|
     proj.setting(:cflags, "#{proj.cppflags}")
     proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir}")
     proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
+
+    proj.setting(:gem_path_env, [
+      "$(shell cygpath -u #{settings[:gcc_bindir]})",
+      "$(shell cygpath -u #{settings[:ruby_bindir]})",
+      "$(shell cygpath -u #{settings[:bindir]})",
+      "/cygdrive/c/Windows/system32",
+      "/cygdrive/c/Windows",
+      "/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0",
+      "$(PATH)",
+    ].join(':'))
   end
 
   if platform.is_macos?
@@ -149,6 +159,13 @@ project "puppet-sdk" do |proj|
   # Childprocess and deps
   proj.component "rubygem-ffi"
   proj.component "rubygem-childprocess"
+
+  # Gettext-setup and deps
+  proj.component "rubygem-locale"
+  proj.component "rubygem-text"
+  proj.component "rubygem-gettext"
+  proj.component "rubygem-fast_gettext"
+  proj.component "rubygem-gettext-setup"
 
   # PDK
   proj.component "rubygem-pdk"

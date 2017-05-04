@@ -59,6 +59,7 @@ project "puppet-sdk" do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
+  proj.setting(:privatedir, File.join(proj.prefix, "private"))
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
@@ -143,9 +144,17 @@ project "puppet-sdk" do |proj|
   # What to build?
   # --------------
 
+  # Common deps
+  proj.component "openssl"
+  proj.component "curl"
+
+  unless platform.is_windows?
+    # Git and deps
+    proj.component "git"
+  end
+
   # Ruby and deps
   proj.component "runtime"
-  proj.component "openssl"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 

@@ -148,10 +148,8 @@ project "puppet-sdk" do |proj|
   proj.component "openssl"
   proj.component "curl"
 
-  unless platform.is_windows?
-    # Git and deps
-    proj.component "git"
-  end
+  # Git and deps
+  proj.component "git"
 
   # Ruby and deps
   proj.component "runtime"

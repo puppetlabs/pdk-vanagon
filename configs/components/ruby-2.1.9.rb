@@ -10,6 +10,13 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   base = 'resources/patches/ruby_219'
   pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
 
+  rbconfig_info = {
+    'x86_64-w64-mingw32' => {
+      :sum => "fe5656cd5fcba0a63b18857275e03808",
+      :target_double => 'x64-mingw32',
+    },
+  }
+
   special_flags = " --prefix=#{settings[:prefix]} --with-opt-dir=#{settings[:prefix]} "
 
   if platform.is_windows?
@@ -18,6 +25,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_remove_DL_deprecated_warning.patch"
     pkg.apply_patch "#{base}/windows_ruby_2.1_update_to_rubygems_2.4.5.1.patch"
     pkg.apply_patch "#{base}/update_rbinstall_for_windows.patch"
+
+    pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
   end
 
   pkg.build_requires "openssl"
@@ -113,6 +122,25 @@ component "ruby-2.1.9" do |pkg, settings, platform|
         "cp #{settings[:prefix]}/bin/libgcc_s_#{lib_type}-1.dll #{settings[:ruby_bindir]}",
         "cp #{settings[:prefix]}/bin/ssleay32.dll #{settings[:ruby_bindir]}",
         "cp #{settings[:prefix]}/bin/libeay32.dll #{settings[:ruby_bindir]}",
+      ]
+    end
+
+    # Here we replace the rbconfig from our ruby compiled with our toolchain
+    # with an rbconfig from a ruby of the same version compiled with the system
+    # gcc. Without this, the rbconfig will be looking for a gcc that won't
+    # exist on a user system and will also pass flags which may not work on
+    # that system.
+    # We also disable a safety check in the rbconfig to prevent it from being
+    # loaded from a different ruby, because we're going to do that later to
+    # install compiled gems.
+    target_dir = File.join(settings[:libdir], "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
+
+    pkg.install do
+      [
+        "sed -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
+        "mkdir -p #{settings[:datadir]}/doc",
+        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc",
+        "cp ../rbconfig-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
       ]
     end
 

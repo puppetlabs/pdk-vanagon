@@ -17,7 +17,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     },
   }
 
-  special_flags = " --prefix=#{settings[:prefix]} --with-opt-dir=#{settings[:prefix]} "
+  special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
 
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_ruby_2.1_update_to_rubygems_2.4.5.patch"
@@ -63,7 +63,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.environment "optflags", settings[:cflags] + " -O3"
     pkg.environment "LDFLAGS", settings[:ldflags]
 
-    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+    special_flags << " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g "
   end
 
 

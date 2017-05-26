@@ -3,4 +3,4 @@ SETLOCAL
 
 call "%~dp0environment.bat" %0 %*
 
-ruby -S -- pdk %*
+%RUBY_DIR%\bin\ruby -S -- %RUBY_DIR%\bin\pdk %*

@@ -3,19 +3,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.md5sum "d9d2109d3827789344cc3aceb8e1d697"
   pkg.url "https://cache.ruby-lang.org/pub/ruby/2.1/ruby-#{pkg.get_version}.tar.gz"
 
-  if platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
-  end
-
   base = 'resources/patches/ruby_219'
   pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
-
-  rbconfig_info = {
-    'x86_64-w64-mingw32' => {
-      :sum => "fe5656cd5fcba0a63b18857275e03808",
-      :target_double => 'x64-mingw32',
-    },
-  }
 
   special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
 
@@ -26,7 +15,15 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_ruby_2.1_update_to_rubygems_2.4.5.1.patch"
     pkg.apply_patch "#{base}/update_rbinstall_for_windows.patch"
 
+    pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
     pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
+
+    rbconfig_info = {
+      'x86_64-w64-mingw32' => {
+        :sum => "fe5656cd5fcba0a63b18857275e03808",
+        :target_double => 'x64-mingw32',
+      },
+    }
   end
 
   pkg.build_requires "openssl"
@@ -133,7 +130,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     # We also disable a safety check in the rbconfig to prevent it from being
     # loaded from a different ruby, because we're going to do that later to
     # install compiled gems.
-    target_dir = File.join(settings[:libdir], "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
+    target_dir = File.join(settings[:ruby_dir], "lib", "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
 
     pkg.install do
       [

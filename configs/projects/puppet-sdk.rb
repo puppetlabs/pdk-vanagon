@@ -34,14 +34,15 @@ project "puppet-sdk" do |proj|
 
     # Windows specific directories.
     proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
+    proj.setting(:prefix, proj.install_root)
     proj.setting(:sysconfdir, File.join("C:", "CommonAppDataFolder", proj.company_id))
     proj.setting(:tmpfilesdir, "C:/Windows/Temp")
     proj.setting(:main_bin, "#{proj.install_root}/bin")
-    proj.setting(:windows_tools, File.join(proj.install_root, "sys/tools/bin"))
-    proj.setting(:ruby_dir, File.join(proj.install_root, "sys/ruby"))
-    proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
+    proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
   else
     proj.setting(:install_root, "/opt/puppetlabs")
+    proj.setting(:prefix, File.join(proj.install_root, "sdk"))
+    proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
 
     if platform.is_macos?
       proj.setting(:sysconfdir, "/private/etc/puppetlabs")
@@ -52,26 +53,28 @@ project "puppet-sdk" do |proj|
     proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
   end
 
-  proj.setting(:miscdir, File.join(proj.install_root, "misc"))
-  proj.setting(:prefix, File.join(proj.install_root, "sdk"))
+  proj.setting(:ruby_version, "2.1.9")
+
+  # TODO: if/when we start shipping multiple rubies, this will need to be a
+  # basedir and then the various ruby components will install under it, but for
+  # now we can just hard-code the first version we are installing
+  proj.setting(:ruby_dir, File.join(proj.prefix, "private/ruby/#{proj.ruby_version}"))
+  proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
-  proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
+  proj.setting(:libdir, File.join(proj.prefix, "lib"))
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
-    proj.setting(:libdir, File.join(proj.ruby_dir, "lib"))
   else
-    proj.setting(:host_ruby, File.join(proj.bindir, "ruby"))
-    proj.setting(:host_gem, File.join(proj.bindir, "gem"))
-    proj.setting(:libdir, File.join(proj.prefix, "lib"))
+    proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
+    proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
   end
 
-  proj.setting(:ruby_version, "2.1.9")
   proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.1.0"))
   proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
 
@@ -181,7 +184,7 @@ project "puppet-sdk" do |proj|
   proj.directory proj.install_root
   proj.directory proj.prefix
   proj.directory proj.sysconfdir
-  proj.directory proj.link_bindir
+  proj.directory proj.link_bindir unless platform.is_windows?
 
   proj.timeout 7200 if platform.is_windows?
 

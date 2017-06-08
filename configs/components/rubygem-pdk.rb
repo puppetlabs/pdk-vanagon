@@ -25,6 +25,6 @@ component "rubygem-pdk" do |pkg, settings, platform|
     pkg.install_file "../pdk_shell.bat", "#{settings[:main_bin]}/pdk_shell.bat"
     pkg.install_file "../pdk.bat", "#{settings[:main_bin]}/pdk.bat"
   else
-    pkg.link "#{settings[:bindir]}/pdk", "#{settings[:link_bindir]}/pdk"
+    pkg.link "#{settings[:ruby_bindir]}/pdk", "#{settings[:link_bindir]}/pdk"
   end
 end

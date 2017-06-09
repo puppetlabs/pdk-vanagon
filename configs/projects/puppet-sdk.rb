@@ -177,6 +177,9 @@ project "puppet-sdk" do |proj|
   proj.component "rubygem-fast_gettext"
   proj.component "rubygem-gettext-setup"
 
+  # Other deps
+  proj.component "rubygem-tty-spinner"
+
   # PDK
   proj.component "rubygem-pdk"
 

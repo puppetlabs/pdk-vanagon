@@ -178,6 +178,7 @@ project "puppet-sdk" do |proj|
   proj.component "rubygem-gettext-setup"
 
   # Other deps
+  proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
 
   # PDK

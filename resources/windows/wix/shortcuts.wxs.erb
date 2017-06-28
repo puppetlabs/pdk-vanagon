@@ -14,8 +14,8 @@
     <!-- Directory Definitions for Start Menu Shortcuts -->
     <DirectoryRef Id='TARGETDIR'>
       <Directory Id='ProgramMenuFolder'>
-        <Directory Id='PuppetSDKShortcutDir' Name="<%= settings[:shortcut_name] %>">
-          <Directory Id='PuppetSDKShortcutDocumentationDir' Name="Documentation">
+        <Directory Id='PDKShortcutDir' Name="<%= settings[:shortcut_name] %>">
+          <Directory Id='PDKShortcutDocumentationDir' Name="Documentation">
           </Directory>
         </Directory>
       </Directory>
@@ -23,26 +23,26 @@
 
     <ComponentGroup Id="ShortCutsComponentGroup">
       <Component
-        Id="PuppetSDKShortcuts"
+        Id="PDKCmdShortcuts"
         Guid="748E4EFE-73CB-4519-9697-53A994F2EDE3"
-        Directory="PuppetSDKShortcutDir"
+        Directory="PDKShortcutDir"
         Win64="<%= settings[:win64] %>">
         <Shortcut
-          Id="PuppetSDKShortcut"
-          Name="Puppet Development Kit Console"
-          Description="Start a Command Prompt with Puppet Development Kit already in the PATH and RUBYLIB load path."
+          Id="PDKCmdShortcut"
+          Name="Puppet Development Kit Command Console"
+          Description="Start a Command prompt with Puppet Development Kit already in the PATH and RUBYLIB load path."
           Target="[%ComSpec]"
           Arguments='/E:ON /K "[INSTALLDIR]bin\pdk_shell.bat"'
-          Icon="PuppetSDKShellShortcutIcon"
+          Icon="PDKCmdShortcutIcon"
           WorkingDirectory="bin">
           <Icon
-            Id="PuppetSDKShellShortcutIcon"
+            Id="PDKCmdShortcutIcon"
             SourceFile="wix\icon\puppet.ico"/>
         </Shortcut>
-        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RemoveFolder Id="PDKCmdShortcutFolder" On="uninstall"/>
         <RegistryValue
           Root="HKCU"
-          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
+          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>\CmdConsole"
           Name="installed"
           Value="1"
           Type="integer"
@@ -50,20 +50,47 @@
       </Component>
 
       <Component
-        Id="PuppetSDKDocumentationShortcuts"
+        Id="PDKPwrShortcuts"
+        Guid="B7015465-5322-449F-AEB0-BAA852BFA38E"
+        Directory="PDKShortcutDir"
+        Win64="<%= settings[:win64] %>">
+        <Shortcut
+          Id="PDKPwrShortcut"
+          Name="Puppet Development Kit PowerShell Console"
+          Description="Start a PowerShell console with Puppet Development Kit already in the PATH and RUBYLIB load path."
+          Target="[%SystemRoot]\system32\WindowsPowerShell\v1.0\powershell.exe"
+          Arguments='-NoExit -ExecutionPolicy RemoteSigned -File "[INSTALLDIR]bin\pdk_shell.ps1"'
+          Icon="PDKPwrShortcutIcon"
+          WorkingDirectory="bin">
+          <Icon
+            Id="PDKPwrShortcutIcon"
+            SourceFile="wix\icon\puppet.ico"/>
+        </Shortcut>
+        <RemoveFolder Id="PDKPwrShortcutFolder" On="uninstall"/>
+        <RegistryValue
+          Root="HKCU"
+          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>\PowerShellConsole"
+          Name="installed"
+          Value="1"
+          Type="integer"
+          KeyPath="yes" />
+      </Component>
+
+      <Component
+        Id="PDKDocumentationShortcuts"
         Guid="616ECAD8-52E7-4DA2-A60C-DE6F11A90E16"
-        Directory="PuppetSDKShortcutDocumentationDir"
+        Directory="PDKShortcutDocumentationDir"
         Win64="<%= settings[:win64] %>">
         <IniFile
-          Id="PuppetSDKSupportURL"
+          Id="PDKSupportURL"
           Name="Get <%= settings[:product_name] %> Support.url"
           Action="addLine"
           Section="InternetShortcut"
           Key="URL"
           Value="<%= settings[:links][:HelpLink] %>"
-          Directory="PuppetSDKShortcutDocumentationDir" />
+          Directory="PDKShortcutDocumentationDir" />
         <RemoveFolder
-          Id="PuppetSDKShortcutDocumentationDir"
+          Id="PDKShortcutDocumentationDir"
           On="uninstall"/>
         <RegistryValue
           Root="HKCU"

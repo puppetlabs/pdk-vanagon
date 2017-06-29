@@ -63,6 +63,12 @@
           <%- end -%>
         </RegistryKey>
       </Component>
+
+      <Component Id="EnvironmentVariables"
+                 Guid="0967C002-7834-4C4F-ABE1-220C9D08A1CE"
+                 Directory="TARGETDIR">
+        <Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="last" Action="set" System="yes" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>

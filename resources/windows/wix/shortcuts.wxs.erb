@@ -23,33 +23,6 @@
 
     <ComponentGroup Id="ShortCutsComponentGroup">
       <Component
-        Id="PuppetSDKShortcuts"
-        Guid="748E4EFE-73CB-4519-9697-53A994F2EDE3"
-        Directory="PuppetSDKShortcutDir"
-        Win64="<%= settings[:win64] %>">
-        <Shortcut
-          Id="PuppetSDKShortcut"
-          Name="Puppet Development Kit Console"
-          Description="Start a Command Prompt with Puppet Development Kit already in the PATH and RUBYLIB load path."
-          Target="[%ComSpec]"
-          Arguments='/E:ON /K "[INSTALLDIR]bin\pdk_shell.bat"'
-          Icon="PuppetSDKShellShortcutIcon"
-          WorkingDirectory="bin">
-          <Icon
-            Id="PuppetSDKShellShortcutIcon"
-            SourceFile="wix\icon\puppet.ico"/>
-        </Shortcut>
-        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue
-          Root="HKCU"
-          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
-          Name="installed"
-          Value="1"
-          Type="integer"
-          KeyPath="yes" />
-      </Component>
-
-      <Component
         Id="PuppetSDKDocumentationShortcuts"
         Guid="616ECAD8-52E7-4DA2-A60C-DE6F11A90E16"
         Directory="PuppetSDKShortcutDocumentationDir"

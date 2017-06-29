@@ -181,6 +181,9 @@ project "puppet-sdk" do |proj|
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
 
+  # Platform specific deps
+  proj.component "ansicon" if platform.is_windows?
+
   # PDK
   proj.component "rubygem-pdk"
 

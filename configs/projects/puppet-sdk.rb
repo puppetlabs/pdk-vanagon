@@ -177,6 +177,15 @@ project "puppet-sdk" do |proj|
   proj.component "rubygem-fast_gettext"
   proj.component "rubygem-gettext-setup"
 
+  # tty-prompt and deps
+  proj.component "rubygem-necromancer"
+  proj.component "rubygem-tty-color"
+  proj.component "rubygem-equatable"
+  proj.component "rubygem-pastel"
+  proj.component "rubygem-wisper"
+  proj.component "rubygem-tty-cursor"
+  proj.component "rubygem-tty-prompt"
+
   # Other deps
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"

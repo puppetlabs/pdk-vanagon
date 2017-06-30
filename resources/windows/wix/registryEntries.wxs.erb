@@ -13,8 +13,7 @@
 
         <RegistryKey
           Root="HKLM"
-          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
-          Action="create" >
+          Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>">
           <!-- This is the default (aka 'unnamed') key value of this path -->
           <RegistryValue
             Type="integer"
@@ -62,12 +61,6 @@
               KeyPath="yes" />
           <%- end -%>
         </RegistryKey>
-      </Component>
-
-      <Component Id="EnvironmentVariables"
-                 Guid="0967C002-7834-4C4F-ABE1-220C9D08A1CE"
-                 Directory="TARGETDIR">
-        <Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="last" Action="set" System="yes" />
       </Component>
     </ComponentGroup>
   </Fragment>

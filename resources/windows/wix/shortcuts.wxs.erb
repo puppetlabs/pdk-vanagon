@@ -15,8 +15,6 @@
     <DirectoryRef Id='TARGETDIR'>
       <Directory Id='ProgramMenuFolder'>
         <Directory Id='PuppetSDKShortcutDir' Name="<%= settings[:shortcut_name] %>">
-          <Directory Id='PuppetSDKShortcutDocumentationDir' Name="Documentation">
-          </Directory>
         </Directory>
       </Directory>
     </DirectoryRef>
@@ -25,7 +23,7 @@
       <Component
         Id="PuppetSDKDocumentationShortcuts"
         Guid="616ECAD8-52E7-4DA2-A60C-DE6F11A90E16"
-        Directory="PuppetSDKShortcutDocumentationDir"
+        Directory="PuppetSDKShortcutDir"
         Win64="<%= settings[:win64] %>">
         <IniFile
           Id="PuppetSDKSupportURL"
@@ -36,7 +34,7 @@
           Value="<%= settings[:links][:HelpLink] %>"
           Directory="PuppetSDKShortcutDocumentationDir" />
         <RemoveFolder
-          Id="PuppetSDKShortcutDocumentationDir"
+          Id="PuppetSDKShortcutDir"
           On="uninstall"/>
         <RegistryValue
           Root="HKCU"

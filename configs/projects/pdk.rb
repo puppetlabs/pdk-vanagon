@@ -1,4 +1,4 @@
-project "puppet-sdk" do |proj|
+project "pdk" do |proj|
   platform = proj.get_platform
 
   # Project level settings our components will care about
@@ -41,7 +41,7 @@ project "puppet-sdk" do |proj|
     proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
   else
     proj.setting(:install_root, "/opt/puppetlabs")
-    proj.setting(:prefix, File.join(proj.install_root, "sdk"))
+    proj.setting(:prefix, File.join(proj.install_root, "pdk"))
     proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
 
     if platform.is_macos?
@@ -93,7 +93,7 @@ project "puppet-sdk" do |proj|
   proj.setting(:host, host)
 
 
-  proj.description "Puppet SDK"
+  proj.description "Puppet Development Kit"
   proj.version_from_git
   proj.write_version_file File.join(proj.prefix, 'VERSION')
   proj.license "See components"

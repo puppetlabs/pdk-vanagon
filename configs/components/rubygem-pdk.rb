@@ -1,7 +1,7 @@
 component "rubygem-pdk" do |pkg, settings, platform|
 	# Set url and ref from json file.
   pkg.load_from_json('configs/components/rubygem-pdk.json')
-  pkg.version "0.3.0"
+  pkg.version "0.4.0.pre"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

@@ -17,6 +17,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
 
     pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
     pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
+    pkg.add_source "file://resources/files/rubygems/GlobalSignRootCA.pem"
 
     rbconfig_info = {
       'x86_64-w64-mingw32' => {
@@ -141,7 +142,23 @@ component "ruby-2.1.9" do |pkg, settings, platform|
       ]
     end
 
+    # Fix outdated SSL cert for Windows
+    pkg.install do
+      "cp ../GlobalSignRootCA.pem #{File.join(settings[:ruby_dir], 'lib', 'ruby', '2.1.0', 'rubygems', 'ssl_certs', 'GlobalSignRootCA.pem')}"
+    end
+
     pkg.directory settings[:ruby_dir]
     pkg.directory settings[:ruby_bindir]
+  end
+
+  if platform.is_windows?
+    gem_bin = "gem.bat"
+  else
+    gem_bin = "gem"
+  end
+
+  # Update to latest version of rubygems
+  pkg.install do
+    "#{settings[:ruby_bindir]}/#{gem_bin} update --system --no-document"
   end
 end

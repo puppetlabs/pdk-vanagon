@@ -150,15 +150,4 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.directory settings[:ruby_dir]
     pkg.directory settings[:ruby_bindir]
   end
-
-  if platform.is_windows?
-    gem_bin = "gem.bat"
-  else
-    gem_bin = "gem"
-  end
-
-  # Update to latest version of rubygems
-  pkg.install do
-    "#{settings[:ruby_bindir]}/#{gem_bin} update --system --no-document"
-  end
 end

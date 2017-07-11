@@ -20,11 +20,13 @@ component "rubygem-pdk" do |pkg, settings, platform|
     git_bin = File.join(settings[:privatedir], 'git', 'bin', 'git')
     pdk_bin = File.join(settings[:ruby_bindir], 'pdk')
     bundle_bin = File.join(settings[:ruby_bindir], 'bundle')
+    gem_bin = File.join(settings[:ruby_bindir], 'gem')
 
     if platform.is_windows?
       git_bin = git_bin.gsub(/\/bin\//, '/cmd/').concat('.exe')
       pdk_bin << '.bat'
       bundle_bin << '.bat'
+      gem_bin << '.bat'
     end
 
     build_commands = [
@@ -38,8 +40,10 @@ component "rubygem-pdk" do |pkg, settings, platform|
 
       # Run 'bundle install' in the generated module and cache the gems
       # inside the project cachedir.
-      # TODO: consider using --deployment flag?
-      "cd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]}",
+      "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd",
+
+      # Install bundler itself into the gem cache
+      "GEM_HOME=#{File.join(settings[:cachedir], 'ruby', '2.1.0')} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document",
     ]
 
     if platform.is_windows?

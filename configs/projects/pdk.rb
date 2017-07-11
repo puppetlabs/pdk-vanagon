@@ -96,7 +96,7 @@ project "pdk" do |proj|
 
   proj.description "Puppet Development Kit"
   proj.version_from_git
-  proj.write_version_file File.join(proj.prefix, 'VERSION')
+  proj.write_version_file File.join(proj.prefix, 'PDK_VERSION')
   proj.license "See components"
   proj.vendor "Puppet, Inc. <info@puppet.com>"
   proj.homepage "https://www.puppet.com"

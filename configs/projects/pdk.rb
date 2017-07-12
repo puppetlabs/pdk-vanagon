@@ -54,6 +54,7 @@ project "pdk" do |proj|
   end
 
   proj.setting(:ruby_version, "2.1.9")
+  proj.setting(:bundler_version, "1.15.1")
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
   # TODO: if/when we start shipping multiple rubies, this will need to be a

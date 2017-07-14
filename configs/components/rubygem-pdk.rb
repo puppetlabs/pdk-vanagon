@@ -17,11 +17,13 @@ component "rubygem-pdk" do |pkg, settings, platform|
   end
 
   if platform.is_windows?
-    pkg.add_source("file://resources/files/windows/environment.bat", sum: "e7453da7fc1e5ad98125d099d4e11fa4")
-    pkg.add_source("file://resources/files/windows/pdk.bat", sum: "f4364047a4d851650adb350b03aafd4b")
+    # PowerShell Module
+    pkg.add_source("file://resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1", sum: "ec3c0df4948b9c7c11ff665546e2e0ec")
+    pkg.add_source("file://resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psm1", sum: "4a3270ba98de1c912ab733befed3c43c")
 
-    pkg.install_file "../environment.bat", "#{settings[:main_bin]}/environment.bat"
-    pkg.install_file "../pdk.bat", "#{settings[:main_bin]}/pdk.bat"
+    pkg.directory "#{settings[:datadir]}/PowerShell/Modules/PuppetDevelopmentKit"
+    pkg.install_file "../PuppetDevelopmentKit.psd1", "#{settings[:datadir]}/PowerShell/Modules/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1"
+    pkg.install_file "../PuppetDevelopmentKit.psm1", "#{settings[:datadir]}/PowerShell/Modules/PuppetDevelopmentKit/PuppetDevelopmentKit.psm1"
   else
     pkg.link "#{settings[:ruby_bindir]}/pdk", "#{settings[:link_bindir]}/pdk"
   end

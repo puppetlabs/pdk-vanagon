@@ -8,6 +8,12 @@
           <%= @platform.generate_service_bin_dirs(self.get_services, self) %>
           </Directory>
         </Directory>
+
+        <Directory Id="PowerShellDir" Name="WindowsPowerShell">
+          <Directory Id="PowerShellModuleDir" Name="Modules">
+            <Directory Id="PowerShellPDKModuleDir" Name="PuppetDevelopmentKit" />
+          </Directory>
+        </Directory>
       </Directory>
     </DirectoryRef>
   </Fragment>

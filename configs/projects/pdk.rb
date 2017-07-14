@@ -192,6 +192,7 @@ project "pdk" do |proj|
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
   proj.component "rubygem-json_pure"
+  proj.component "rubygem-tty-which"
 
   # Platform specific deps
   proj.component "ansicon" if platform.is_windows?

@@ -42,6 +42,9 @@ component "rubygem-pdk" do |pkg, settings, platform|
       # inside the project cachedir.
       "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd",
 
+      # Copy generated Gemfile.lock into cachedir.
+      "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock",
+
       # Install bundler itself into the gem cache
       "GEM_HOME=#{File.join(settings[:cachedir], 'ruby', '2.1.0')} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document",
     ]

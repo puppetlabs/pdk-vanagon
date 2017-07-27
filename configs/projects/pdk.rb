@@ -203,6 +203,9 @@ project "pdk" do |proj|
   # Batteries included copies of module template and required gems
   proj.component "pdk-module-template"
 
+  # Set up PATH on posix platforms
+  proj.component "shellpath" unless platform.is_windows?
+
   # What to include in package?
   proj.directory proj.install_root
   proj.directory proj.prefix

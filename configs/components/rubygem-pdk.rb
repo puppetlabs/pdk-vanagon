@@ -25,6 +25,7 @@ component "rubygem-pdk" do |pkg, settings, platform|
     pkg.install_file "../PuppetDevelopmentKit.psd1", "#{settings[:datadir]}/PowerShell/Modules/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1"
     pkg.install_file "../PuppetDevelopmentKit.psm1", "#{settings[:datadir]}/PowerShell/Modules/PuppetDevelopmentKit/PuppetDevelopmentKit.psm1"
   else
-    pkg.link "#{settings[:ruby_bindir]}/pdk", "#{settings[:link_bindir]}/pdk"
+    pkg.add_source("file://resources/files/posix/pdk_env_wrapper", sum: "bb9406aff5dd85731634386157cfd117")
+    pkg.install_file "../pdk_env_wrapper", "#{settings[:link_bindir]}/pdk", "0755"
   end
 end

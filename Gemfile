@@ -15,3 +15,10 @@ gem 'packaging', '~> 0.6', :git => 'https://github.com/puppetlabs/packaging.git'
 gem 'rake', '~> 12.0'
 
 #gem 'rubocop', "~> 0.34.2"
+
+group 'development' do
+  gem 'pry-byebug'
+
+  # Rubygems API client
+  gem 'gems'
+end

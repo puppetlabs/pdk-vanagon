@@ -1,6 +1,6 @@
 component "rubygem-tty-cursor" do |pkg, settings, platform|
-  pkg.version "0.4.0"
-  pkg.md5sum "cbf8f9fee34919deccdc9656b2d131aa"
+  pkg.version "0.5.0"
+  pkg.md5sum "44bde28174e9e0f1a7987a3e3ab87aab"
   pkg.url "http://buildsources.delivery.puppetlabs.net/tty-cursor-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"

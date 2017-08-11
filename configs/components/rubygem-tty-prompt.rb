@@ -1,6 +1,6 @@
 component "rubygem-tty-prompt" do |pkg, settings, platform|
-  pkg.version "0.12.0"
-  pkg.md5sum "c9059b9c7b51ec49d7b8996e1de060c7"
+  pkg.version "0.13.0"
+  pkg.md5sum "b44d04e0e1e9ec0e701d32949f828c6e"
   pkg.url "http://buildsources.delivery.puppetlabs.net/tty-prompt-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"

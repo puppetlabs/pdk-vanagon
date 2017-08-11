@@ -27,11 +27,11 @@
         Win64="<%= settings[:win64] %>">
         <IniFile
           Id="PuppetSDKSupportURL"
-          Name="Get <%= settings[:product_name] %> Support.url"
+          Name="<%= settings[:product_name] %> Documentation.url"
           Action="addLine"
           Section="InternetShortcut"
           Key="URL"
-          Value="<%= settings[:links][:HelpLink] %>"
+          Value="<%= settings[:links][:ManualLink] %>"
           Directory="PuppetSDKShortcutDir" />
         <RemoveFolder
           Id="PuppetSDKShortcutDir"

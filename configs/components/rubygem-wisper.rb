@@ -1,6 +1,6 @@
 component "rubygem-wisper" do |pkg, settings, platform|
-  pkg.version "1.6.1"
-  pkg.md5sum "cc98d091a08f410210fb577d15bd489c"
+  pkg.version "2.0.0"
+  pkg.md5sum "80deda8b4226106e88285373a8159f20"
   pkg.url "http://buildsources.delivery.puppetlabs.net/wisper-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"

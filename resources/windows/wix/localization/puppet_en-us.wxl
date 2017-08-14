@@ -262,7 +262,7 @@
 This wizard will install the Puppet Development Kit version [VersionUIString].
 </String>
     <String Id="WelcomeDlgDescriptionLink" Overridable="yes"><!-- _locID_text="WelcomeDlgDescription" _locComment="WelcomeDlgDescriptionLink" -->
-<![CDATA[<a href="https://docs.puppet.com/">Read more</a> about the Puppet Development Kit.]]>
+<![CDATA[<a href="https://docs.puppet.com/pdk/">Read more</a> about the Puppet Development Kit.]]>
     </String>
     <String Id="WelcomeUpdateDlgDescriptionUpdate" Overridable="yes"><!-- _locID_text="WelcomeUpdateDlgDescriptionUpdate" _locComment="WelcomeUpdateDlgDescriptionUpdate" -->This will update [ProductName] to version [VersionUIString].</String>
     <String Id="WelcomeDlgTitle" Overridable="yes"><!-- _locID_text="WelcomeDlgTitle" _locComment="WelcomeDlgTitle" -->{\WixUI_Font_Bigger}Welcome to the [ProductName] Setup Wizard</String>

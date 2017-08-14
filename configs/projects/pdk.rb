@@ -20,9 +20,8 @@ project "pdk" do |proj|
       :HelpLink => "http://puppet.com/services/customer-support",
       :CommunityLink => "https://puppet.com/community",
       :ForgeLink => "http://forge.puppet.com",
-      #FIXME: these links:
-      :NextStepLink => "https://docs.puppet.com/puppet/latest/reference/services_commands_windows.html",
-      :ManualLink => "https://docs.puppet.com/pe/latest/",
+      :NextStepLink => "https://docs.puppet.com/pdk/",
+      :ManualLink => "https://docs.puppet.com/pdk/",
     })
 
     # FIXME: exit dialog text

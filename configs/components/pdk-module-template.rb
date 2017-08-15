@@ -32,7 +32,7 @@ component "rubygem-pdk" do |pkg, settings, platform|
     build_commands = [
       # Clone this component repo to a bare repo inside the project cachedir.
       # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
-      "#{git_bin} clone --bare --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-module-template.git')}",
+      "#{git_bin} clone --mirror --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-module-template.git')}",
 
       # Use previously installed pdk gem to generate a new module using the
       # cached module template.

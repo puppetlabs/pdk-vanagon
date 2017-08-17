@@ -6,7 +6,7 @@
 ## Promoting and releasing changes to puppetlabs/pdk repo into new packages
 
 1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/master/CONTRIBUTING.md#release-process) to create a public gem release.
-2. Edit `configs/components/rubygem-pdk.rb` and `configs/components/rubygem-pdk.json`. Update the `ref` in the JSON file to point to the ref that you want to promote. Update the `version` in the Ruby file to match the version of the gem which is built by that ref.
+2. Edit `configs/components/rubygem-pdk.json`. Update the `ref` to point to the ref that you want to promote and the `version` to match the version of the gem which is built by that ref.
 3. Choose the upstream pdk-module-template SHA that you want to release.
 4. Edit `configs/components/pdk-module-template.json`. Update the `ref` in the JSON file to point to the ref that you want to promote.
 3. Commit, PR, and merge this change.

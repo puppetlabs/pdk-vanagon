@@ -5,6 +5,22 @@ begin
 rescue LoadError
 end
 
+task :promote_component, [:component, :version, :ref] do |t,args|
+  require 'json'
+
+  abort 'USAGE: rake promote_component [component,version,ref]' unless args[:component] && args[:version] && args[:ref]
+  component_file = "configs/components/#{args[:component]}.rb"
+  component_config = "configs/components/#{args[:component]}.json"
+  abort "No component file '#{component_file}'" unless File.exist?(component_file)
+  abort "No component config file '#{component_config}'" unless File.exist?(component_config) 
+  config = JSON.parse(File.read(component_config))
+  config["version"] = args[:version]
+  config["ref"] = args[:ref]
+  File.open(component_config, 'w') do |f|
+    f.write(JSON.pretty_generate(config))
+  end 
+end
+
 build_defs_file = File.join(RAKE_ROOT, 'ext', 'build_defaults.yaml')
 if File.exist?(build_defs_file)
   begin

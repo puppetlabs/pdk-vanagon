@@ -31,6 +31,9 @@ namespace :component do
   end
 end
 
+# Legacy task name.
+task :promote_component, [:component, :version, :ref] => "component:promote"
+
 def component_config_file(component)
   "configs/components/#{component}.json"
 end

@@ -1,3 +1,5 @@
+require 'json'
+
 RAKE_ROOT = File.expand_path(File.dirname(__FILE__))
 
 begin
@@ -5,20 +7,39 @@ begin
 rescue LoadError
 end
 
-task :promote_component, [:component, :version, :ref] do |t,args|
-  require 'json'
+namespace :component do
+  desc "Display currently promoted ref for component"
+  task :check, [:component] do |t,args|
+    abort 'USAGE: rake component:check[component]' unless args[:component]
 
-  abort 'USAGE: rake promote_component [component,version,ref]' unless args[:component] && args[:version] && args[:ref]
-  component_file = "configs/components/#{args[:component]}.rb"
-  component_config = "configs/components/#{args[:component]}.json"
-  abort "No component file '#{component_file}'" unless File.exist?(component_file)
-  abort "No component config file '#{component_config}'" unless File.exist?(component_config) 
-  config = JSON.parse(File.read(component_config))
-  config["version"] = args[:version]
-  config["ref"] = args[:ref]
-  File.open(component_config, 'w') do |f|
-    f.write(JSON.pretty_generate(config))
-  end 
+    config = get_component_config(args[:component])
+
+    puts config["ref"]
+  end
+
+  desc "Update component config to promote a new version"
+  task :promote, [:component, :version, :ref] do |t,args|
+    abort 'USAGE: rake component:promote[component,version,ref]' unless args[:component] && args[:version] && args[:ref]
+
+    config = get_component_config(args[:component])
+    config["version"] = args[:version]
+    config["ref"] = args[:ref]
+
+    File.open(component_config_file(args[:component]), 'w') do |f|
+      f.write(JSON.pretty_generate(config))
+    end
+  end
+end
+
+def component_config_file(component)
+  "configs/components/#{component}.json"
+end
+
+def get_component_config(component)
+  conf = component_config_file(component)
+  abort "No component config file '#{conf}'" unless File.exist?(conf)
+
+  JSON.parse(File.read(conf))
 end
 
 build_defs_file = File.join(RAKE_ROOT, 'ext', 'build_defaults.yaml')

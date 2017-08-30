@@ -34,7 +34,6 @@ project "pdk" do |proj|
     # Windows specific directories.
     proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
     proj.setting(:prefix, proj.install_root)
-    proj.setting(:sysconfdir, File.join("C:", "CommonAppDataFolder", proj.company_id))
     proj.setting(:tmpfilesdir, "C:/Windows/Temp")
     proj.setting(:main_bin, "#{proj.install_root}/bin")
     proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
@@ -42,12 +41,6 @@ project "pdk" do |proj|
     proj.setting(:install_root, "/opt/puppetlabs")
     proj.setting(:prefix, File.join(proj.install_root, "pdk"))
     proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
-
-    if platform.is_macos?
-      proj.setting(:sysconfdir, "/private/etc/puppetlabs")
-    else
-      proj.setting(:sysconfdir, "/etc/puppetlabs")
-    end
 
     proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
   end
@@ -210,7 +203,6 @@ project "pdk" do |proj|
   # What to include in package?
   proj.directory proj.install_root
   proj.directory proj.prefix
-  proj.directory proj.sysconfdir
   proj.directory proj.link_bindir unless platform.is_windows?
 
   proj.timeout 7200 if platform.is_windows?

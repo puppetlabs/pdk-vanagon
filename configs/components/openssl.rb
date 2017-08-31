@@ -77,7 +77,10 @@ component "openssl" do |pkg, settings, platform|
   end
 
   pkg.install do
-    ["#{platform[:make]} #{install_prefix} install"]
+    ["#{platform[:make]} #{install_prefix} install",
+     "rm -f #{settings[:prefix]}/bin/openssl",
+     "rm -f #{settings[:prefix]}/bin/c_rehash",
+    ]
   end
 
   pkg.install_file "LICENSE", "#{settings[:prefix]}/share/doc/openssl-#{pkg.get_version}/LICENSE"

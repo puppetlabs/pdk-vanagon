@@ -39,8 +39,9 @@ project "pdk" do |proj|
     proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
   else
     proj.setting(:install_root, "/opt/puppetlabs")
+    proj.setting(:main_bin, "/usr/local/bin")
     proj.setting(:prefix, File.join(proj.install_root, "pdk"))
-    proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
+    proj.setting(:link_bindir, File.join(proj.prefix, "bin"))
 
     proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
   end

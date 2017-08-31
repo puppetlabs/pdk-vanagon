@@ -29,6 +29,10 @@ component 'curl' do |pkg, settings, platform|
   end
 
   pkg.install do
-    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"]
+    # Do not need curl binaries, delete after install
+    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
+     "rm -f #{settings[:prefix]}/bin/curl",
+     "rm -f #{settings[:prefix]}/bin/curl-config"
+    ]
   end
 end

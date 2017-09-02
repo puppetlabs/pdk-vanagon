@@ -1,6 +1,6 @@
 component "rubygem-childprocess" do |pkg, settings, platform|
-  pkg.version "0.6.2"
-  pkg.md5sum "b0d728c5ead77c9488a42db50a62446b"
+  pkg.version "0.7.1"
+  pkg.md5sum "7256bd0c8e65e34903b7540fab490441"
   pkg.url "http://buildsources.delivery.puppetlabs.net/childprocess-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"

@@ -1,6 +1,6 @@
 @{
   ModuleToProcess   = 'PuppetDevelopmentKit.psm1'
-  ModuleVersion     = '0.4.0'
+  ModuleVersion     = '1.1.0'
   GUID              = 'bfe70e90-1802-4f6b-b4a0-f627d53f593f'
   Author            = "Puppet, Inc"
   CompanyName       = "Puppet, Inc"

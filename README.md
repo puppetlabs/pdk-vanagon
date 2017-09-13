@@ -7,18 +7,19 @@
 
 1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/master/CONTRIBUTING.md#release-process) to create a public gem release.
 2. Edit `configs/components/rubygem-pdk.json`. Update the `ref` to point to the ref that you want to promote and the `version` to match the version of the gem which is built by that ref.
-3. Edit `resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1`. Update the `version` of this Powershell wrapper to the release version.
-4. Choose the upstream pdk-module-template SHA that you want to release.
-5. Edit `configs/components/pdk-module-template.json`. Update the `ref` in the JSON file to point to the ref that you want to promote.
-6. Commit, PR, and merge this change.
-7. If you want this to be a long-lived build (e.g. a new release candidate):
+3. Edit `configs/components/pdk-module-template.json`. Update the `ref` to point to the desired SHA from the pdk-module-template.
+4. Edit `resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1`. Update the `version` of this Powershell wrapper to the release version.
+5. Choose the upstream pdk-module-template SHA that you want to release.
+6. Edit `configs/components/pdk-module-template.json`. Update the `ref` in the JSON file to point to the ref that you want to promote.
+7. Commit, PR, and merge this change.
+8. If you want this to be a long-lived build (e.g. a new release candidate):
     1. Create a new tag conforming to the scheme `X.Y.Z.0` where X.Y.Z matches the new version of the `pdk` gem. For example: `git tag -s 1.2.3.0 -m 'Release 1.2.3.0'`
     2. Push new tag to upstream puppetlabs/puppet-sdk-vanagon repo.
-8. [Trigger a new build](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/puppet-sdk/job/platform_puppet-sdk_pdk-van-init_master/build?delay=0sec) with default params.
-9. Once the Jenkins jobs are finished, your new packages will appear in [builds.delivery.p.n](http://builds.delivery.puppetlabs.net/pdk/) with either the tag you attached to your new commit or the SHA of your `puppet-sdk-vanagon` (not `pdk`) commit.
-10. Optional: If the packages were tagged with a version, use the [S3 ship job](http://jenkins-compose.delivery.puppetlabs.net/job/puppetlabs-pdk_s3-ship/) to sign and ship the packages to S3. The REF parameter receives the puppet-sdk-vanagon tag to ship. RE's CGI script (see RE-9094) will pick up the new version.
-11. After pushing a release to S3, send out a Release Announcement
-12. Celebrate
+9. [Trigger a new build](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/puppet-sdk/job/platform_puppet-sdk_pdk-van-init_master/build?delay=0sec) with default params.
+10. Once the Jenkins jobs are finished, your new packages will appear in [builds.delivery.p.n](http://builds.delivery.puppetlabs.net/pdk/) with either the tag you attached to your new commit or the SHA of your `puppet-sdk-vanagon` (not `pdk`) commit.
+11. Optional: If the packages were tagged with a version, use the [S3 ship job](http://jenkins-compose.delivery.puppetlabs.net/job/puppetlabs-pdk_s3-ship/) to sign and ship the packages to S3. The REF parameter receives the puppet-sdk-vanagon tag to ship. RE's CGI script (see RE-9094) will pick up the new version.
+12. After pushing a release to S3, send out a Release Announcement
+13. Celebrate
 
 ## Promoting changes to puppetlabs/pdk-module-temlate into new packages
 

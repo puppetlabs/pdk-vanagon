@@ -203,6 +203,9 @@ project "pdk" do |proj|
   # Batteries included copies of module template and required gems
   proj.component "pdk-module-template"
 
+  # Cache a copy of the task.json schema file
+  proj.component "task-schema"
+
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?
 

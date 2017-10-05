@@ -183,6 +183,11 @@ project "pdk" do |proj|
   proj.component "rubygem-timers"
   proj.component "rubygem-tty-prompt"
 
+  # json-schema and deps
+  proj.component "rubygem-public_suffix"
+  proj.component "rubygem-addressable"
+  proj.component "rubygem-json-schema"
+
   # Other deps
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"

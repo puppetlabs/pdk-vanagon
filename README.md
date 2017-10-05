@@ -19,7 +19,8 @@
 10. Once the Jenkins jobs are finished, your new packages will appear in [builds.delivery.p.n](http://builds.delivery.puppetlabs.net/pdk/) with either the tag you attached to your new commit or the SHA of your `puppet-sdk-vanagon` (not `pdk`) commit.
 11. Optional: If the packages were tagged with a version, use the [S3 ship job](http://jenkins-compose.delivery.puppetlabs.net/job/puppetlabs-pdk_s3-ship/) to sign and ship the packages to S3. The REF parameter receives the puppet-sdk-vanagon tag to ship. RE's CGI script (see RE-9094) will pick up the new version.
 12. After pushing a release to S3, send out a Release Announcement
-13. Celebrate
+13. Notify symantec about the new version via https://submit.symantec.com/false_positive/ to avoid recurrence of PDK-527
+14. Celebrate
 
 ## Promoting changes to puppetlabs/pdk-module-temlate into new packages
 

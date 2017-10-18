@@ -153,6 +153,15 @@ project "pdk" do |proj|
   proj.component "runtime"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
+  proj.component "augeas" unless platform.is_windows?
+  proj.component "libxml2" unless platform.is_windows?
+  proj.component "libxslt" unless platform.is_windows?
+  proj.component "ruby-augeas" unless platform.is_windows?
+  # We only build ruby-selinux for EL 5-7
+  if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
+    proj.component "ruby-selinux"
+  end
+  proj.component "ruby-stomp"
 
   # Bundler
   proj.component "rubygem-bundler"

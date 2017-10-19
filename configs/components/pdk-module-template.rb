@@ -1,4 +1,4 @@
-component "rubygem-pdk" do |pkg, settings, platform|
+component "pdk-module-template" do |pkg, settings, platform|
   # Set url and ref from json file so it's easy for jenkins
   # to promote new template versions.
   pkg.load_from_json('configs/components/pdk-module-template.json')

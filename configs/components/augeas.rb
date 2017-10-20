@@ -11,7 +11,7 @@ component 'augeas' do |pkg, settings, platform|
   pkg.build_requires "libxml2"
 
   # Ensure we're building against our own libraries when present
-  pkg.environment "PKG_CONFIG_PATH", "/opt/puppetlabs/puppet/lib/pkgconfig"
+  pkg.environment "PKG_CONFIG_PATH", "#{settings[:libdir]}/pkgconfig"
 
   if platform.is_aix?
     pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/pkg-config-0.19-6.aix5.2.ppc.rpm"

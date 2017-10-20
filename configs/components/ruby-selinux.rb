@@ -23,7 +23,7 @@ component "ruby-selinux" do |pkg, settings, platform|
 
   cc = "/opt/pl-build-tools/bin/gcc"
   system_include = "-I/usr/include"
-  ruby = "#{settings[:bindir]}/ruby -rrbconfig"
+  ruby = "#{settings[:ruby_bindir]}/ruby -rrbconfig"
   if platform.is_cross_compiled_linux?
     cc = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
     system_include = "-I/opt/pl-build-tools/#{settings[:platform_triple]}/sysroot/usr/include"

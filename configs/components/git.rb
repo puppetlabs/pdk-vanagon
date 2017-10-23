@@ -1,11 +1,11 @@
 component "git" do |pkg, settings, platform|
   if platform.is_windows?
-    pkg.version "2.12.2.2"
-    pkg.md5sum "a67f12e2584ce7cdaab67c77af300f47"
+    pkg.version "2.14.2.3"
+    pkg.md5sum "486fb9f0a73469b4634edecdff503091"
     pkg.url "http://buildsources.delivery.puppetlabs.net/MinGit-#{pkg.get_version}-64-bit.zip"
   else
-    pkg.version "2.12.2"
-    pkg.md5sum "f1a50c09ce8b5dd197f3c6c6d5ea8e75"
+    pkg.version "2.14.2"
+    pkg.md5sum "240b2e339029da98dd87ffbc44934278"
     pkg.url "https://www.kernel.org/pub/software/scm/git/git-#{pkg.get_version}.tar.gz"
   end
 

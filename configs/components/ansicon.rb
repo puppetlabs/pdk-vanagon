@@ -4,7 +4,7 @@ component "ansicon" do |pkg, settings, platform|
   pkg.url "http://buildsources.delivery.puppetlabs.net/ansicon-#{pkg.get_version}.tar.gz"
 
   # This component should only be included on Windows
-  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$$PATH"
+  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
   pkg.environment "CYGWIN", settings[:cygwin]
 
   pkg.build do

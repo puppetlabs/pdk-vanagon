@@ -27,13 +27,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
     end
 
     pkg.install do
-      [
-        "PKG_CONFIG_PATH='#{settings[:pkg_config_path]}' \
-        CFLAGS='#{settings[:cflags]}' \
-        LDFLAGS='#{settings[:ldflags]}' \
-        CC=/opt/pl-build-tools/bin/gcc \
-        #{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem -- --with-opt-dir=#{settings[:prefix]} --use-system-libraries"
-      ]
+      ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem"]
     end
   end
 end

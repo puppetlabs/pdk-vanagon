@@ -38,6 +38,16 @@ component "pdk-module-template" do |pkg, settings, platform|
       # cached module template.
       "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-module-template.git')}",
 
+      # Add some additional gems to support experimental features
+      "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"puppet-blacksmith\",                          require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile",
+      # required for guard, but 3.1.0 and later do not support ruby 2.1
+      "echo 'gem \"listen\", \"< 3.1.0\",                        require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile",
+
       # Run 'bundle install' in the generated module and cache the gems
       # inside the project cachedir.
       "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd",

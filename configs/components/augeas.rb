@@ -17,7 +17,7 @@ component 'augeas' do |pkg, settings, platform|
     pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/pkg-config-0.19-6.aix5.2.ppc.rpm"
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     pkg.environment "LDFLAGS", settings[:ldflags]
-    pkg.environment "CFLAGS", "-I/opt/puppetlabs/puppet/include/"
+    pkg.environment "CFLAGS", "-I#{settings[:includedir]}"
     pkg.build_requires 'libedit'
     pkg.build_requires 'runtime'
   end
@@ -32,15 +32,12 @@ component 'augeas' do |pkg, settings, platform|
       pkg.requires 'readline'
     end
 
-    if platform.architecture =~ /ppc64le|s390x/
+    if platform.architecture =~ /aarch64|ppc64le|s390x/
       pkg.build_requires 'runtime'
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
-    pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH:#{settings[:bindir]}"
-    pkg.environment "CFLAGS" => settings[:cflags]
-    pkg.environment "LDFLAGS" => settings[:ldflags]
   elsif platform.is_huaweios?
     pkg.build_requires 'runtime'
     pkg.build_requires 'pl-pkg-config'
@@ -82,12 +79,6 @@ component 'augeas' do |pkg, settings, platform|
   elsif platform.is_macos?
     pkg.environment "PATH" => "$$PATH:/usr/local/bin"
     pkg.environment "CFLAGS" => settings[:cflags]
-  elsif platform.is_windows?
-    #nothing to see here
-  else
-    pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH:#{settings[:bindir]}"
-    pkg.environment "CFLAGS" => settings[:cflags]
-    pkg.environment "LDFLAGS" => settings[:ldflags]
   end
 
   pkg.configure do

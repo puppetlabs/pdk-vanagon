@@ -48,6 +48,8 @@ project "pdk" do |proj|
 
   proj.setting(:ruby_version, "2.1.9")
   proj.setting(:bundler_version, "1.15.1")
+  proj.setting(:mini_portile2_version, '2.3.0')
+  proj.setting(:nokogiri_version, '1.8.1')
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
   # TODO: if/when we start shipping multiple rubies, this will need to be a
@@ -202,6 +204,10 @@ project "pdk" do |proj|
   proj.component "rubygem-tty-spinner"
   proj.component "rubygem-json_pure"
   proj.component "rubygem-tty-which"
+
+  # nokogiri and deps
+  proj.component 'rubygem-mini_portile2'
+  proj.component 'rubygem-nokogiri'
 
   # Platform specific deps
   proj.component "ansicon" if platform.is_windows?

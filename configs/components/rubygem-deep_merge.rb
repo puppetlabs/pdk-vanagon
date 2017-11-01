@@ -1,7 +1,7 @@
 component "rubygem-deep_merge" do |pkg, settings, platform|
   pkg.version "1.1.1"
   pkg.md5sum "1b2527fa722b54bf0406fd7ab6cc5e08"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/deep_merge-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/deep_merge-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

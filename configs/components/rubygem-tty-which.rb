@@ -1,7 +1,7 @@
 component "rubygem-tty-which" do |pkg, settings, platform|
   pkg.version "0.3.0"
   pkg.md5sum "633a1f4f8c6e15a26cb83e1be0b9f2ce"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/tty-which-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/tty-which-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

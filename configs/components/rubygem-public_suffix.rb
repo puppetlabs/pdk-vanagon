@@ -1,7 +1,7 @@
 component "rubygem-public_suffix" do |pkg, settings, platform|
   pkg.version "3.0.0"
   pkg.md5sum "787a298cfb1e4d9f39aa43a415d53e6f"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/public_suffix-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/public_suffix-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

@@ -2,7 +2,7 @@ component "git" do |pkg, settings, platform|
   if platform.is_windows?
     pkg.version "2.14.2.3"
     pkg.md5sum "486fb9f0a73469b4634edecdff503091"
-    pkg.url "http://buildsources.delivery.puppetlabs.net/MinGit-#{pkg.get_version}-64-bit.zip"
+    pkg.url "#{settings[:buildsources_url]}/MinGit-#{pkg.get_version}-64-bit.zip"
   else
     pkg.version "2.14.2"
     pkg.md5sum "240b2e339029da98dd87ffbc44934278"

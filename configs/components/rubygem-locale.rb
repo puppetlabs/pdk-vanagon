@@ -1,7 +1,7 @@
 component "rubygem-locale" do |pkg, settings, platform|
   pkg.version "2.1.2"
   pkg.md5sum "def1e89d1d3126a0c684d3b7b20d88d4"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/locale-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/locale-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

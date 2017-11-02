@@ -1,7 +1,7 @@
 component "rubygem-json-schema" do |pkg, settings, platform|
   pkg.version "2.8.0"
   pkg.md5sum "075b4034f57ee8ab900a92a8da45054a"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/json-schema-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/json-schema-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

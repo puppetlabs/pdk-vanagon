@@ -1,7 +1,7 @@
 component "rubygem-bundler" do |pkg, settings, platform|
   pkg.version settings[:bundler_version]
   pkg.md5sum "329064ce58948d8c38b7543340ce9068"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/bundler-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/bundler-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

@@ -1,7 +1,7 @@
 component "rubygem-addressable" do |pkg, settings, platform|
   pkg.version "2.5.2"
   pkg.md5sum "b469195cee7d4ebcd492cf7c514a5ad8"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/addressable-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/addressable-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

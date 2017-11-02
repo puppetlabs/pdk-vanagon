@@ -1,7 +1,7 @@
 component "rubygem-json_pure" do |pkg, settings, platform|
   pkg.version "2.1.0"
   pkg.md5sum "611938ea90a941ca220e1025262b0561"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/json_pure-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/json_pure-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

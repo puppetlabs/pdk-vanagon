@@ -1,7 +1,7 @@
 component "rubygem-tty-spinner" do |pkg, settings, platform|
   pkg.version "0.5.0"
   pkg.md5sum "36cad9c558a576415e58d316621422c6"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/tty-spinner-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/tty-spinner-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

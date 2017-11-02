@@ -46,6 +46,9 @@ project "pdk" do |proj|
     proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
   end
 
+  proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
+  proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
+
   proj.setting(:ruby_version, "2.1.9")
   proj.setting(:bundler_version, "1.15.1")
   proj.setting(:mini_portile2_version, '2.3.0')
@@ -234,6 +237,6 @@ project "pdk" do |proj|
   # Here we rewrite public http urls to use our internal source host instead.
   # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
   # rewritten as
-  # http://buildsources.delivery.puppetlabs.net/openssl-1.0.0r.tar.gz
-  proj.register_rewrite_rule 'http', 'http://buildsources.delivery.puppetlabs.net'
+  # https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/openssl-1.0.0r.tar.gz
+  proj.register_rewrite_rule 'http', proj.buildsources_url
 end

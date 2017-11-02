@@ -9,7 +9,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
 
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]
-    pkg.url "https://buildsources.delivery.puppetlabs.net/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
+    pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
     pkg.md5sum "fdcb75a394aa944dec24fdd8c183d741"
 
     pkg.install do

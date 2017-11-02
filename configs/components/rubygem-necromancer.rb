@@ -1,7 +1,7 @@
 component "rubygem-necromancer" do |pkg, settings, platform|
   pkg.version "0.4.0"
   pkg.md5sum "f4e3986d55e53db3e8a47598e0e1db9c"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/necromancer-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/necromancer-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

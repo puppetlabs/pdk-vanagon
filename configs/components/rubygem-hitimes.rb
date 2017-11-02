@@ -2,7 +2,7 @@ component "rubygem-hitimes" do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
   pkg.version "1.2.6"
   pkg.md5sum "3b65295968799c8c9966083d0d9de0f0"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/#{gemname}-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

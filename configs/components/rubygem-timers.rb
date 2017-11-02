@@ -1,7 +1,7 @@
 component "rubygem-timers" do |pkg, settings, platform|
   pkg.version "4.1.2"
   pkg.md5sum "2be9e4db59553d2aa6ae205c45e7a85b"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/timers-#{pkg.get_version}.gem"
+  pkg.url "#{settings[:buildsources_url]}/timers-#{pkg.get_version}.gem"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
 

@@ -2,7 +2,7 @@ component "openssl" do |pkg, settings, platform|
   ## SOURCE METADATA
   pkg.version "1.0.2j"
   pkg.md5sum "96322138f0b69e61b7212bc53d5e912b"
-  pkg.url "http://buildsources.delivery.puppetlabs.net/openssl-#{pkg.get_version}.tar.gz"
+  pkg.url "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
   ## PACKAGE DEPENDENCIES
 

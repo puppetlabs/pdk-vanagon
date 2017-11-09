@@ -1,8 +1,9 @@
 component "openssl" do |pkg, settings, platform|
   ## SOURCE METADATA
-  pkg.version "1.0.2j"
-  pkg.md5sum "96322138f0b69e61b7212bc53d5e912b"
-  pkg.url "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
+  pkg.version "1.0.2m"
+  pkg.md5sum "10e9e37f492094b9ef296f68f24a7666"
+  pkg.url "https://www.openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
+  pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
   ## PACKAGE DEPENDENCIES
 

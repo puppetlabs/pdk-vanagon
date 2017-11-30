@@ -2,7 +2,7 @@ component "rubygem-pdk" do |pkg, settings, platform|
 	# Set url and ref from json file.
   pkg.load_from_json('configs/components/rubygem-pdk.json')
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]

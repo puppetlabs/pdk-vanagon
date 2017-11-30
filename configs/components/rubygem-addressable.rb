@@ -3,7 +3,7 @@ component "rubygem-addressable" do |pkg, settings, platform|
   pkg.md5sum "b469195cee7d4ebcd492cf7c514a5ad8"
   pkg.url "#{settings[:buildsources_url]}/addressable-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]

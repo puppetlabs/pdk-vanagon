@@ -3,7 +3,7 @@ component "rubygem-tty-color" do |pkg, settings, platform|
   pkg.md5sum "5eeee7ff49775b8569bea975f77ea94d"
   pkg.url "#{settings[:buildsources_url]}/tty-color-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]

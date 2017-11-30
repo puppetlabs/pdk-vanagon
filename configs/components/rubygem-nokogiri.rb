@@ -4,7 +4,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
   pkg.md5sum "65eab96f98f22763766efe663d102cf3"
   pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
   pkg.build_requires 'rubygem-mini_portile2'
 
   if platform.is_windows?

@@ -4,7 +4,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.md5sum "37284a51e5464443f7122b388329a2a0"
   pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.md5sum "664afc6a316dd648f497fbda3be87137"

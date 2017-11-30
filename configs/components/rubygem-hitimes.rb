@@ -4,7 +4,7 @@ component "rubygem-hitimes" do |pkg, settings, platform|
   pkg.md5sum "3b65295968799c8c9966083d0d9de0f0"
   pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.md5sum "4b0154b5fea7da87091b12e365694360"

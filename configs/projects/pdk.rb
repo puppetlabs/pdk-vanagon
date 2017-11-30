@@ -147,27 +147,6 @@ project "pdk" do |proj|
   # What to build?
   # --------------
 
-  # Common deps
-  proj.component "openssl"
-  proj.component "curl"
-
-  # Git and deps
-  proj.component "git"
-
-  # Ruby and deps
-  proj.component "runtime"
-  proj.component "puppet-ca-bundle"
-  proj.component "ruby-#{proj.ruby_version}"
-  proj.component "augeas" unless platform.is_windows?
-  proj.component "libxml2" unless platform.is_windows?
-  proj.component "libxslt" unless platform.is_windows?
-  proj.component "ruby-augeas" unless platform.is_windows?
-  # We only build ruby-selinux for EL 5-7
-  if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
-    proj.component "ruby-selinux"
-  end
-  proj.component "ruby-stomp"
-
   # Bundler
   proj.component "rubygem-bundler"
 
@@ -213,9 +192,6 @@ project "pdk" do |proj|
   proj.component 'rubygem-mini_portile2'
   proj.component 'rubygem-nokogiri'
 
-  # Platform specific deps
-  proj.component "ansicon" if platform.is_windows?
-
   # PDK
   proj.component "rubygem-pdk"
 
@@ -227,6 +203,9 @@ project "pdk" do |proj|
 
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?
+
+  # runtime!
+  proj.component "pdk-runtime"
 
   # What to include in package?
   proj.directory proj.install_root

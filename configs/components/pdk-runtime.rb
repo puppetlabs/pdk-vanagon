@@ -8,10 +8,11 @@ component 'pdk-runtime' do |pkg, settings, platform|
   if platform.is_windows?
     # We need to make sure we're setting permissions correctly for the executables
     # in the ruby bindir since preserving permissions in archives in windows is
-    # ... weird.
+    # ... weird, and we need to be able to use cygwin environment variable use
+    # so cmd.exe was not working as expected.
     install_command = [
       "gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C /cygdrive/c/ -xf -",
-      "chmod 755 #{settings[:ruby_bindir]}/*"
+      "chmod 755 #{settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     ]
   end
   pkg.install do

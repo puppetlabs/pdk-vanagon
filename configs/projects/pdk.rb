@@ -99,7 +99,7 @@ project "pdk" do |proj|
   proj.license "See components"
   proj.vendor "Puppet, Inc. <info@puppet.com>"
   proj.homepage "https://www.puppet.com"
-  proj.target_repo "PC1"
+  proj.target_repo "PDK"
 
   if platform.is_macos?
     proj.identifier "com.puppetlabs"

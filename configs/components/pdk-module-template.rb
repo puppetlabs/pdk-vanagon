@@ -42,11 +42,19 @@ component "pdk-module-template" do |pkg, settings, platform|
       "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-module-template.git')}",
 
       # Add some additional gems to support experimental features
+      "echo 'gem \"puppet-module-posix-dev-r\#{minor_version}\", require: false, platforms: [:ruby]' >> vanagon_module/Gemfile",
+      "echo 'gem \"puppet-module-win-dev-r\#{minor_version}\",   require: false, platforms: [:mswin, :mingw, :x64_mingw]' >> vanagon_module/Gemfile",
       "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile",
+      # https://github.com/puppetlabs/pdk/issues/305#issuecomment-336885491
+      # "echo 'gem \"puppet-retrospec\",                           require: false' >> vanagon_module/Gemfile",
+      # beaker doesn't build on windows: https://tickets.puppetlabs.com/browse/PDK-604?focusedCommentId=503941&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-503941
+      # "echo 'gem \"beaker-testmode_switcher\",                   require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"puppet-blacksmith\",                          require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile",
       # required for guard, but 3.1.0 and later do not support ruby 2.1
       "echo 'gem \"listen\", \"< 3.1.0\",                        require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"pry\",                                        require: false' >> vanagon_module/Gemfile",
+      # "echo 'gem \"pry-byebug\",                                 require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile",

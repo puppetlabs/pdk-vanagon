@@ -1,10 +1,10 @@
 ---
 project: 'pdk'
-packaging_url: 'git://github.com/puppetlabs/packaging.git --branch=1.0.x'
+packaging_url: 'git://github.com/puppetlabs/packaging.git --branch=master'
 packaging_repo: 'packaging'
 # foss_platforms will be shipped to the nightly repos
 # foss_platforms:
-foss_platforms:
+pe_platforms:
   - el-6-x86_64
   - el-7-x86_64
   - osx-10.11-x86_64
@@ -23,16 +23,6 @@ osx_signing_cert: "Developer ID Installer: PUPPET LABS, INC. (VKGLGN2B6Y)"
 osx_signing_keychain: "/Users/jenkins/Library/Keychains/signing.keychain"
 osx_signing_server: 'osx-signer.delivery.puppetlabs.net'
 vanagon_project: TRUE
-apt_repo_name: 'PDK'
-yum_repo_name: 'PDK'
-repo_name: 'PDK'
+apt_repo_name: 'PC1'
+yum_repo_name: 'PC1'
 build_tar: FALSE
-staging_server: weth.delivery.puppetlabs.net
-msi_staging_server: 'weth.delivery.puppetlabs.com'
-tar_staging_server: 'weth.delivery.puppetlabs.net'
-dmg_staging_server: 'weth.delivery.puppetlabs.net'
-swix_staging_server: 'weth.delivery.puppetlabs.net'
-msi_staging_server: 'weth.delivery.puppetlabs.net'
-apt_signing_server: 'weth.delivery.puppetlabs.net'
-apt_signing_server: weth.delivery.puppetlabs.net
-yum_staging_server: weth.delivery.puppetlabs.net

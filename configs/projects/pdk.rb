@@ -207,6 +207,7 @@ project "pdk" do |proj|
   proj.component "rubygem-tty-spinner"
   proj.component "rubygem-json_pure"
   proj.component "rubygem-tty-which"
+  proj.component "rubygem-diff-lcs"
 
   # nokogiri and deps
   proj.component 'rubygem-mini_portile2'

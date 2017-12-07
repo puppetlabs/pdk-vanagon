@@ -220,7 +220,7 @@ project "pdk" do |proj|
   proj.component "rubygem-pdk"
 
   # Batteries included copies of module template and required gems
-  proj.component "pdk-module-template"
+  proj.component "pdk-templates"
 
   # Cache a copy of the task.json schema file
   proj.component "task-schema"

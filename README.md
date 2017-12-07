@@ -10,7 +10,7 @@ This repo contains all the packaging scripts to build the native PDK packages ac
 2. PDK merges to master are automatically promoted into pdk-vanagon with [this jenkins job](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk-vanagon-promotion_pdk-van-promote_master/).
 3. Make sure the correct `ref` and `version` have landed in `configs/components/rubygem-pdk.json`.
 4. Edit `resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1`. Update the `version` of this Powershell wrapper to the release version.
-5. Edit `configs/components/pdk-module-template.json`. Update the `ref` to point to the desired SHA from the [pdk-module-template](https://github.com/puppetlabs/pdk-module-template).
+5. Edit `configs/components/pdk-templates.json`. Update the `ref` to point to the desired SHA from the [pdk-templates](https://github.com/puppetlabs/pdk-templates).
 6. Commit, PR, and merge these changes.
 7. If you want this to be a long-lived build (e.g. a new release candidate):
     1. Create a new tag conforming to the scheme `X.Y.Z.N` where X.Y.Z matches the new version of the `pdk` gem, and N is the build number for this package, starting with zero ("0"). For example: `git tag -s 1.2.3.0 -m 'Release 1.2.3.0'`
@@ -22,9 +22,9 @@ This repo contains all the packaging scripts to build the native PDK packages ac
 12. Notify symantec about the new version via https://submit.symantec.com/false_positive/ to avoid recurrence of PDK-527
 13. Celebrate
 
-## Promoting changes to puppetlabs/pdk-module-temlate into new packages
+## Promoting changes to puppetlabs/pdk-templates into new packages
 
-1. Edit `configs/components/pdk-module-template.json`. Update the `ref` to point to the desired SHA from the [pdk-module-template](https://github.com/puppetlabs/pdk-module-template).
+1. Edit `configs/components/pdk-templates.json`. Update the `ref` to point to the desired SHA from the [pdk-templates](https://github.com/puppetlabs/pdk-templates).
 
 See https://tickets.puppetlabs.com/browse/PDK-578
 
@@ -34,7 +34,7 @@ See https://tickets.puppetlabs.com/browse/PDK-578
 
 * Clone this repo
 * Change the `configs/components/rubygem-pdk.json` to point to the SHA or ref and version you want to test/build.
-* Change the `configs/components/pdk-module-template.json` to point to the SHA or ref and version you want to test/build.
+* Change the `configs/components/pdk-templates.json` to point to the SHA or ref and version you want to test/build.
 * `bundle install`
 * `bundle exec build pdk ubuntu-16.04-amd64,windows-2012r2-x64,el-7-x86_64`
 

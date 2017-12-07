@@ -1,7 +1,7 @@
-component "pdk-module-template" do |pkg, settings, platform|
+component "pdk-templates" do |pkg, settings, platform|
   # Set url and ref from json file so it's easy for jenkins
   # to promote new template versions.
-  pkg.load_from_json('configs/components/pdk-module-template.json')
+  pkg.load_from_json('configs/components/pdk-templates.json')
 
   pkg.build_requires "git"
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
@@ -35,11 +35,11 @@ component "pdk-module-template" do |pkg, settings, platform|
     build_commands = [
       # Clone this component repo to a bare repo inside the project cachedir.
       # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
-      "#{git_bin} clone --mirror --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-module-template.git')}",
+      "#{git_bin} clone --mirror --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-templates.git')}",
 
       # Use previously installed pdk gem to generate a new module using the
       # cached module template.
-      "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-module-template.git')}",
+      "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}",
 
       # Add some additional gems to support experimental features
       "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile",

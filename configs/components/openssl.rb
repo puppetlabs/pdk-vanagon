@@ -11,7 +11,9 @@ component "openssl" do |pkg, settings, platform|
   if platform.is_windows?
     pkg.build_requires "runtime"
   elsif platform.is_linux?
-    pkg.build_requires 'pl-binutils'
+    unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
+      pkg.build_requires 'pl-binutils'
+    end
     pkg.build_requires 'pl-gcc'
   end
 

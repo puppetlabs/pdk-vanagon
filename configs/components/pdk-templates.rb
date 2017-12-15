@@ -43,7 +43,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
       # Add some additional gems to support experimental features
       "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"puppet-blacksmith\",                          require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"puppet-blacksmith\", :platforms => :ruby,     require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile",
       # required for guard, but 3.1.0 and later do not support ruby 2.1
       "echo 'gem \"listen\", \"< 3.1.0\",                        require: false' >> vanagon_module/Gemfile",

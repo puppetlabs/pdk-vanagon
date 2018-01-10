@@ -3,7 +3,7 @@ component 'rubygem-mini_portile2' do |pkg, settings, platform|
   pkg.md5sum '3dca7ae71a5ac1ce2b33b5ac92ae647c'
   pkg.url "https://rubygems.org/downloads/mini_portile2-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]

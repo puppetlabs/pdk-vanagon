@@ -3,7 +3,7 @@ component "rubygem-diff-lcs" do |pkg, settings, platform|
   pkg.md5sum "9b1664d1bdf336f4309343c2a640d9e8"
   pkg.url "#{settings[:buildsources_url]}/diff-lcs-#{pkg.get_version}.gem"
 
-  pkg.build_requires "ruby-#{settings[:ruby_version]}"
+  pkg.build_requires 'pdk-runtime'
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]

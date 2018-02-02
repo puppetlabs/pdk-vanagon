@@ -187,6 +187,8 @@ project "pdk" do |proj|
   proj.component "rubygem-json_pure"
   proj.component "rubygem-tty-which"
   proj.component "rubygem-diff-lcs"
+  proj.component "rubygem-minitar"
+  proj.component "rubygem-pathspec"
 
   # nokogiri and deps
   proj.component 'rubygem-mini_portile2'

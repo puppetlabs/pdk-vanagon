@@ -23,7 +23,7 @@ component "pdk-templates" do |pkg, settings, platform|
     pdk_bin = File.join(settings[:ruby_bindir], 'pdk')
     bundle_bin = File.join(settings[:ruby_bindir], 'bundle')
     gem_bin = File.join(settings[:ruby_bindir], 'gem')
-    ruby_cachedir = File.join(settings[:cachedir], 'ruby', '2.1.0')
+    ruby_cachedir = File.join(settings[:cachedir], 'ruby', '2.4.0')
 
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
     gem_path_with_puppet_cache = [
@@ -57,6 +57,7 @@ component "pdk-templates" do |pkg, settings, platform|
       "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile",
       "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile",
+      "echo 'gem \"json\", \"2.0.4\",                            require: false' >> vanagon_module/Gemfile",
 
       # Run 'bundle install' in the generated module and cache the gems
       # inside the project cachedir. We add the private/puppet paths to

@@ -5,9 +5,10 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
-  pkg.build_requires 'rubygem-mini_portile2'
-  pkg.build_requires 'rubygem-nokogiri'
+  pkg.build_requires "rubygem-mini_portile2"
+  pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
+  pkg.build_requires "puppet-forge-api"
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
@@ -23,6 +24,13 @@ component "pdk-templates" do |pkg, settings, platform|
     bundle_bin = File.join(settings[:ruby_bindir], 'bundle')
     gem_bin = File.join(settings[:ruby_bindir], 'gem')
     ruby_cachedir = File.join(settings[:cachedir], 'ruby', '2.1.0')
+
+    puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
+    gem_path_with_puppet_cache = [
+      "#{settings[:privatedir]}/ruby/2.1.9/lib/ruby/gems/2.1.0",
+      "#{puppet_cachedir}/2.1.0",
+      "#{puppet_cachedir}/2.4.0",
+    ].join(platform.is_windows? ? ';' : ':')
 
     if platform.is_windows?
       git_bin = git_bin.gsub(/\/bin\//, '/cmd/').concat('.exe')
@@ -51,7 +59,13 @@ component "pdk-templates" do |pkg, settings, platform|
       "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile",
 
       # Run 'bundle install' in the generated module and cache the gems
-      # inside the project cachedir.
+      # inside the project cachedir. We add the private/puppet paths to
+      # GEM_PATH to avoid installing the puppet gem again.
+
+      # TODO: switch to this once the PDK bundler commands know to look in the puppet_cachedir
+      # "pushd vanagon_module && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{settings[:cachedir]}\" #{bundle_bin} install && popd",
+
+      # TODO: remove this when we active replacement above
       "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd",
 
       # Copy generated Gemfile.lock into cachedir.

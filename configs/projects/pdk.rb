@@ -200,8 +200,8 @@ project "pdk" do |proj|
   # Batteries included copies of module template and required gems
   proj.component "pdk-templates"
 
-  # Cache a copy of the task.json schema file
-  proj.component "task-schema"
+  # Cache puppet gems, task metadata schema, etc.
+  proj.component "puppet-forge-api"
 
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?

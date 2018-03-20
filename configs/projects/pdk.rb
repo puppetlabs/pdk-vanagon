@@ -49,7 +49,7 @@ project "pdk" do |proj|
   proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
-  proj.setting(:ruby_version, "2.1.9")
+  proj.setting(:ruby_version, "2.4.3")
   proj.setting(:bundler_version, "1.15.1")
   proj.setting(:mini_portile2_version, '2.3.0')
   proj.setting(:nokogiri_version, '1.8.2')
@@ -75,7 +75,7 @@ project "pdk" do |proj|
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
   end
 
-  proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.1.0"))
+  proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.4.0"))
   proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
 
   gem_install = "#{proj.host_gem} install --no-rdoc --no-ri --local "

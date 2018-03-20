@@ -1,7 +1,7 @@
 component 'rubygem-nokogiri' do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
   pkg.version settings[:nokogiri_version]
-  pkg.md5sum "65eab96f98f22763766efe663d102cf3"
+  pkg.md5sum "a8c35a787c6c985f2e0a782b09d68f80"
   pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

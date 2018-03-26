@@ -7,8 +7,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
   # We need a few different things that come from the Forge API codebase so we do it all in this component.
 
   pkg.build do
-    # Install puppet-gem versions based on a mapping stored in the Forge API code
-
+    # Cache specific versions of the puppet gem
     gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
 
@@ -18,7 +17,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '2.4.0' => File.join(settings[:ruby_bindir], (platform.is_windows? ? 'gem.bat' : 'gem')),
     }
 
-    # TODO: get this mapping from forge api code (or wget from Forge itself)
     puppet_rubyapi_versions = {
       '4.7.1' => '2.1.0',
       '4.8.2' => '2.1.0',
@@ -52,12 +50,14 @@ component "puppet-forge-api" do |pkg, settings, platform|
     # We also purge the included man pages.
     build_commands << "#{find_in_cache_with_regex} '.*/puppet-[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+[^/]*/man/.*' -delete"
 
-    # We don't need the binaries or cached .gem packages either
-    build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/bin/.*' -delete"
+    # We don't need the cached .gem packages either
     build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/cache/.*\\.gem' -delete"
 
     build_commands
   end
+
+  # Cache the PE to puppet version mapping.
+  pkg.install_file('lib/pe_versions.json', File.join(settings[:cachedir], 'pe_versions.json'))
 
   # Cache the task metadata schema.
   pkg.install_file('app/static/schemas/task.json', File.join(settings[:cachedir], 'task.json'))

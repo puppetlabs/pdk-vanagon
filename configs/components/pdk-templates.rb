@@ -70,14 +70,15 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # TODO: we may not actually need this?
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
-    settings[:additional_rubies].each do |rubyver, local_settings|
-      local_bundle_bin = File.join(local_settings[:ruby_bindir], 'bundle')
-      local_bundle_bin += '.bat' if platform.is_windows?
-
-      build_commands << "rm vanagon_module/Gemfile.lock"
-      build_commands << "pushd vanagon_module && #{local_bundle_bin} install --path #{settings[:cachedir]} && popd"
-      build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
-    end
+    # FIXME: enable after initial pdk-runtime build
+    #settings[:additional_rubies].each do |rubyver, local_settings|
+    #  local_bundle_bin = File.join(local_settings[:ruby_bindir], 'bundle')
+    #  local_bundle_bin += '.bat' if platform.is_windows?
+    #
+    #  build_commands << "rm vanagon_module/Gemfile.lock"
+    #  build_commands << "pushd vanagon_module && #{local_bundle_bin} install --path #{settings[:cachedir]} && popd"
+    #  build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+    #end
 
     # Install bundler itself into the gem cache
     build_commands << "GEM_HOME=#{ruby_cachedir} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document"

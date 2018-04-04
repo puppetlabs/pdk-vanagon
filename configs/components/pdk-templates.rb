@@ -27,7 +27,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
     gem_path_with_puppet_cache = [
-      "#{settings[:privatedir]}/ruby/2.1.9/lib/ruby/gems/2.1.0",
+      "#{settings[:privatedir]}/ruby/2.4.3/lib/ruby/gems/2.4.0",
       "#{puppet_cachedir}/2.1.0",
       "#{puppet_cachedir}/2.4.0",
     ].join(platform.is_windows? ? ';' : ':')
@@ -39,47 +39,55 @@ component "pdk-templates" do |pkg, settings, platform|
       gem_bin << '.bat'
     end
 
-    build_commands = [
-      # Clone this component repo to a bare repo inside the project cachedir.
-      # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
-      "#{git_bin} clone --mirror --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-templates.git')}",
+    # Clone this component repo to a bare repo inside the project cachedir.
+    # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
+    build_commands = ["#{git_bin} clone --mirror --no-hardlinks . #{File.join(settings[:cachedir], 'pdk-templates.git')}"]
 
-      # Use previously installed pdk gem to generate a new module using the
-      # cached module template.
-      "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}",
+    # Use previously installed pdk gem to generate a new module using the
+    # cached module template.
+    build_commands << "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
 
-      # Add some additional gems to support experimental features
-      "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"puppet-blacksmith\", :platforms => :ruby,     require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile",
-      # required for guard, but 3.1.0 and later do not support ruby 2.1
-      "echo 'gem \"listen\", \"< 3.1.0\",                        require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile",
-      "echo 'gem \"json\", \"2.0.4\",                            require: false' >> vanagon_module/Gemfile",
+    # Add some additional gems to support experimental features
+    build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile"
+    build_commands << "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile"
+    build_commands << "echo 'gem \"listen\",                                     require: false' >> vanagon_module/Gemfile"
+    build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile"
+    build_commands << "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile"
+    build_commands << "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile"
 
-      # Run 'bundle install' in the generated module and cache the gems
-      # inside the project cachedir. We add the private/puppet paths to
-      # GEM_PATH to avoid installing the puppet gem again.
+    # Run 'bundle install' in the generated module and cache the gems
+    # inside the project cachedir. We add the private/puppet paths to
+    # GEM_PATH to avoid installing the puppet gem again.
 
-      # TODO: switch to this once the PDK bundler commands know to look in the puppet_cachedir
-      # "pushd vanagon_module && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{settings[:cachedir]}\" #{bundle_bin} install && popd",
+    # TODO: switch to this once the PDK bundler commands know to look in the puppet_cachedir
+    # build_commands << "pushd vanagon_module && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{settings[:cachedir]}\" #{bundle_bin} install && popd"
 
-      # TODO: remove this when we active replacement above
-      "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd",
+    # TODO: remove this when we active replacement above
+    build_commands << "pushd vanagon_module && #{bundle_bin} install --path #{settings[:cachedir]} && popd"
 
-      # Copy generated Gemfile.lock into cachedir.
-      "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock",
+    # Copy generated Gemfile.lock into cachedir.
+    build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
-      # Install bundler itself into the gem cache
-      "GEM_HOME=#{ruby_cachedir} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document",
-    ]
+    # TODO: we may not actually need this?
+    # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
+    # FIXME: enable after initial pdk-runtime build
+    #settings[:additional_rubies].each do |rubyver, local_settings|
+    #  local_bundle_bin = File.join(local_settings[:ruby_bindir], 'bundle')
+    #  local_bundle_bin += '.bat' if platform.is_windows?
+    #
+    #  build_commands << "rm vanagon_module/Gemfile.lock"
+    #  build_commands << "pushd vanagon_module && #{local_bundle_bin} install --path #{settings[:cachedir]} && popd"
+    #  build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+    #end
+
+    # Install bundler itself into the gem cache
+    build_commands << "GEM_HOME=#{ruby_cachedir} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document"
 
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
       # bump up against MAX_PATH on Windows. Since the 'spec' directory is not required
       # at runtime, we just purge it before attempting to package.
+      # TODO: this should be unnecessary after switch to cached puppet gems
       build_commands << "/usr/bin/find #{File.join(settings[:cachedir], 'ruby')} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
 
       build_commands.unshift "GEM_HOME=#{ruby_cachedir} #{gem_bin} install ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem --local --no-document"

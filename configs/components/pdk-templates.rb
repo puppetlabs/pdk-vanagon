@@ -50,7 +50,10 @@ component "pdk-templates" do |pkg, settings, platform|
     # Add some additional gems to support experimental features
     build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile"
-    build_commands << "echo 'gem \"listen\",                                     require: false' >> vanagon_module/Gemfile"
+
+    # This pin is needed to ensure Ruby 2.1.9 compat still
+    build_commands << "echo 'gem \"listen\", \"~> 3.0.8\",                       require: false' >> vanagon_module/Gemfile"
+
     build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile"

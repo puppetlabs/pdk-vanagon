@@ -1,5 +1,5 @@
 component 'pdk-runtime' do |pkg, settings, platform|
-  pkg.version '201804030'
+  pkg.version '201804040'
   pkg.sha1sum "http://builds.puppetlabs.lan/puppet-runtime/#{pkg.get_version}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz.sha1"
   pkg.url "http://builds.puppetlabs.lan/puppet-runtime/#{pkg.get_version}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz"
   pkg.install_only true
@@ -16,10 +16,9 @@ component 'pdk-runtime' do |pkg, settings, platform|
       "chmod 755 #{settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     ]
 
-    # FIXME: enable after initial pdk-runtime build
-    #settings[:additional_rubies].each do |rubyver, local_settings|
-    #  install_commands << "chmod 755 #{local_settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
-    #end
+    settings[:additional_rubies].each do |rubyver, local_settings|
+      install_commands << "chmod 755 #{local_settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
+    end
   end
 
   pkg.install do

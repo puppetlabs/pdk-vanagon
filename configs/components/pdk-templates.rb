@@ -50,7 +50,10 @@ component "pdk-templates" do |pkg, settings, platform|
     # Add some additional gems to support experimental features
     build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile"
-    build_commands << "echo 'gem \"listen\",                                     require: false' >> vanagon_module/Gemfile"
+
+    # This pin is needed to ensure Ruby 2.1.9 compat still
+    build_commands << "echo 'gem \"listen\", \"~> 3.0.8\",                       require: false' >> vanagon_module/Gemfile"
+
     build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile"
@@ -70,15 +73,14 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # TODO: we may not actually need this?
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
-    # FIXME: enable after initial pdk-runtime build
-    #settings[:additional_rubies].each do |rubyver, local_settings|
-    #  local_bundle_bin = File.join(local_settings[:ruby_bindir], 'bundle')
-    #  local_bundle_bin += '.bat' if platform.is_windows?
-    #
-    #  build_commands << "rm vanagon_module/Gemfile.lock"
-    #  build_commands << "pushd vanagon_module && #{local_bundle_bin} install --path #{settings[:cachedir]} && popd"
-    #  build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
-    #end
+    settings[:additional_rubies].each do |rubyver, local_settings|
+      local_bundle_bin = File.join(local_settings[:ruby_bindir], 'bundle')
+      local_bundle_bin += '.bat' if platform.is_windows?
+
+      build_commands << "rm vanagon_module/Gemfile.lock"
+      build_commands << "pushd vanagon_module && #{local_bundle_bin} install --path #{settings[:cachedir]} && popd"
+      build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+    end
 
     # Install bundler itself into the gem cache
     build_commands << "GEM_HOME=#{ruby_cachedir} #{gem_bin} install ../bundler-#{settings[:bundler_version]}.gem --local --no-document"

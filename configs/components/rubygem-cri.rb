@@ -1,6 +1,6 @@
 component "rubygem-cri" do |pkg, settings, platform|
-  pkg.version "2.9.1"
-  pkg.md5sum "a69b95364558623133d15ad25a7be46a"
+  pkg.version "2.10.1"
+  pkg.md5sum "3b270cde9529f1d738850b731c20f343"
   pkg.url "#{settings[:buildsources_url]}/cri-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

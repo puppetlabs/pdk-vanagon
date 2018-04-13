@@ -51,14 +51,12 @@ project "pdk" do |proj|
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
   proj.setting(:ruby_version, "2.4.3")
+  proj.setting(:ruby_api, "2.4.0")
   proj.setting(:bundler_version, "1.16.1")
   proj.setting(:mini_portile2_version, '2.3.0')
   proj.setting(:nokogiri_version, '1.8.2')
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
-  # TODO: if/when we start shipping multiple rubies, this will need to be a
-  # basedir and then the various ruby components will install under it, but for
-  # now we can just hard-code the first version we are installing
   proj.setting(:ruby_dir, File.join(proj.privatedir, "ruby", proj.ruby_version))
   proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
@@ -67,17 +65,19 @@ project "pdk" do |proj|
   proj.setting(:mandir, File.join(proj.datadir, "man"))
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
   proj.setting(:libdir, File.join(proj.prefix, "lib"))
-  proj.setting(:gem_home, File.join(proj.libdir, "ruby", "gems", "2.4.0"))
+  proj.setting(:gem_home, File.join(proj.ruby_dir, "lib", "ruby", "gems", proj.ruby_api))
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
+    proj.setting(:host_bundle, File.join(proj.ruby_bindir, "bundle.bat"))
   else
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
+    proj.setting(:host_bundle, File.join(proj.ruby_bindir, "bundle"))
   end
 
-  gem_install = "#{proj.host_gem} install --no-rdoc --no-ri --local "
+  gem_install = "#{proj.host_gem} install --no-document --local "
   # Add --bindir option for Windows...
   gem_install << "--bindir #{proj.ruby_bindir} " if platform.is_windows?
   proj.setting(:gem_install, gem_install)
@@ -88,22 +88,25 @@ project "pdk" do |proj|
       ruby_version: "2.1.9",
       ruby_api: "2.1.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.1.9"),
+      latest_puppet: "4.10.10",
     }
   }
 
   additional_rubies.each do |rubyver, local_settings|
     local_settings[:ruby_bindir] = File.join(local_settings[:ruby_dir], "bin")
-    local_settings[:gem_home] = File.join(proj.libdir, "ruby", "gems", local_settings[:ruby_api])
+    local_settings[:gem_home] = File.join(local_settings[:ruby_dir], "lib", "ruby", "gems", local_settings[:ruby_api])
 
     if platform.is_windows?
       local_settings[:host_ruby] = File.join(local_settings[:ruby_bindir], "ruby.exe")
       local_settings[:host_gem] = File.join(local_settings[:ruby_bindir], "gem.bat")
+      local_settings[:host_bundle] = File.join(local_settings[:ruby_bindir], "bundle.bat")
     else
       local_settings[:host_ruby] = File.join(local_settings[:ruby_bindir], "ruby")
       local_settings[:host_gem] = File.join(local_settings[:ruby_bindir], "gem")
+      local_settings[:host_bundle] = File.join(local_settings[:ruby_bindir], "bundle")
     end
 
-    local_gem_install = "#{local_settings[:host_gem]} install --no-rdoc --no-ri --local "
+    local_gem_install = "#{local_settings[:host_gem]} install --no-document --local "
     # Add --bindir option for Windows...
     local_gem_install << "--bindir #{local_settings[:ruby_bindir]} " if platform.is_windows?
 

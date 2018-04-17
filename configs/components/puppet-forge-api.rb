@@ -11,11 +11,18 @@ component "puppet-forge-api" do |pkg, settings, platform|
     gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
 
-    # TODO: update this to point to specific ruby versions
     gem_bins = {
-      '2.1.0' => File.join(settings[:ruby_bindir], (platform.is_windows? ? 'gem.bat' : 'gem')),
-      '2.4.0' => File.join(settings[:ruby_bindir], (platform.is_windows? ? 'gem.bat' : 'gem')),
+      settings[:ruby_api] => settings[:host_gem],
     }
+
+    bundle_bins = {
+      settings[:ruby_api] => settings[:host_bundle],
+    }
+
+    settings[:additional_rubies]&.each do |rubyver, local_settings|
+      gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
+      bundle_bins[local_settings[:ruby_api]] = local_settings[:host_bundle]
+    end
 
     puppet_rubyapi_versions = {
       '4.7.1' => '2.1.0',
@@ -27,12 +34,20 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '5.2.0' => '2.4.0',
       '5.3.5' => '2.4.0',
       '5.4.0' => '2.4.0',
+      '5.5.0' => '2.4.0',
     }
 
     build_commands = []
 
+    # Update gem command on ruby 2.1.9 to latest to avoid getting pre-release facter gems?
+    build_commands << "#{gem_bins['2.1.0']} update --system --no-document"
+
+    # Replace the gem and bundler wrapper batch files...
+    build_commands << "cp #{gem_bins['2.4.0']} #{gem_bins['2.1.0']}" if platform.is_windows?
+    build_commands << "cp #{bundle_bins['2.4.0']} #{bundle_bins['2.1.0']}" if platform.is_windows?
+
     build_commands += puppet_rubyapi_versions.collect do |pupver, rubyapi|
-      "#{gem_bins[rubyapi]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, rubyapi)} puppet --version #{pupver}"
+      "#{gem_bins[rubyapi]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, rubyapi)} puppet:#{pupver} --platform ruby"
     end
 
     find_in_cache_with_regex = '/usr/bin/find '

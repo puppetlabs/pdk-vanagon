@@ -34,6 +34,8 @@ component "pdk-templates" do |pkg, settings, platform|
       pdk_bin << '.bat'
     end
 
+    mod_name = "vanagon_module_#{settings[:ruby_version].gsub(/[^0-9]/, '')}"
+
     pre_build_commands = []
     build_commands = []
 
@@ -50,27 +52,28 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Use previously installed pdk gem to generate a new module using the
     # cached module template.
-    build_commands << "#{pdk_bin} new module vanagon_module --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
+    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
 
-    # Add some additional gems to support experimental features
-    build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> vanagon_module/Gemfile"
-    build_commands << "echo 'gem \"guard\",                                      require: false' >> vanagon_module/Gemfile"
-
-    # This pin is needed to ensure Ruby 2.1.9 compat still
-    build_commands << "echo 'gem \"listen\", \"~> 3.0.8\",                       require: false' >> vanagon_module/Gemfile"
-
-    build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> vanagon_module/Gemfile"
-    build_commands << "echo 'gem \"codecov\",                                    require: false' >> vanagon_module/Gemfile"
-    build_commands << "echo 'gem \"license_finder\",                             require: false' >> vanagon_module/Gemfile"
-
-    # Run 'bundle install' in the generated module and cache the gems
+    # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
-    # GEM_PATH to avoid installing the puppet gem again.
-    build_commands << "pushd vanagon_module && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"
+    # GEM_PATH to make sure we resolve to a cached version of puppet.
+    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} lock && popd"
 
     # Copy generated Gemfile.lock into cachedir.
-    build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{settings[:ruby_version]}.lock"
-    build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock" # legacy support, remove anytime post 1.5.0 release
+    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{settings[:ruby_version]}.lock"
+    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock" # legacy support, remove anytime post 1.5.0 release
+
+    # Add some additional gems to support experimental features
+    build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
+    build_commands << "echo 'gem \"guard\",                                      require: false' >> #{mod_name}/Gemfile"
+    build_commands << "echo 'gem \"listen\",                                     require: false' >> #{mod_name}/Gemfile"
+    build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{mod_name}/Gemfile"
+    build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
+    build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
+
+    # Run 'bundle install' in the generated module to cache the gems
+    # inside the project cachedir.
+    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"
 
     # Install bundler and other special deps into the gem cache
     build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:gem_install]} ../bundler-#{settings[:bundler_version]}.gem"
@@ -85,15 +88,35 @@ component "pdk-templates" do |pkg, settings, platform|
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
     settings[:additional_rubies]&.each do |rubyver, local_settings|
       local_ruby_cachedir = File.join(settings[:cachedir], 'ruby', local_settings[:ruby_api])
+
       local_gem_path = [
         File.join(settings[:privatedir], 'ruby', local_settings[:ruby_version], 'lib', 'ruby', 'gems', local_settings[:ruby_api]),
         File.join(puppet_cachedir, local_settings[:ruby_api]),
       ].join(platform.is_windows? ? ';' : ':')
 
+      local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
-      build_commands << "rm vanagon_module/Gemfile.lock"
-      build_commands << "pushd vanagon_module && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
-      build_commands << "cp vanagon_module/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+      # Generate a new module for this ruby version.
+      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
+
+      # Resolve default gemfile deps and cache Gemfile.lock into package cachedir.
+      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} lock && popd"
+
+      build_commands << "cp #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+
+      # Add some additional gems to support experimental features
+      build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
+
+      # This pin is needed to ensure Ruby 2.1.9 compat still
+      build_commands << "echo 'gem \"listen\", \"~> 3.0.8\",                       require: false' >> #{local_mod_name}/Gemfile"
+
+      build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
+
+      # Istall all the deps into the package cachedir.
+      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby
       build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} --force ../bundler-#{settings[:bundler_version]}.gem"

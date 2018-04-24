@@ -3,7 +3,7 @@ $fso = New-Object -ComObject Scripting.FileSystemObject
 $env:DEVKIT_BASEDIR = (Get-ItemProperty -Path "HKLM:\Software\Puppet Labs\DevelopmentKit").RememberedInstallDir64
 # Windows API GetShortPathName requires inline C#, so use COM instead
 $env:DEVKIT_BASEDIR = $fso.GetFolder($env:DEVKIT_BASEDIR).ShortPath
-$env:RUBY_DIR       = "$($env:DEVKIT_BASEDIR)\private\ruby\2.4.3"
+$env:RUBY_DIR       = "$($env:DEVKIT_BASEDIR)\private\ruby\2.4.4"
 $env:SSL_CERT_FILE  = "$($env:DEVKIT_BASEDIR)\ssl\cert.pem"
 $env:SSL_CERT_DIR   = "$($env:DEVKIT_BASEDIR)\ssl\certs"
 

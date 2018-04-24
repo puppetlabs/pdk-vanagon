@@ -50,7 +50,7 @@ project "pdk" do |proj|
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
-  proj.setting(:ruby_version, "2.4.3")
+  proj.setting(:ruby_version, "2.4.4")
   proj.setting(:ruby_api, "2.4.0")
   proj.setting(:bundler_version, "1.16.1")
   proj.setting(:mini_portile2_version, '2.3.0')

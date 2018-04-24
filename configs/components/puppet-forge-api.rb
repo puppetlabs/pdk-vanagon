@@ -24,18 +24,21 @@ component "puppet-forge-api" do |pkg, settings, platform|
       bundle_bins[local_settings[:ruby_api]] = local_settings[:host_bundle]
     end
 
+    # TODO: build this dynamically somehow?
     puppet_rubyapi_versions = {
       '4.7.1' => '2.1.0',
       '4.8.2' => '2.1.0',
       '4.9.4' => '2.1.0',
-      '4.10.10' => '2.1.0',
+      '4.10.11' => '2.1.0',
       '5.0.1' => '2.4.0',
       '5.1.0' => '2.4.0',
       '5.2.0' => '2.4.0',
-      '5.3.5' => '2.4.0',
+      '5.3.6' => '2.4.0',
       '5.4.0' => '2.4.0',
-      '5.5.0' => '2.4.0',
+      '5.5.1' => '2.4.0',
     }
+
+    puppet_gem_platform = platform.is_windows? ? 'x64-mingw32' : 'ruby'
 
     build_commands = []
 
@@ -47,7 +50,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
     build_commands << "cp #{bundle_bins['2.4.0']} #{bundle_bins['2.1.0']}" if platform.is_windows?
 
     build_commands += puppet_rubyapi_versions.collect do |pupver, rubyapi|
-      "#{gem_bins[rubyapi]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, rubyapi)} puppet:#{pupver} --platform ruby"
+      "#{gem_bins[rubyapi]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, rubyapi)} puppet:#{pupver} --platform #{puppet_gem_platform}"
     end
 
     find_in_cache_with_regex = '/usr/bin/find '

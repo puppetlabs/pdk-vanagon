@@ -75,8 +75,8 @@ component "pdk-templates" do |pkg, settings, platform|
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"
 
-    # Install bundler and other special deps into the gem cache
-    build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:gem_install]} ../bundler-#{settings[:bundler_version]}.gem"
+    # Install bundler into the gem cache
+    build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -119,7 +119,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby
-      build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} --force ../bundler-#{settings[:bundler_version]}.gem"
+      build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
       pre_build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"

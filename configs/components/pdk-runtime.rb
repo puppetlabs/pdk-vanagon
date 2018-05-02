@@ -25,4 +25,3 @@ component 'pdk-runtime' do |pkg, settings, platform|
     install_commands
   end
 end
-

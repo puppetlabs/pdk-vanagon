@@ -12,9 +12,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
-  else
-    pkg.build_requires "pl-gcc" if platform.is_linux?
-
+  elsif platform.is_linux? && platform.codename != 'bionic'
+    pkg.build_requires "pl-gcc"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
   end
 

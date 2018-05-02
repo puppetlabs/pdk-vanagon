@@ -27,13 +27,17 @@ component "rubygem-hitimes" do |pkg, settings, platform|
     end
 
     pkg.install do
-      [
-        "PKG_CONFIG_PATH='#{settings[:pkg_config_path]}' \
-        CFLAGS='#{settings[:cflags]}' \
-        LDFLAGS='#{settings[:ldflags]}' \
-        CC=/opt/pl-build-tools/bin/gcc \
-        #{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem -- --with-opt-dir=#{settings[:prefix]} --use-system-libraries"
+      install_cmds = [
+        "PKG_CONFIG_PATH='#{settings[:pkg_config_path]}'",
+        "CFLAGS='#{settings[:cflags]}'",
+        "LDFLAGS='#{settings[:ldflags]}'",
       ]
+
+      install_cmds << "CC=/opt/pl-build-tools/bin/gcc" unless platform.codename == 'bionic'
+
+      install_cmds << "#{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem -- --with-opt-dir=#{settings[:prefix]} --use-system-libraries"
+
+      install_cmds.join(' ')
     end
   end
 end

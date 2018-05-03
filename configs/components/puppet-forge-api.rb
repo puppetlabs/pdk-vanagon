@@ -75,6 +75,14 @@ component "puppet-forge-api" do |pkg, settings, platform|
     # We don't need the cached .gem packages either
     build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/cache/.*\\.gem' -delete"
 
+    if platform.is_windows?
+      batch_rewrites = [
+        's|ProgramFiles64Folder|Program Files|g',
+        's|PuppetLabs|Puppet Labs|g',
+      ]
+      build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec sed -i '#{batch_rewrites.join(' ; ')}' {} \\;"
+    end
+
     build_commands
   end
 

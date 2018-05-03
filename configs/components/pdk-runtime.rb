@@ -1,5 +1,5 @@
 component 'pdk-runtime' do |pkg, settings, platform|
-  pkg.version '201804270'
+  pkg.version '201805020'
   pkg.sha1sum "http://builds.puppetlabs.lan/puppet-runtime/#{pkg.get_version}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz.sha1"
   pkg.url "http://builds.puppetlabs.lan/puppet-runtime/#{pkg.get_version}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz"
   pkg.install_only true

@@ -4,6 +4,8 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
 
+  pkg.add_source('file://resources/files/windows/ruby_gem_wrapper.bat') if platform.is_windows?
+
   # We need a few different things that come from the Forge API codebase so we do it all in this component.
 
   pkg.build do
@@ -76,11 +78,8 @@ component "puppet-forge-api" do |pkg, settings, platform|
     build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/cache/.*\\.gem' -delete"
 
     if platform.is_windows?
-      batch_rewrites = [
-        's|ProgramFiles64Folder|Program Files|g',
-        's|PuppetLabs|Puppet Labs|g',
-      ]
-      build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec sed -i '#{batch_rewrites.join(' ; ')}' {} \\;"
+      wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
+      build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"
     end
 
     build_commands

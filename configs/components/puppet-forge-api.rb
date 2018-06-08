@@ -28,16 +28,16 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     # TODO: build this dynamically somehow?
     puppet_rubyapi_versions = {
-      '4.7.1' => '2.1.0',
-      '4.8.2' => '2.1.0',
-      '4.9.4' => '2.1.0',
+      '4.7.1'   => '2.1.0',
+      '4.8.2'   => '2.1.0',
+      '4.9.4'   => '2.1.0',
       '4.10.11' => '2.1.0',
-      '5.0.1' => '2.4.0',
-      '5.1.0' => '2.4.0',
-      '5.2.0' => '2.4.0',
-      '5.3.6' => '2.4.0',
-      '5.4.0' => '2.4.0',
-      '5.5.1' => '2.4.0',
+      '5.0.1'   => '2.4.0',
+      '5.1.0'   => '2.4.0',
+      '5.2.0'   => '2.4.0',
+      '5.3.6'   => '2.4.0',
+      '5.4.0'   => '2.4.0',
+      '5.5.1'   => '2.4.0',
     }
 
     puppet_gem_platform = platform.is_windows? ? 'x64-mingw32' : 'ruby'
@@ -80,6 +80,33 @@ component "puppet-forge-api" do |pkg, settings, platform|
     if platform.is_windows?
       wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
       build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"
+
+      # Add beaker dependencies
+
+      # Install the natively built json-1.8.6 gem into the 2.4.0 cache.
+      # The 2.1.0 cache doesn't need it because it can resolve to the vendored
+      # 1.8.1 version of json in ruby 2.1.9.
+      build_commands << "#{gem_bins['2.4.0']} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, '2.4.0')} json:1.8.6 --platform #{puppet_gem_platform}"
+
+      # Byebug requires special treatment b/c the cross compiled into a fat gem
+      ['2.4', '2.1'].each do |rubyapi|
+        build_commands << "#{gem_bins["#{rubyapi}.0"]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, "#{rubyapi}.0")} byebug:9.0.6 --platform #{puppet_gem_platform}"
+        byebug_libdir = File.join(puppet_cachedir, "#{rubyapi}.0", "gems", "byebug-9.0.6-x64-mingw32", "lib", "byebug")
+        build_commands << "cp #{File.join(byebug_libdir, rubyapi, "byebug.so")} #{File.join(byebug_libdir, "byebug.so")}"
+      end
+
+      # Add the remaining beaker dependencies that have been natively compiled
+      # and repackaged.
+      beaker_native_deps = {
+        'oga':     '2.15',
+        'ruby-ll': '2.1.2'
+      }
+
+      ['2.1.0', '2.4.0'].each do |rubyapi|
+        build_commands += beaker_native_deps.collect do |gem, ver|
+          "#{gem_bins[rubyapi]} install --clear-sources --source #{gem_source} --no-document --install-dir #{File.join(puppet_cachedir, rubyapi)} #{gem}:#{ver} --platform #{puppet_gem_platform}"
+        end
+      end
     end
 
     build_commands

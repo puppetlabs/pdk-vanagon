@@ -72,7 +72,6 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"guard\",                                      require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"listen\",                                     require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
 

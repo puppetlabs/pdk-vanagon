@@ -1,6 +1,6 @@
 project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  proj.setting(:pdk_runtime_version, '201806040')
+  proj.setting(:pdk_runtime_version, '201806180')
   proj.inherit_settings 'pdk-runtime', 'git://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
@@ -68,20 +68,15 @@ project "pdk" do |proj|
   # Bundler
   proj.component "rubygem-bundler"
 
+  # runtime!
+  proj.component "pdk-runtime"
+
   # Cri and deps
   proj.component "rubygem-colored"
   proj.component "rubygem-cri"
 
   # Childprocess and deps
-  proj.component "rubygem-ffi"
   proj.component "rubygem-childprocess"
-
-  # Gettext-setup and deps
-  proj.component "rubygem-locale"
-  proj.component "rubygem-text"
-  proj.component "rubygem-gettext"
-  proj.component "rubygem-fast_gettext"
-  proj.component "rubygem-gettext-setup"
 
   # tty-prompt and deps
   proj.component "rubygem-necromancer"
@@ -105,7 +100,6 @@ project "pdk" do |proj|
   proj.component "rubygem-json_pure"
   proj.component "rubygem-tty-which"
   proj.component "rubygem-diff-lcs"
-  proj.component "rubygem-minitar"
   proj.component "rubygem-pathspec"
 
   # nokogiri and deps
@@ -123,9 +117,6 @@ project "pdk" do |proj|
 
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?
-
-  # runtime!
-  proj.component "pdk-runtime"
 
   # What to include in package?
   proj.directory proj.install_root

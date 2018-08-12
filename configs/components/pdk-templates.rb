@@ -76,6 +76,13 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
 
+    # Add some Beaker dependencies for Linux
+    unless platform.is_windows?
+      build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{mod_name}/Gemfile"
+      build_commands << "echo 'gem \"byebug\", \"9.0.6\",                          require: false' >> #{mod_name}/Gemfile"
+      build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{mod_name}/Gemfile"
+    end
+
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"

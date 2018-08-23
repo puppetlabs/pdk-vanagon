@@ -13,6 +13,7 @@ component "pdk-templates" do |pkg, settings, platform|
   platforms_without_plgcc = %w[
     fedora-26-x86_64
     fedora-27-x86_64
+    fedora-28-x86_64
     ubuntu-18.04-amd64
   ]
 

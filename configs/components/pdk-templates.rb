@@ -128,8 +128,9 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"nokogiri\", \"<= 1.8.2\",                     require: false' >> #{local_mod_name}/Gemfile"
 
-      # Istall all the deps into the package cachedir.
+      # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby

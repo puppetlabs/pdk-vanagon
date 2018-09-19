@@ -38,6 +38,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '5.3.6'   => '2.4.0',
       '5.4.0'   => '2.4.0',
       '5.5.1'   => '2.4.0',
+      '6.0.0'   => '2.5.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
@@ -58,16 +59,18 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     build_commands = []
 
-    # Make backups of the gem and bundler wrapper batch files...
-    build_commands << "cp #{gem_bins['2.1.0']} #{gem_bins['2.1.0']}.bak" if platform.is_windows?
-    build_commands << "cp #{bundle_bins['2.1.0']} #{bundle_bins['2.1.0']}.bak" if platform.is_windows?
+    settings[:additional_rubies]&.each do |rubyver, local_settings|
+      # Make backups of the gem and bundler wrapper batch files...
+      build_commands << "cp #{gem_bins[local_settings[:ruby_api]]} #{gem_bins[local_settings[:ruby_api]]}.bak" if platform.is_windows?
+      build_commands << "cp #{bundle_bins[local_settings[:ruby_api]]} #{bundle_bins[local_settings[:ruby_api]]}.bak" if platform.is_windows?
 
-    # Update gem command on ruby 2.1.9 to latest to avoid getting pre-release facter gems?
-    build_commands << "#{gem_bins['2.1.0']} update --system --no-document"
+      # Update gem command on additional rubies to latest to avoid getting pre-release facter gems?
+      build_commands << "#{gem_bins[local_settings[:ruby_api]]} update --system --no-document"
 
-    # ...replace the gem and bundler wrapper batch files file the backups we made.
-    build_commands << "mv #{gem_bins['2.1.0']}.bak #{gem_bins['2.1.0']}" if platform.is_windows?
-    build_commands << "mv #{bundle_bins['2.1.0']}.bak #{bundle_bins['2.1.0']}" if platform.is_windows?
+      # ...replace the gem and bundler wrapper batch files file the backups we made.
+      build_commands << "mv #{gem_bins[local_settings[:ruby_api]]}.bak #{gem_bins[local_settings[:ruby_api]]}" if platform.is_windows?
+      build_commands << "mv #{bundle_bins[local_settings[:ruby_api]]}.bak #{bundle_bins[local_settings[:ruby_api]]}" if platform.is_windows?
+    end
 
     build_commands += puppet_rubyapi_versions.collect do |pupver, rubyapi|
       gem_install.call(rubyapi, 'puppet', pupver)
@@ -96,15 +99,9 @@ component "puppet-forge-api" do |pkg, settings, platform|
       build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"
 
       # Add beaker dependencies
-
-      # Install the natively built json-1.8.6 gem into the 2.4.0 cache.
-      # The 2.1.0 cache doesn't need it because it can resolve to the vendored
-      # 1.8.1 version of json in ruby 2.1.9.
-      build_commands << gem_install.call('2.4.0', 'json', '1.8.6')
-
       beaker_native_deps = {
         'oga':     '2.15',
-        'ruby-ll': '2.1.2'
+        'ruby-ll': '2.1.2',
       }
 
       pdk_ruby_versions.each do |rubyapi|

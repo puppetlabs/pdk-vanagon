@@ -113,10 +113,12 @@ component "pdk-templates" do |pkg, settings, platform|
       # Generate a new module for this ruby version.
       build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
 
-      # Resolve default gemfile deps and cache Gemfile.lock into package cachedir.
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} lock && popd"
+      # Resolve default gemfile deps
+      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
+      # Update the Gemfile.lock to resolve based on the local gem cache.
+      build_commands << "pushd #{local_mod_name} && GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} lock --local --update && popd"
 
-      build_commands << "cp #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
+      build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
 
       # Add some additional gems to support experimental features
       build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
@@ -129,6 +131,13 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"nokogiri\", \"<= 1.8.2\",                     require: false' >> #{local_mod_name}/Gemfile"
+
+      # Add some Beaker dependencies for Linux
+      unless platform.is_windows?
+        build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{local_mod_name}/Gemfile"
+        build_commands << "echo 'gem \"byebug\", \"9.0.6\",                          require: false' >> #{local_mod_name}/Gemfile"
+        build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{local_mod_name}/Gemfile"
+      end
 
       # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"

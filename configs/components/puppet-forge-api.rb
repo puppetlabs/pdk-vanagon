@@ -12,6 +12,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
     # Cache specific versions of the puppet gem
     gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
+    rubies_dir = File.join(settings[:privatedir], 'ruby')
 
     gem_bins = {
       settings[:ruby_api] => settings[:host_gem],
@@ -97,6 +98,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
     if platform.is_windows?
       wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
       build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"
+      build_commands << "/usr/bin/find #{rubies_dir} -type f -name '*.bat' -exec cp #{wrapper_path} {} \\;"
 
       # Add beaker dependencies
       beaker_native_deps = {

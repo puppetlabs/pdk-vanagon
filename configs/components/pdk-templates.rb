@@ -58,7 +58,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Use previously installed pdk gem to generate a new module using the
     # cached module template.
-    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')}"
+    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-url=file://#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to

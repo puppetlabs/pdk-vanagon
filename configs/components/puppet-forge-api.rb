@@ -66,7 +66,8 @@ component "puppet-forge-api" do |pkg, settings, platform|
       build_commands << "cp #{bundle_bins[local_settings[:ruby_api]]} #{bundle_bins[local_settings[:ruby_api]]}.bak" if platform.is_windows?
 
       # Update gem command on additional rubies to latest to avoid getting pre-release facter gems?
-      build_commands << "#{gem_bins[local_settings[:ruby_api]]} update --system --no-document"
+      rubygems_version = rubyver =~ /^2\.1/ ? "2.7.8" : "" # PDK-1247 Pin ruby 2.1.9 to latest compatible rubygems.
+      build_commands << "#{gem_bins[local_settings[:ruby_api]]} update --system #{rubygems_version} --no-document"
 
       # ...replace the gem and bundler wrapper batch files file the backups we made.
       build_commands << "mv #{gem_bins[local_settings[:ruby_api]]}.bak #{gem_bins[local_settings[:ruby_api]]}" if platform.is_windows?

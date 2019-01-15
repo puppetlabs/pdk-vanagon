@@ -16,6 +16,8 @@ platform "osx-10.13-x86_64" do |plat|
 
   plat.install_build_dependencies_with "/usr/local/bin/osx-deps "
 
-  plat.vmpooler_template "osx-1013-x86_64"
+  # Need to use 1012 image until PA-2334 is resolved to add Homebrew toolchain
+  # changes to 10.13 and 10.14.
+  plat.vmpooler_template 'osx-1012-x86_64'
   plat.output_dir File.join("apple", "10.13", "PC1", "x86_64")
 end

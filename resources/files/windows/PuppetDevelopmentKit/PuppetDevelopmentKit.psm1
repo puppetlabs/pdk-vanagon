@@ -7,7 +7,22 @@ $env:RUBY_DIR       = "$($env:DEVKIT_BASEDIR)\private\ruby\2.4.5"
 $env:SSL_CERT_FILE  = "$($env:DEVKIT_BASEDIR)\ssl\cert.pem"
 $env:SSL_CERT_DIR   = "$($env:DEVKIT_BASEDIR)\ssl\certs"
 
+
 function pdk {
+  $paths = @(
+    'Env:\RUBYLIB'
+    'Env:\RUBYLIB_PREFIX'
+    'Env:\RUBYOPT'
+    'Env:\RUBYPATH'
+    'Env:\RUBYSHELL'
+    'Env:\DLN_LIBRARY_PATH'
+    'Env:\LD_PRELOAD'
+    'Env:\LD_LIBRARY_PATH'
+    'Env:\GEM_HOME'
+    'Env:\GEM_PATH'
+  )
+  Remove-Item -Path $paths -Force
+
   if ($env:ConEmuANSI -eq 'ON') {
     &$env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args
   } else {

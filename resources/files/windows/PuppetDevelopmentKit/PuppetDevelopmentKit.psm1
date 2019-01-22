@@ -1,37 +1,40 @@
-$fso = New-Object -ComObject Scripting.FileSystemObject
-
-$env:DEVKIT_BASEDIR = (Get-ItemProperty -Path "HKLM:\Software\Puppet Labs\DevelopmentKit").RememberedInstallDir64
-# Windows API GetShortPathName requires inline C#, so use COM instead
-$env:DEVKIT_BASEDIR = $fso.GetFolder($env:DEVKIT_BASEDIR).ShortPath
-$env:RUBY_DIR       = "$($env:DEVKIT_BASEDIR)\private\ruby\2.4.5"
-$env:SSL_CERT_FILE  = "$($env:DEVKIT_BASEDIR)\ssl\cert.pem"
-$env:SSL_CERT_DIR   = "$($env:DEVKIT_BASEDIR)\ssl\certs"
-
 function pdk {
-  $envvars = @(
-    'Env:\RUBYLIB'
-    'Env:\RUBYLIB_PREFIX'
-    'Env:\RUBYOPT'
-    'Env:\RUBYPATH'
-    'Env:\RUBYSHELL'
-    'Env:\DLN_LIBRARY_PATH'
-    'Env:\LD_PRELOAD'
-    'Env:\LD_LIBRARY_PATH'
-    'Env:\GEM_HOME'
-    'Env:\GEM_PATH'
-  )
-
-  $envvars | ForEach {
-    if (Test-Path $_) {
-      Remove-Item -Path $_ -Force
-    }
+  $fso = New-Object -ComObject Scripting.FileSystemObject
+  $devkit_basedir = $fso.GetFolder((Get-ItemProperty -Path "HKLM:\Software\Puppet Labs\DevelopmentKit").RememberedInstallDir64).ShortPath
+  $ruby_dir = "$($devkit_basedir)\private\ruby\2.4.5"
+  $envvars = @{
+    'DEVKIT_BASEDIR' = $devkit_basedir;
+    'RUBY_DIR' = $ruby_dir;
+    'SSL_CERT_FILE' = "$($devkit_basedir)\ssl\cert.pem";
+    'SSL_CERT_DIR' = "$($devkit_basedir)\ssl\certs";
+    'RUBYLIB' = $null;
+    'RUBYLIB_PREFIX' = $null;
+    'RUBYOPT' = $null;
+    'RUBYPATH' = $null;
+    'RUBYSHELL' = $null;
+    'DLN_LIBRARY_PATH' = $null;
+    'LD_PRELOAD' = $null;
+    'LD_LIBRARY_PATH' = $null;
+    'GEM_HOME' = $null;
   }
+
+  $process = New-Object System.Diagnostics.Process
 
   if ($env:ConEmuANSI -eq 'ON') {
-    &$env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args
+    $process.StartInfo.FileName = "$($ruby_dir)\bin\ruby"
+    $process.StartInfo.Arguments = "-S -- $($ruby_dir)\bin\pdk $($args)"
   } else {
-    &$env:DEVKIT_BASEDIR\private\tools\bin\ansicon.exe $env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args
+    $process.StartInfo.FileName = "$($devkit_basedir)\private\tools\bin\ansicon.exe"
+    $process.StartInfo.Arguments = "$($ruby_dir)\bin\ruby -S -- $($ruby_dir)\bin\pdk $($args)"
   }
+
+  ForEach($envvar in $envvars.GetEnumerator()) {
+    $process.StartInfo.EnvironmentVariables[$envvar.Key] = $envvar.Value
+  }
+
+  $process.StartInfo.WorkingDirectory = Convert-Path .
+  $process.StartInfo.UseShellExecute = $false
+  if ($process.Start()) { $process.WaitForExit() }
 }
 
-Export-ModuleMember -Function pdk -Variable *
+Export-ModuleMember -Function pdk

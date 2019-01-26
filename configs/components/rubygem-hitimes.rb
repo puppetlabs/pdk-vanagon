@@ -1,13 +1,13 @@
 component "rubygem-hitimes" do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
-  pkg.version "1.2.6"
-  pkg.md5sum "3b65295968799c8c9966083d0d9de0f0"
-  pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}.gem"
+  pkg.version "1.3.0"
+  pkg.md5sum "66afea99907f1a4ff6b7ab4163f42966"
+  pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
-    pkg.md5sum "4b0154b5fea7da87091b12e365694360"
+    pkg.md5sum "cae2c889a6b7434cb1a66a3213ee1172"
     pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
 
     pkg.environment "PATH", settings[:gem_path_env]

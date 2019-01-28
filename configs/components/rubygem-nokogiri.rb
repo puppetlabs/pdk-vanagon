@@ -1,7 +1,7 @@
 component 'rubygem-nokogiri' do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
   pkg.version settings[:nokogiri_version]
-  pkg.md5sum "a8c35a787c6c985f2e0a782b09d68f80"
+  pkg.md5sum "a8ee8d3da2a686dd27bd9c2786eb2216"
   pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"
@@ -10,7 +10,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]
     pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
-    pkg.md5sum "45a9a3be226d478828ea1e82a8dfdad5"
+    pkg.md5sum "2e7c07baa7db36b31f33d5a0656db649"
 
     pkg.install do
       ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}-x64-mingw32.gem"]

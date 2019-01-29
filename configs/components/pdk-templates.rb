@@ -132,7 +132,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"nokogiri\", \"<= 1.8.2\",                     require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"nokogiri\", \"<= #{settings[:nokogiri_version]}\",                     require: false' >> #{local_mod_name}/Gemfile"
 
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?

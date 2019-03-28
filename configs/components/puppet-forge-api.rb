@@ -95,24 +95,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
       gem_install.call(rubyapi, 'puppet', pupver)
     end
 
-    find_in_cache_with_regex = '/usr/bin/find '
-    find_in_cache_with_regex << '-E ' if platform.is_macos?
-    find_in_cache_with_regex << puppet_cachedir << ' '
-    find_in_cache_with_regex << '-regextype posix-extended ' unless platform.is_macos?
-    find_in_cache_with_regex << '-regex '
-
-    # The puppet gem has files in it's 'spec' directory with very long paths which
-    # bump up against MAX_PATH on Windows. They also unncessarily bloat the package
-    # size. Since the 'spec' directory is not required at runtime, we just purge it
-    # before attempting to package.
-    build_commands << "#{find_in_cache_with_regex} '.*/puppet-[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+[^/]*/spec/.*' -delete"
-
-    # We also purge the included man pages.
-    build_commands << "#{find_in_cache_with_regex} '.*/puppet-[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+[^/]*/man/.*' -delete"
-
-    # We don't need the cached .gem packages either
-    build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/cache/.*\\.gem' -delete"
-
     if platform.is_windows?
       wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
       build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"

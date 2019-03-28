@@ -132,6 +132,8 @@ project "pdk" do |proj|
   # Cache puppet gems, task metadata schema, etc.
   proj.component "puppet-forge-api"
 
+  proj.component 'gem-prune'
+
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?
 

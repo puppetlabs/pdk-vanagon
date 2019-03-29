@@ -21,6 +21,16 @@ component 'pdk-runtime' do |pkg, settings, platform|
     end
   end
 
+  # Clean up uneccesary files.
+  install_commands << "rm -rf /opt/puppetlabs/pdk/bin/*"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/share/vim"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/share/aclocal"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/share/man"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/share/doc"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/share/augeas"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/misc"
+  install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/man"
+
   pkg.install do
     install_commands
   end

@@ -20,7 +20,21 @@ component 'gem-prune' do |pkg, settings, platform|
     pdk_ruby_versions = ['2.1.0', '2.4.0', '2.5.0']
 
     pdk_ruby_versions.map do |rubyapi|
-      "GEM_PATH=#{File.join(puppet_cachedir, rubyapi)}:#{File.join(ruby_cachedir, rubyapi)} RUBYOPT=-Irubygems-prune #{gem_bins[rubyapi]} prune"
+      gem_paths = [
+        File.join(puppet_cachedir, rubyapi),
+        File.join(ruby_cachedir, rubyapi),
+      ]
+
+      # This code is evaluated on the host where vanagon is
+      # running, so we can't depend on the PATH_SEPARATOR constant
+      # being correct for the target platform.
+      if platform.is_windows?
+        path_sep = ";"
+      else
+        path_sep = File::PATH_SEPARATOR
+      end
+
+      "GEM_PATH=\"#{gem_paths.join(path_sep)}\" RUBYOPT=\"-Irubygems-prune\" #{gem_bins[rubyapi]} prune"
     end
   end
 end

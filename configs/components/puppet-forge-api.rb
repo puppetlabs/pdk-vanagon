@@ -62,43 +62,38 @@ component "puppet-forge-api" do |pkg, settings, platform|
       ].join(' ')
     end
 
-    build_commands = []
+    rubygems_update = lambda do |ruby_version, ruby_api|
+      rubygems_update_commands = []
 
-    settings[:additional_rubies]&.each do |rubyver, local_settings|
       # Make backups of the gem and bundler wrapper batch files...
-      build_commands << "cp #{gem_bins[local_settings[:ruby_api]]} #{gem_bins[local_settings[:ruby_api]]}.bak" if platform.is_windows?
-      build_commands << "cp #{bundle_bins[local_settings[:ruby_api]]} #{bundle_bins[local_settings[:ruby_api]]}.bak" if platform.is_windows?
+      rubygems_update_commands << "cp #{gem_bins[ruby_api]} #{gem_bins[ruby_api]}.bak" if platform.is_windows?
+      rubygems_update_commands << "cp #{bundle_bins[ruby_api]} #{bundle_bins[ruby_api]}.bak" if platform.is_windows?
 
       # Update gem command on additional rubies to latest to avoid getting pre-release facter gems?
-      rubygems_version = rubyver =~ /^2\.1/ ? "2.7.8" : "" # PDK-1247 Pin ruby 2.1.9 to latest compatible rubygems.
-      build_commands << "#{gem_bins[local_settings[:ruby_api]]} update --system #{rubygems_version} --no-document"
+      rubygems_version = ruby_version =~ /^2\.1/ ? "2.7.9" : "" # PDK-1247 Pin ruby 2.1.9 to latest compatible rubygems.
+      rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
       # ...replace the gem and bundler wrapper batch files file the backups we made.
-      build_commands << "mv #{gem_bins[local_settings[:ruby_api]]}.bak #{gem_bins[local_settings[:ruby_api]]}" if platform.is_windows?
-      build_commands << "mv #{bundle_bins[local_settings[:ruby_api]]}.bak #{bundle_bins[local_settings[:ruby_api]]}" if platform.is_windows?
+      rubygems_update_commands << "mv #{gem_bins[ruby_api]}.bak #{gem_bins[ruby_api]}" if platform.is_windows?
+      rubygems_update_commands << "mv #{bundle_bins[ruby_api]}.bak #{bundle_bins[ruby_api]}" if platform.is_windows?
+
+      rubygems_update_commands
     end
 
+    build_commands = []
+
+    # Update rubygems on "primary" Ruby
+    build_commands += rubygems_update.call(settings[:ruby_version], settings[:ruby_api])
+
+    # Update rubygems on "additional" rubies
+    settings[:additional_rubies]&.each do |rubyver, local_settings|
+      build_commands += rubygems_update.call(rubyver, local_settings[:ruby_api])
+    end
+
+    # Install "puppet" gem versions into appropriate Ruby installations.
     build_commands += puppet_rubyapi_versions.collect do |pupver, rubyapi|
       gem_install.call(rubyapi, 'puppet', pupver)
     end
-
-    find_in_cache_with_regex = '/usr/bin/find '
-    find_in_cache_with_regex << '-E ' if platform.is_macos?
-    find_in_cache_with_regex << puppet_cachedir << ' '
-    find_in_cache_with_regex << '-regextype posix-extended ' unless platform.is_macos?
-    find_in_cache_with_regex << '-regex '
-
-    # The puppet gem has files in it's 'spec' directory with very long paths which
-    # bump up against MAX_PATH on Windows. They also unncessarily bloat the package
-    # size. Since the 'spec' directory is not required at runtime, we just purge it
-    # before attempting to package.
-    build_commands << "#{find_in_cache_with_regex} '.*/puppet-[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+[^/]*/spec/.*' -delete"
-
-    # We also purge the included man pages.
-    build_commands << "#{find_in_cache_with_regex} '.*/puppet-[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+[^/]*/man/.*' -delete"
-
-    # We don't need the cached .gem packages either
-    build_commands << "#{find_in_cache_with_regex} '.*/[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+/cache/.*\\.gem' -delete"
 
     if platform.is_windows?
       wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')

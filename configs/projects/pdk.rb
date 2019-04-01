@@ -1,6 +1,6 @@
 project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  proj.setting(:pdk_runtime_version, '201901242')
+  proj.setting(:pdk_runtime_version, '201903260')
   proj.inherit_settings 'pdk-runtime', 'git://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
@@ -131,6 +131,8 @@ project "pdk" do |proj|
 
   # Cache puppet gems, task metadata schema, etc.
   proj.component "puppet-forge-api"
+
+  proj.component 'gem-prune'
 
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?

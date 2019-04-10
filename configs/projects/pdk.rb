@@ -109,6 +109,11 @@ project "pdk" do |proj|
   proj.component "rubygem-addressable"
   proj.component "rubygem-json-schema"
 
+  # Analytics deps
+  proj.component "rubygem-concurrent-ruby"
+  proj.component "rubygem-facter"
+  proj.component "rubygem-httpclient"
+
   # Other deps
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
@@ -132,7 +137,7 @@ project "pdk" do |proj|
   # Cache puppet gems, task metadata schema, etc.
   proj.component "puppet-forge-api"
 
-  proj.component 'gem-prune'
+  proj.component "gem-prune"
 
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?

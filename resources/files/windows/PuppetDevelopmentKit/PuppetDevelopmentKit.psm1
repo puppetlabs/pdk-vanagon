@@ -8,6 +8,12 @@ $env:SSL_CERT_FILE  = "$($env:DEVKIT_BASEDIR)\ssl\cert.pem"
 $env:SSL_CERT_DIR   = "$($env:DEVKIT_BASEDIR)\ssl\certs"
 
 function pdk {
+  if ($Host.Name -eq 'Windows PowerShell ISE Host') {
+    Write-Error ("The Puppet Development Kit can not be run within the Windows PowerShell ISE.`n" + `
+                "Please open a new Windows PowerShell Console, or 'Start-Process PowerShell', and use the PDK within this new console.`n" + `
+                "For more information see https://puppet.com/docs/pdk/latest/pdk_known_issues.html and https://devblogs.microsoft.com/powershell/console-application-non-support-in-the-ise.")
+    return
+  }
   if ($env:ConEmuANSI -eq 'ON') {
     &$env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args
   } else {

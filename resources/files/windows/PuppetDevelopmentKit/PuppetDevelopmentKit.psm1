@@ -9,8 +9,8 @@ $env:SSL_CERT_DIR   = "$($env:DEVKIT_BASEDIR)\ssl\certs"
 
 function pdk {
   if ($Host.Name -eq 'Windows PowerShell ISE Host') {
-    Write-Error ("The Puppet Development Kit can not be run within the Windows PowerShell ISE.`n" + `
-                "Please open a new Windows PowerShell Console, or 'Start-Process PowerShell', and use the PDK within this new console.`n" + `
+    Write-Error ("The Puppet Development Kit cannot be run in the Windows PowerShell ISE.`n" + `
+                "Open a new Windows PowerShell Console, or 'Start-Process PowerShell', and use PDK within this new console.`n" + `
                 "For more information see https://puppet.com/docs/pdk/latest/pdk_known_issues.html and https://devblogs.microsoft.com/powershell/console-application-non-support-in-the-ise.")
     return
   }

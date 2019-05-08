@@ -21,8 +21,8 @@ osx_signing_cert: "Developer ID Installer: PUPPET LABS, INC. (VKGLGN2B6Y)"
 osx_signing_keychain: "/Users/jenkins/Library/Keychains/signing.keychain"
 osx_signing_server: 'osx-signer.delivery.puppetlabs.net'
 vanagon_project: TRUE
-repo_name: 'puppet6'
-nonfinal_repo_name: 'puppet6-nightly'
+repo_name: 'puppet-enterprise-tools'
+nonfinal_repo_name: 'puppet-nightly'
 build_tar: FALSE
 staging_server: 'weth.delivery.puppetlabs.net'
 msi_staging_server: 'weth.delivery.puppetlabs.com'

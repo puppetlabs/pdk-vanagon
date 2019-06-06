@@ -23,8 +23,6 @@ platform 'osx-10.14-x86_64' do |plat|
 
   plat.provision_with "su test -c '/usr/local/bin/brew install #{packages.join(' ')}'"
 
-  # Need to use 1012 image until PA-2334 is resolved to add Homebrew toolchain
-  # changes to 10.13 and 10.14.
-  plat.vmpooler_template 'osx-1012-x86_64'
+  plat.vmpooler_template 'osx-1014-x86_64'
   plat.output_dir File.join('apple', '10.14', 'PC1', 'x86_64')
 end

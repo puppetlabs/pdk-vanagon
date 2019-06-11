@@ -139,6 +139,8 @@ project "pdk" do |proj|
 
   proj.component "gem-prune"
 
+  proj.component "pdk-create-ruby-tarballs"
+
   # Set up PATH on posix platforms
   proj.component "shellpath" unless platform.is_windows?
 

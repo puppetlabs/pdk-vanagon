@@ -5,11 +5,13 @@ component "pdk-create-ruby-tarballs" do |pkg, settings, platform|
   # We only create the tarballs on Windows right now
   if platform.is_windows?
     pkg.add_source("file://resources/files/install-tarballs/extract_all.rb")
+    pkg.add_source("file://resources/files/install-tarballs/remove_all.rb")
     pkg.directory "#{settings[:datadir]}/install-tarballs"
     # Unlike other examples, where the path would be '../<file>' we use the current workding directory.  This is because
     # even though we add a source as above, because it is not a gem or tar etc., the component has nothing to extract therefore
     # we don't end up in a component directory
     pkg.install_file "extract_all.rb", "#{settings[:datadir]}/install-tarballs/extract_all.rb"
+    pkg.install_file "remove_all.rb", "#{settings[:datadir]}/install-tarballs/remove_all.rb"
 
     pkg.build do
       build_commands = []

@@ -69,7 +69,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Copy generated Gemfile.lock into cachedir.
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{settings[:ruby_version]}.lock"
-    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock" # legacy support, remove anytime post 1.5.0 release
+    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
     # Add some additional gems to support experimental features
     build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
@@ -110,15 +110,20 @@ component "pdk-templates" do |pkg, settings, platform|
         File.join(puppet_cachedir, local_settings[:ruby_api]),
       ].join(platform.is_windows? ? ';' : ':')
 
+      bundler_env = [
+        "GEM_PATH=\"#{local_gem_path}\"",
+        "GEM_HOME=\"#{local_ruby_cachedir}\"",
+      ]
+
+      bundler_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
+
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
       # Generate a new module for this ruby version.
       build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')}"
 
       # Resolve default gemfile deps
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
-      # Update the Gemfile.lock to resolve based on the local gem cache.
-      build_commands << "pushd #{local_mod_name} && GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} lock --local --update && popd"
+      build_commands << "pushd #{local_mod_name} && #{bundler_env.join(' ')} #{local_settings[:host_bundle]} update && popd"
 
       build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
 
@@ -142,7 +147,7 @@ component "pdk-templates" do |pkg, settings, platform|
       end
 
       # Install all the deps into the package cachedir.
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
+      build_commands << "pushd #{local_mod_name} && #{bundler_env.join(' ')} #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby
       build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"

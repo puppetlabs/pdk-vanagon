@@ -86,7 +86,7 @@ Function GetRubyDirectory(RootDirectory)
 End Function
 
 ' Mainline
-Function ExtractTarballs()
+Function RunRubyScriptFile(ScriptFileName)
   Log "InstallDir is " + InstallDir, false
 
   ' Based on equivalent PowerShell script at;
@@ -103,7 +103,7 @@ Function ExtractTarballs()
   Dim RubyVersion : RubyVersion = GetRubyDirectory(DEVKIT_BASEDIR + "\private\ruby")
   If RubyVersion = "" Then
     Log "Could not find a suitable ruby environment", true
-    ExtractTarballs = IDABORT
+    RunRubyScriptFile = IDABORT
     Exit Function
   Else
     Log "Ruby " + RubyVersion + " has the PDK gem", false
@@ -130,19 +130,27 @@ Function ExtractTarballs()
   ProcessEnv("SSL_CERT_DIR") = SSL_CERT_DIR
   ProcessEnv("PDK_DEBUG") = "True"
 
-  Dim ExtractScript : ExtractScript = DEVKIT_BASEDIR + "\share\install-tarballs\extract_all.rb"
+  Dim ExtractScript : ExtractScript = DEVKIT_BASEDIR + "\share\install-tarballs\" + ScriptFileName
   If Not(fso.FileExists(ExtractScript)) Then
     Log "Extract script " & ExtractScript & " could not be found", true
-    ExtractTarballs = IDABORT
+    RunRubyScriptFile = IDABORT
     Exit Function
   End If
 
   ' Note Returning values back to the MSI Engine only works with Binary type Custom Actions
   if ExecuteCommand(comspec & " /C " & RubyPath & " -S -- " & ExtractScript) Then
     Log "Completed with success", false
-    ExtractTarballs = IDOK
+    RunRubyScriptFile = IDOK
   Else
     Log "Completed with error", true
-    ExtractTarballs = IDABORT
+    RunRubyScriptFile = IDABORT
   End If
+End Function
+
+Function ExtractTarballs()
+  ExtractTarballs = RunRubyScriptFile("extract_all.rb")
+End Function
+
+Function RemoveTarballs()
+  RemoveTarballs = RunRubyScriptFile("remove_all.rb")
 End Function

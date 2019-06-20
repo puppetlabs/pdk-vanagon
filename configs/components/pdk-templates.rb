@@ -42,16 +42,23 @@ component "pdk-templates" do |pkg, settings, platform|
       pdk_bin << '.bat'
     end
 
+    gem_env = [
+      "GEM_PATH=\"#{gem_path_with_puppet_cache}\"",
+      "GEM_HOME=\"#{ruby_cachedir}\"",
+    ]
+
+    gem_env << "PUPPET_GEM_VERSION=\"#{settings[:latest_puppet]}\"" if settings[:latest_puppet]
+
     mod_name = "vanagon_module_#{settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
     pre_build_commands = []
     build_commands = []
 
     # Pre-install some native gems.
-    pre_build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
 
     if platform.is_windows?
-      pre_build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
+      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
     end
 
     # Clone this component repo to a bare repo inside the project cachedir.
@@ -65,11 +72,11 @@ component "pdk-templates" do |pkg, settings, platform|
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
     # GEM_PATH to make sure we resolve to a cached version of puppet.
-    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} lock && popd"
+    build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} lock && popd"
 
     # Copy generated Gemfile.lock into cachedir.
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{settings[:ruby_version]}.lock"
-    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock" # legacy support, remove anytime post 1.5.0 release
+    build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
     # Add some additional gems to support experimental features
     build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
@@ -87,10 +94,10 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
-    build_commands << "pushd #{mod_name} && GEM_PATH=\"#{gem_path_with_puppet_cache}\" GEM_HOME=\"#{ruby_cachedir}\" #{settings[:host_bundle]} install && popd"
+    build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
 
     # Install bundler into the gem cache
-    build_commands << "GEM_HOME=#{ruby_cachedir} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -110,15 +117,20 @@ component "pdk-templates" do |pkg, settings, platform|
         File.join(puppet_cachedir, local_settings[:ruby_api]),
       ].join(platform.is_windows? ? ';' : ':')
 
+      local_gem_env = [
+        "GEM_PATH=\"#{local_gem_path}\"",
+        "GEM_HOME=\"#{local_ruby_cachedir}\"",
+      ]
+
+      local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
+
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
       # Generate a new module for this ruby version.
       build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')}"
 
       # Resolve default gemfile deps
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
-      # Update the Gemfile.lock to resolve based on the local gem cache.
-      build_commands << "pushd #{local_mod_name} && GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} lock --local --update && popd"
+      build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"
 
       build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
 
@@ -142,13 +154,13 @@ component "pdk-templates" do |pkg, settings, platform|
       end
 
       # Install all the deps into the package cachedir.
-      build_commands << "pushd #{local_mod_name} && PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\" GEM_PATH=\"#{local_gem_path}\" GEM_HOME=\"#{local_ruby_cachedir}\" #{local_settings[:host_bundle]} install && popd"
+      build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} install && popd"
 
       # Install bundler itself into the gem cache for this ruby
-      build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
-      pre_build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
 
       if platform.is_windows?
         # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -157,7 +169,7 @@ component "pdk-templates" do |pkg, settings, platform|
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
 
-        pre_build_commands << "GEM_HOME=#{local_ruby_cachedir} #{local_settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
+        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
       end
     end
 

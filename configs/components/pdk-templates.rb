@@ -88,7 +88,7 @@ component "pdk-templates" do |pkg, settings, platform|
     # Add some Beaker dependencies for Linux
     unless platform.is_windows?
       build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{mod_name}/Gemfile"
-      build_commands << "echo 'gem \"byebug\", \"9.0.6\",                          require: false' >> #{mod_name}/Gemfile"
+      build_commands << "echo 'gem \"byebug\", \"#{settings[:byebug_version][settings[:ruby_api]]}\", require: false' >> #{mod_name}/Gemfile"
       build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{mod_name}/Gemfile"
     end
 
@@ -149,7 +149,7 @@ component "pdk-templates" do |pkg, settings, platform|
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
         build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{local_mod_name}/Gemfile"
-        build_commands << "echo 'gem \"byebug\", \"9.0.6\",                          require: false' >> #{local_mod_name}/Gemfile"
+        build_commands << "echo 'gem \"byebug\", \"#{settings[:byebug_version][local_settings[:ruby_api]]}\", require: false' >> #{local_mod_name}/Gemfile"
         build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{local_mod_name}/Gemfile"
       end
 

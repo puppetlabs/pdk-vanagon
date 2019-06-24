@@ -47,6 +47,7 @@ project "pdk" do |proj|
   proj.setting(:bundler_version, "1.16.1")
   proj.setting(:mini_portile2_version, '2.3.0')
   proj.setting(:nokogiri_version, '1.8.5')
+  proj.setting(:byebug_version, {'2.1.0' => '9.0.6'}.tap { |h| h.default = '11.0.1' })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
 

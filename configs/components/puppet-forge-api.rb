@@ -8,6 +8,10 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
   # We need a few different things that come from the Forge API codebase so we do it all in this component.
 
+  if platform.is_windows?
+    pkg.environment "PATH", settings[:gem_path_env]
+  end
+
   pkg.build do
     # Cache specific versions of the puppet gem
     gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
@@ -22,9 +26,14 @@ component "puppet-forge-api" do |pkg, settings, platform|
       settings[:ruby_api] => settings[:host_bundle],
     }
 
+    ruby_dirs = {
+      settings[:ruby_api] => settings[:ruby_dir],
+    }
+
     settings[:additional_rubies]&.each do |rubyver, local_settings|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
       bundle_bins[local_settings[:ruby_api]] = local_settings[:host_bundle]
+      ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
     end
 
     # TODO: build this dynamically somehow?
@@ -50,7 +59,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     puppet_gem_platform = platform.is_windows? ? 'x64-mingw32' : 'ruby'
 
-    gem_install = lambda do |ruby_version, gem, version|
+    gem_install = lambda do |ruby_version, gem, version, *args|
       [
         gem_bins[ruby_version],
         'install',
@@ -60,6 +69,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
         "--install-dir #{File.join(puppet_cachedir, ruby_version)}",
         "#{gem}:#{version}",
         "--platform #{puppet_gem_platform}",
+        *args,
       ].join(' ')
     end
 
@@ -108,12 +118,20 @@ component "puppet-forge-api" do |pkg, settings, platform|
       }
 
       pdk_ruby_versions.each do |rubyapi|
-        # Byebug requires special treatment b/c the cross compiled into a fat gem
-        byebug_libdir = File.join(puppet_cachedir, rubyapi, "gems", "byebug-9.0.6-x64-mingw32", "lib", "byebug")
-        build_commands += [
-          gem_install.call(rubyapi, 'byebug', '9.0.6'),
-          "cp #{File.join(byebug_libdir, rubyapi.split('.')[0..1].join('.'), "byebug.so")} #{File.join(byebug_libdir, "byebug.so")}",
-        ]
+        build_commands << gem_install.call(
+          rubyapi,
+          'byebug',
+          settings[:byebug_version][rubyapi],
+          '--',
+          "--with-ruby-include=#{File.join(ruby_dirs[rubyapi], 'include', "ruby-#{rubyapi}")}",
+          "--with-ruby-lib=#{File.join(ruby_dirs[rubyapi], 'lib')}",
+        )
+
+        # Byebug 9.x requires special treatment b/c the cross compiled into a fat gem
+        if settings[:byebug_version][rubyapi].start_with?('9.')
+          byebug_libdir = File.join(puppet_cachedir, rubyapi, "gems", "byebug-#{settings[:byebug_version][rubyapi]}-x64-mingw32", "lib", "byebug")
+          build_commands << "cp #{File.join(byebug_libdir, rubyapi.split('.')[0..1].join('.'), "byebug.so")} #{File.join(byebug_libdir, "byebug.so")}"
+        end
 
         # Add the remaining beaker dependencies that have been natively compiled
         # and repackaged.

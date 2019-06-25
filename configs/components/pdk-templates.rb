@@ -88,13 +88,18 @@ component "pdk-templates" do |pkg, settings, platform|
     # Add some Beaker dependencies for Linux
     unless platform.is_windows?
       build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{mod_name}/Gemfile"
-      build_commands << "echo 'gem \"byebug\", \"#{settings[:byebug_version][settings[:ruby_api]]}\", require: false' >> #{mod_name}/Gemfile"
       build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{mod_name}/Gemfile"
     end
 
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
+
+    unless platform.is_windows?
+      settings[:byebug_version][settings[:ruby_api]].each do |byebug_version|
+        build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document byebug:#{byebug_version}"
+      end
+    end
 
     # Install bundler into the gem cache
     build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
@@ -149,12 +154,17 @@ component "pdk-templates" do |pkg, settings, platform|
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
         build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{local_mod_name}/Gemfile"
-        build_commands << "echo 'gem \"byebug\", \"#{settings[:byebug_version][local_settings[:ruby_api]]}\", require: false' >> #{local_mod_name}/Gemfile"
         build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{local_mod_name}/Gemfile"
       end
 
       # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} install && popd"
+
+      unless platform.is_windows?
+        settings[:byebug_version][local_settings[:ruby_api]].each do |byebug_version|
+          build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document byebug:#{byebug_version}"
+        end
+      end
 
       # Install bundler itself into the gem cache for this ruby
       build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"

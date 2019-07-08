@@ -63,7 +63,8 @@ project "pdk" do |proj|
     ].join(':'))
   end
 
-  if platform.is_fedora? && platform.os_version.to_i >= 28
+  if (platform.is_fedora? && platform.os_version.to_i >= 28) ||
+      (platform.is_el? && platform.os_version.to_i >= 8)
     # Disable shebang mangling for certain paths inside PDK.
     # See https://fedoraproject.org/wiki/Packaging:Guidelines#Shebang_lines
     brp_mangle_shebangs_exclude_from = [

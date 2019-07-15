@@ -31,6 +31,12 @@
         <![CDATA[VersionNT64 >= 100 AND <%= settings[:win64] %> = no AND NOT (&<%= settings[:product_id] %>Runtime = 2)]]>
       </Custom>
       <%-end-%>
+      <!-- Tarball Extractor on install -->
+      <Custom Action="SetPropertyForExtractTarballs" Before="InstallInitialize">NOT REMOVE</Custom>
+      <Custom Action='ExtractTarballs' After='InstallFiles'>NOT REMOVE</Custom>
+      <!-- Tarball Remover on uninstall -->
+      <Custom Action="SetPropertyForRemoveTarballs" Before="InstallInitialize">REMOVE~="ALL" OR MaintenanceMode="Remove"</Custom>
+      <Custom Action='RemoveTarballs' Before='RemoveFiles'>REMOVE~="ALL" OR MaintenanceMode="Remove"</Custom>
     </InstallExecuteSequence>
 
     <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLDIR]" After="CostFinalize" />

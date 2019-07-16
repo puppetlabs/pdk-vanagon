@@ -15,6 +15,7 @@ component "pdk-templates" do |pkg, settings, platform|
     fedora-27-x86_64
     fedora-28-x86_64
     fedora-29-x86_64
+    fedora-30-x86_64
     ubuntu-18.04-amd64
     el-8-x86_64
   ]

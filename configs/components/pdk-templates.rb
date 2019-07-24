@@ -11,6 +11,7 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "puppet-forge-api"
 
   platforms_without_plgcc = %w[
+    debian-10-amd64
     fedora-26-x86_64
     fedora-27-x86_64
     fedora-28-x86_64

@@ -187,7 +187,8 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Fix permissions
-    build_commands << "chmod -R -vv ugo+r #{File.join(settings[:cachedir], 'ruby')} #{File.join(settings[:privatedir], 'puppet', 'ruby')}"
+    chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"
+    build_commands << "chmod -R #{chmod_changes_flag} ugo+r #{File.join(settings[:cachedir], 'ruby')} #{File.join(settings[:privatedir], 'puppet', 'ruby')}"
 
     pre_build_commands + build_commands
   end

@@ -142,6 +142,8 @@ component "puppet-forge-api" do |pkg, settings, platform|
         build_commands += beaker_native_deps.collect do |gem, ver|
           gem_install.call(rubyapi, gem, ver)
         end
+
+        build_commands << gem_install.call(rubyapi, 'rb-readline', '0.5.5')
       end
     end
 

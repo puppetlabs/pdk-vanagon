@@ -1,6 +1,6 @@
 component "rubygem-tty-spinner" do |pkg, settings, platform|
-  pkg.version "0.5.0"
-  pkg.md5sum "36cad9c558a576415e58d316621422c6"
+  pkg.version "0.9.1"
+  pkg.md5sum "ba5df1e9795700f6109a1a06cbecd355"
   pkg.url "#{settings[:buildsources_url]}/tty-spinner-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

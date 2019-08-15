@@ -1,6 +1,6 @@
 component "rubygem-pastel" do |pkg, settings, platform|
-  pkg.version "0.7.1"
-  pkg.md5sum "d18811c988aff85c25823b9e78074685"
+  pkg.version "0.7.3"
+  pkg.md5sum "4227e7ba9c1b32a2ff9c26bb6ec96c0b"
   pkg.url "#{settings[:buildsources_url]}/pastel-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

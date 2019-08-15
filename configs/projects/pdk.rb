@@ -103,7 +103,8 @@ project "pdk" do |proj|
   proj.component "rubygem-wisper"
   proj.component "rubygem-tty-cursor"
   proj.component "rubygem-hitimes"
-  proj.component "rubygem-timers"
+  proj.component "rubygem-tty-screen"
+  proj.component "rubygem-tty-reader"
   proj.component "rubygem-tty-prompt"
 
   # json-schema and deps

@@ -1,6 +1,6 @@
 component "rubygem-tty-which" do |pkg, settings, platform|
-  pkg.version "0.3.0"
-  pkg.md5sum "633a1f4f8c6e15a26cb83e1be0b9f2ce"
+  pkg.version "0.4.1"
+  pkg.md5sum "f4afca72a52f8f64601cf6a41593eaad"
   pkg.url "#{settings[:buildsources_url]}/tty-which-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

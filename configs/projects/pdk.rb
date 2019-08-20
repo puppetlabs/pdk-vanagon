@@ -125,7 +125,6 @@ project "pdk" do |proj|
   proj.component "rubygem-diff-lcs"
   proj.component "rubygem-pathspec"
   proj.component "rubygem-hitimes"
-  proj.component "rubygem-net-ssh"
 
   # nokogiri and deps
   proj.component 'rubygem-mini_portile2'

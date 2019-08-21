@@ -1,6 +1,8 @@
 component 'rubygem-nokogiri' do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
-  pkg.version settings[:nokogiri_version]
+  # We don't know exactly what Ruby API PDK is built against so just use the 'default'
+  # See /configs/projects/pdk.rb for the actual version used:  `proj.setting(:nokogiri_version) = ...`
+  pkg.version settings[:nokogiri_version]['default']
   pkg.md5sum "a8ee8d3da2a686dd27bd9c2786eb2216"
   pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 

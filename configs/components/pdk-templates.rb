@@ -5,6 +5,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
+  pkg.build_requires "rubygem-mini_portile2-for-ruby-2.1.0"
+  pkg.build_requires "rubygem-nokogiri-for-ruby-2.1.0"
   pkg.build_requires "rubygem-mini_portile2"
   pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
@@ -58,7 +60,8 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands = []
 
     # Pre-install some native gems.
-    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+    mini_portile2_version = settings[:mini_portile2_version][settings[:ruby_api]][:version]
+    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{mini_portile2_version}.gem"
 
     if platform.is_windows?
       nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
@@ -176,7 +179,8 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
-      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+      local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]
+      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{local_mini_portile2_version}.gem"
 
       if platform.is_windows?
         # The puppet gem has files in it's 'spec' directory with very long paths which

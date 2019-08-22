@@ -45,8 +45,19 @@ project "pdk" do |proj|
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
   proj.setting(:bundler_version, "1.16.1")
-  proj.setting(:mini_portile2_version, '2.3.0')
   proj.setting(:byebug_version, {'2.1.0' => ['9.0.6']}.tap { |h| h.default = ['9.0.6', '11.0.1'] })
+
+  default_mini_portile2 = {
+    version: '2.4.0',
+    checksum: '6bb790b78b70beb3a7f9076791ecf225',
+  }
+
+  proj.setting(:mini_portile2_version, {
+    '2.1.0' => {
+      version: '2.3.0',
+      checksum: '3dca7ae71a5ac1ce2b33b5ac92ae647c',
+    },
+  }.tap { |h| h.default = default_mini_portile2 })
 
   # Default is 1.10.4 to mitigate against CVE-2019-5477. Ruby 2.1 requires an older version
   default_nokogiri = {
@@ -57,9 +68,9 @@ project "pdk" do |proj|
 
   proj.setting(:nokogiri_version, {
     '2.1.0' => {
-      version: '1.7.2',
-      posix_checksum: '0a2e2b051ee73159e2d0dcfacbe14e15',
-      win_checksum: 'ca7068580124f6b9235fca94e0c1f105',
+      version: '1.8.5',
+      posix_checksum: 'a8ee8d3da2a686dd27bd9c2786eb2216',
+      win_checksum: '2e7c07baa7db36b31f33d5a0656db649',  # Checksum of nokogiri (x64-mingw32) 1.8.5 on https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources
     },
   }.tap { |h| h.default = default_nokogiri })
 
@@ -141,6 +152,8 @@ project "pdk" do |proj|
   proj.component "rubygem-hitimes"
 
   # nokogiri and deps
+  proj.component 'rubygem-mini_portile2-for-ruby-2.1.0'
+  proj.component 'rubygem-nokogiri-for-ruby-2.1.0'
   proj.component 'rubygem-mini_portile2'
   proj.component 'rubygem-nokogiri'
 

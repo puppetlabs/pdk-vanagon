@@ -61,7 +61,8 @@ component "pdk-templates" do |pkg, settings, platform|
     pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
 
     if platform.is_windows?
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
+      nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
+      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
     end
 
     # Clone this component repo to a bare repo inside the project cachedir.
@@ -130,7 +131,7 @@ component "pdk-templates" do |pkg, settings, platform|
         "GEM_HOME=\"#{local_ruby_cachedir}\"",
       ]
 
-      nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]]
+      local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
 
       local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
 
@@ -154,7 +155,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"nokogiri\", \"<= #{nokogiri_version}\",                     require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
 
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
@@ -184,7 +185,7 @@ component "pdk-templates" do |pkg, settings, platform|
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
 
-        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
+        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
       end
     end
 

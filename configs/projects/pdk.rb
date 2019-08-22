@@ -46,9 +46,22 @@ project "pdk" do |proj|
 
   proj.setting(:bundler_version, "1.16.1")
   proj.setting(:mini_portile2_version, '2.3.0')
-  # Default is 1.10.4 to mitigate against CVE-2019-5477. Ruby 2.1 requires an older version
-  proj.setting(:nokogiri_version, { '2.1.0' => '1.7.2' }.tap { |h| h.default = '1.10.4' })
   proj.setting(:byebug_version, {'2.1.0' => ['9.0.6']}.tap { |h| h.default = ['9.0.6', '11.0.1'] })
+
+  # Default is 1.10.4 to mitigate against CVE-2019-5477. Ruby 2.1 requires an older version
+  default_nokogiri = {
+    version: '1.10.4',
+    posix_checksum: 'be51f9f1c51148871fa02876a7919685',
+    win_checksum: 'cc4abb26b1f14108822cad322e31dd43',
+  }
+
+  proj.setting(:nokogiri_version, {
+    '2.1.0' => {
+      version: '1.7.2',
+      posix_checksum: '0a2e2b051ee73159e2d0dcfacbe14e15',
+      win_checksum: 'ca7068580124f6b9235fca94e0c1f105',
+    },
+  }.tap { |h| h.default = default_nokogiri })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
 

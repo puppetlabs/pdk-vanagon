@@ -1,9 +1,11 @@
 component 'rubygem-nokogiri' do |pkg, settings, platform|
   gemname = pkg.get_name.gsub('rubygem-', '')
+
   # We don't know exactly what Ruby API PDK is built against so just use the 'default'
   # See /configs/projects/pdk.rb for the actual version used:  `proj.setting(:nokogiri_version) = ...`
-  pkg.version settings[:nokogiri_version]['default']
-  pkg.md5sum "a8ee8d3da2a686dd27bd9c2786eb2216"
+  pkg.version settings[:nokogiri_version]['default'][:version]
+  pkg.md5sum settings[:nokogiri_version]['default'][:posix_checksum]
+
   pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"
@@ -12,7 +14,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]
     pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
-    pkg.md5sum "2e7c07baa7db36b31f33d5a0656db649"
+    pkg.md5sum settings[:nokogiri_version]['default'][:win_checksum]
 
     pkg.install do
       ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}-x64-mingw32.gem"]

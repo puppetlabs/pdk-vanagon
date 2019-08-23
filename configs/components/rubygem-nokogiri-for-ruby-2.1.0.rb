@@ -16,10 +16,14 @@ component 'rubygem-nokogiri-for-ruby-2.1.0' do |pkg, settings, platform|
     pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
     pkg.md5sum settings[:nokogiri_version]['2.1.0'][:win_checksum]
 
-    pkg.install do
-      ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}-x64-mingw32.gem"]
-    end
     pkg.build_requires "pl-zlib-#{platform.architecture}"
+
+    pkg.install do
+      # For the Ruby 2.1.x version of this component we only need
+      # vanagon to stage the .gem, not install anything. The gem will
+      # actually be installed in the pdk-templates component.
+      "echo no-op"
+    end
   else
     pkg.build_requires 'cmake'
 
@@ -40,7 +44,10 @@ component 'rubygem-nokogiri-for-ruby-2.1.0' do |pkg, settings, platform|
     end
 
     pkg.install do
-      ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem"]
+      # For the Ruby 2.1.x version of this component we only need
+      # vanagon to stage the .gem, not install anything. The gem will
+      # actually be installed in the pdk-templates component.
+      "echo no-op"
     end
   end
 end

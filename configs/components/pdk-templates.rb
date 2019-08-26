@@ -5,6 +5,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
+  pkg.build_requires "rubygem-mini_portile2-for-ruby-2.1.0"
+  pkg.build_requires "rubygem-nokogiri-for-ruby-2.1.0"
   pkg.build_requires "rubygem-mini_portile2"
   pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
@@ -58,10 +60,12 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands = []
 
     # Pre-install some native gems.
-    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+    mini_portile2_version = settings[:mini_portile2_version][settings[:ruby_api]][:version]
+    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{mini_portile2_version}.gem"
 
     if platform.is_windows?
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
+      nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
+      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
     end
 
     # Clone this component repo to a bare repo inside the project cachedir.
@@ -130,6 +134,8 @@ component "pdk-templates" do |pkg, settings, platform|
         "GEM_HOME=\"#{local_ruby_cachedir}\"",
       ]
 
+      local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
+
       local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
 
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
@@ -152,7 +158,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"nokogiri\", \"<= #{settings[:nokogiri_version]}\",                     require: false' >> #{local_mod_name}/Gemfile"
+      build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
 
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
@@ -173,7 +179,8 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
-      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{settings[:mini_portile2_version]}.gem"
+      local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]
+      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{local_mini_portile2_version}.gem"
 
       if platform.is_windows?
         # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -182,7 +189,7 @@ component "pdk-templates" do |pkg, settings, platform|
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
 
-        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{settings[:nokogiri_version]}-x64-mingw32.gem"
+        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
       end
     end
 

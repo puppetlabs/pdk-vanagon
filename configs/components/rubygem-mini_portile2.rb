@@ -1,7 +1,7 @@
 component 'rubygem-mini_portile2' do |pkg, settings, platform|
-  pkg.version settings[:mini_portile2_version]
-  pkg.md5sum '3dca7ae71a5ac1ce2b33b5ac92ae647c'
-  pkg.url "https://rubygems.org/downloads/mini_portile2-#{pkg.get_version}.gem"
+  pkg.version settings[:mini_portile2_version]['default'][:version]
+  pkg.md5sum settings[:mini_portile2_version]['default'][:checksum]
+  pkg.url "#{settings[:buildsources_url]}/mini_portile2-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"
 

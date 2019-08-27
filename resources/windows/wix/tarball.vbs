@@ -17,6 +17,7 @@ Const IDABORT = 3
 
 Dim wshShell : Set wshShell = CreateObject("WScript.Shell")
 Dim fso : Set fso = CreateObject("Scripting.FileSystemObject")
+Dim comspec : comspec = wshShell.ExpandEnvironmentStrings("%comspec%")
 
 Sub Log (Message, IsError)
   ' Logs through cscript
@@ -39,21 +40,37 @@ Sub Log (Message, IsError)
 End Sub
 
 ' Executes command, sending its stdout / stderr to the WScript host
-Function ExecuteCommand (Command)
+Function ExecuteCommand(Command)
   Dim output: output = ""
   Log "Executing Command : " & Command, False
 
   Dim tempFilePath : tempFilePath = wshShell.ExpandEnvironmentStrings("%TEMP%\" + fso.GetTempName())
+  Dim tempBatFile : tempBatFile = wshShell.ExpandEnvironmentStrings("%TEMP%\" + fso.GetTempName() + ".bat")
+  ' Open the temp .bat file for writing
+  ' Unfortunately due to the strange double quoting behaviour in wshShell.Run we create a temporary
+  ' Batch file with the command we want, and then call the batch file.  Note that we explicitly call
+  ' EXIT /B so that we avoid the case where someone malicious modifies the BAT file while being run.
+  ' Remember that cmd.exe reads and executes BAT files line-by-line. The EXIT statement tells cmd
+  ' to exit even if there's malicious code following.
+  Dim outFile : Set outFile = fso.OpenTextFile(tempBatFile, 2, true)
+  outFile.WriteLine(Command & " > """ & tempFilePath & """ 2>&1 && EXIT /B %ERRORLEVEL%")
+  outFile.Close()
+  Set outFile = Nothing
   ' https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/windows-scripting/d5fk67ky%28v%3dvs.84%29
   ' intWindows Style - 0 - Hides the window and activates another window.
   ' bWaitOnReturn - True - waits for program termination
-  Dim exitCode : exitCode = wshShell.Run(Command & " > """ & tempFilePath & """ 2>&1", 0, True)
-  Dim outFile : Set outFile = fso.OpenTextFile(tempFilePath)
-  Do While Not outFile.AtEndOfStream
-   Log outFile.ReadLine(), false
-  Loop
-  outFile.Close()
-  fso.DeleteFile(tempFilePath)
+  Dim exitCode : exitCode = wshShell.Run(comspec & " /c CALL " & tempBatFile & " 2>&1", 0, True)
+  fso.DeleteFile(tempBatFile)
+  If fso.FileExists(tempFilePath) Then
+    Set outFile = fso.OpenTextFile(tempFilePath)
+    Log "--- Output", false
+    Do While Not outFile.AtEndOfStream
+    Log outFile.ReadLine(), false
+    Loop
+    outFile.Close()
+    Log "---", false
+    fso.DeleteFile(tempFilePath)
+  End If
 
   If exitCode <> 0 Then
     Log "Execution Failed With Code: " & exitCode, True
@@ -120,7 +137,6 @@ Function RunRubyScriptFile(ScriptFileName)
   Log "SSL_CERT_DIR is " + SSL_CERT_DIR, false
 
   Dim RubyPath : RubyPath = RUBY_DIR + "\bin\ruby.exe"
-  Dim comspec : comspec = wshShell.ExpandEnvironmentStrings("%comspec%")
   Dim ProcessEnv : Set ProcessEnv = wshShell.Environment( "PROCESS" )
 
   Log "Creating process level environment variables...", false
@@ -138,7 +154,7 @@ Function RunRubyScriptFile(ScriptFileName)
   End If
 
   ' Note Returning values back to the MSI Engine only works with Binary type Custom Actions
-  if ExecuteCommand(comspec & " /C " & RubyPath & " -S -- " & ExtractScript) Then
+  if ExecuteCommand("""" & RubyPath & """ -S -- """ & ExtractScript & """") Then
     Log "Completed with success", false
     RunRubyScriptFile = IDOK
   Else

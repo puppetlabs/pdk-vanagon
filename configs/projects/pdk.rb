@@ -1,6 +1,6 @@
 project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  proj.setting(:pdk_runtime_version, '201907220')
+  proj.setting(:pdk_runtime_version, '201910020')
   proj.inherit_settings 'pdk-runtime', 'git://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
@@ -150,6 +150,7 @@ project "pdk" do |proj|
   proj.component "rubygem-diff-lcs"
   proj.component "rubygem-pathspec"
   proj.component "rubygem-hitimes"
+  proj.component "rubygem-minitar"
 
   # nokogiri and deps
   proj.component 'rubygem-mini_portile2-for-ruby-2.1.0'

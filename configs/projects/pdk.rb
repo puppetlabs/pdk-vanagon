@@ -44,6 +44,7 @@ project "pdk" do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
+  proj.setting(:rspec_puppet_version, Gem.latest_version_for('rspec-puppet').to_s)
   proj.setting(:bundler_version, "1.16.1")
   proj.setting(:byebug_version, {'2.1.0' => ['9.0.6']}.tap { |h| h.default = ['9.0.6', '11.0.1'] })
 

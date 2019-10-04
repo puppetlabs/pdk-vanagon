@@ -79,6 +79,8 @@ component "pdk-templates" do |pkg, settings, platform|
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
     # GEM_PATH to make sure we resolve to a cached version of puppet.
+    build_commands << "echo 'gem \"rspec-puppet\", \"#{settings[:rspec_puppet_version]}\", require: false' >> #{mod_name}/Gemfile"
+
     build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} lock && popd"
 
     # Copy generated Gemfile.lock into cachedir.
@@ -142,6 +144,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
       # Generate a new module for this ruby version.
       build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')}"
+
+      build_commands << "echo 'gem \"rspec-puppet\", \"#{settings[:rspec_puppet_version]}\", require: false' >> #{local_mod_name}/Gemfile"
 
       # Resolve default gemfile deps
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"

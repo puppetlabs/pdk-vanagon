@@ -1,10 +1,10 @@
 @{
   ModuleToProcess   = 'PuppetDevelopmentKit.psm1'
-  ModuleVersion     = '1.14.0'
+  ModuleVersion     = '@@@PDK_VERSION@@@'
   GUID              = 'bfe70e90-1802-4f6b-b4a0-f627d53f593f'
   Author            = "Puppet, Inc"
   CompanyName       = "Puppet, Inc"
-  Copyright         = '(c) 2017 Puppet, Inc. All rights reserved'
+  Copyright         = '(c) @@@YEAR@@@ Puppet, Inc. All rights reserved'
   FunctionsToExport = @('pdk')
   CmdletsToExport   = @()
   VariablesToExport = @()

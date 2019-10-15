@@ -15,9 +15,6 @@ component "rubygem-pdk" do |pkg, settings, platform|
     ]
   end
 
-  # Replace the @@@RUBY_VERSION@@@ placeholder in the wrapper script or
-  # powershell module with the Ruby version specified in the pdk-runtime
-  # settings.
   pkg.build do
     wrapper = if platform.is_windows?
                 File.join('..', 'PuppetDevelopmentKit.psm1')
@@ -25,14 +22,22 @@ component "rubygem-pdk" do |pkg, settings, platform|
                 File.join('..', 'pdk_env_wrapper')
               end
 
+    # Replace the @@@RUBY_VERSION@@@ placeholder in the wrapper script or
+    # powershell module with the Ruby version specified in the pdk-runtime
+    # settings.
     build_commands = [
       "sed -i -e 's/@@@RUBY_VERSION@@@/#{settings[:ruby_version]}/' #{wrapper}",
     ]
 
-    if platform.windows?
+    if platform.is_windows?
       psd_file = File.join('..', 'PuppetDevelopmentKit.psd1')
 
-      build_commands << "sed -i -e 's/@@@YEAR@@@/#{Time.now.utc.year}/' #{psd_file}"
+      # Replace the @@@YEAR@@@ and @@@PDK_VERSION@@@ placeholders in the PSData
+      # with the current year and PDK version.
+      build_commands += [
+        "sed -i -e 's/@@@YEAR@@@/#{Time.now.utc.year}/' #{psd_file}",
+        "sed -i -e 's/@@@PDK_VERSION@@@/#{Gem::Version.new(pkg.get_version).release}/' #{psd_file}",
+      ]
     end
 
     build_commands

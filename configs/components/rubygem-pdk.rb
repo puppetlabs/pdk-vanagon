@@ -25,9 +25,17 @@ component "rubygem-pdk" do |pkg, settings, platform|
                 File.join('..', 'pdk_env_wrapper')
               end
 
-    [
+    build_commands = [
       "sed -i -e 's/@@@RUBY_VERSION@@@/#{settings[:ruby_version]}/' #{wrapper}",
     ]
+
+    if platform.windows?
+      psd_file = File.join('..', 'PuppetDevelopmentKit.psd1')
+
+      build_commands << "sed -i -e 's/@@@YEAR@@@/#{Time.now.utc.year}/' #{psd_file}"
+    end
+
+    build_commands
   end
 
   if platform.is_windows?

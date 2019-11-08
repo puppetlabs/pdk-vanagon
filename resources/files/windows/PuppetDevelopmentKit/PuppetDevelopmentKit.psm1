@@ -14,7 +14,11 @@ function pdk {
                 "For more information see https://puppet.com/docs/pdk/latest/pdk_known_issues.html and https://devblogs.microsoft.com/powershell/console-application-non-support-in-the-ise.")
     return
   }
-  if ($env:ConEmuANSI -eq 'ON') {
+
+  # Don't use Ansicon under Conemu or Windows Terminal
+  # - ConEmuANSI is set to ON for Conemu
+  # - WT_SESSION is set when using Windows Terminal
+  if (($env:ConEmuANSI -eq 'ON') -or ($null -ne $ENV:WT_SESSION)) {
     &$env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args
   } else {
     &$env:DEVKIT_BASEDIR\private\tools\bin\ansicon.exe $env:RUBY_DIR\bin\ruby -S -- $env:RUBY_DIR\bin\pdk $args

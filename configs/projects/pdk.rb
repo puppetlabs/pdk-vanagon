@@ -1,6 +1,7 @@
 project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  proj.setting(:pdk_runtime_version, '201910020')
+  runtime_config = JSON.parse(File.read(File.join(__dir__, '..', 'components', 'puppet-runtime.json')))
+  proj.setting(:pdk_runtime_version, runtime_config["version"])
   proj.inherit_settings 'pdk-runtime', 'git://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"

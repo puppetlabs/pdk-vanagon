@@ -155,7 +155,4 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
   # Cache the PE to puppet version mapping.
   pkg.install_file('lib/pe_versions.json', File.join(settings[:cachedir], 'pe_versions.json'))
-
-  # Cache the task metadata schema.
-  pkg.install_file('app/static/schemas/task.json', File.join(settings[:cachedir], 'task.json'))
 end

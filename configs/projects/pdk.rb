@@ -166,6 +166,7 @@ project "pdk" do |proj|
   proj.component "pdk-templates"
 
   # Cache puppet gems, task metadata schema, etc.
+  proj.component "puppet-specifications"
   proj.component "puppet-forge-api"
 
   proj.component "gem-prune"

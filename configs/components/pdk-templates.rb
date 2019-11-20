@@ -12,20 +12,22 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-forge-api"
 
-  platforms_without_plgcc = %w[
-    debian-10-amd64
-    fedora-26-x86_64
-    fedora-27-x86_64
-    fedora-28-x86_64
-    fedora-29-x86_64
-    fedora-30-x86_64
-    ubuntu-18.04-amd64
-    el-8-x86_64
-  ]
+  def use_plgcc?(platform)
+    platforms_without_plgcc = %w[
+      debian-10-amd64
+      ubuntu-18.04-amd64
+      el-8-x86_64
+    ]
+
+    return false if platforms_without_plgcc.include?(platform.name)
+    return false if platform.is_fedora? && platform.os_version.to_i >= 26
+
+    true
+  end
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
-  elsif platform.is_linux? && !platforms_without_plgcc.include?(platform.name)
+  elsif platform.is_linux? && use_plgcc?(platform)
     pkg.build_requires "pl-gcc"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
   end

@@ -31,6 +31,12 @@ component 'pdk-runtime' do |pkg, settings, platform|
   install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/misc"
   install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/man"
 
+  install_commands << "#{settings[:host_gem]} update --system"
+  settings[:additional_rubies].each do |rubyver, local_settings|
+    rubygems_version = rubyver.start_with?('2.1') ? '2.7.10' : ''
+    install_commands << "#{local_settings[:host_gem]} update --system #{rubygems_version}"
+  end
+
   pkg.install do
     install_commands
   end

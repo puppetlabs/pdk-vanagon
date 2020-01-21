@@ -31,10 +31,14 @@ component 'pdk-runtime' do |pkg, settings, platform|
   install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/misc"
   install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/man"
 
+  # TODO: investigate cygwin/rubygems shenanigans that prevent gem uninstall
+  #       from working on windows.
   install_commands << "#{settings[:host_gem]} update --system"
+  install_commands << "#{settings[:host_gem]} uninstall --all --executables rubygems-update" unless platform.is_windows?
   settings[:additional_rubies].each do |rubyver, local_settings|
     rubygems_version = rubyver.start_with?('2.1') ? '2.7.10' : ''
     install_commands << "#{local_settings[:host_gem]} update --system #{rubygems_version}"
+    install_commands << "#{local_settings[:host_gem]} uninstall --all --executables rubygems-update" unless platform.is_windows?
   end
 
   pkg.install do

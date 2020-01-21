@@ -45,7 +45,6 @@ project "pdk" do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
-  proj.setting(:bundler_version, "1.16.1")
   proj.setting(:byebug_version, {'2.1.0' => ['9.0.6']}.tap { |h| h.default = ['9.0.6', '11.0.1'] })
 
   default_mini_portile2 = {
@@ -107,9 +106,6 @@ project "pdk" do |proj|
 
   # What to build?
   # --------------
-
-  # Bundler
-  proj.component "rubygem-bundler"
 
   # runtime!
   proj.component "pdk-runtime"

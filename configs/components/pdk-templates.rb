@@ -4,7 +4,6 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.load_from_json('configs/components/pdk-templates.json')
 
   pkg.build_requires "pdk-runtime"
-  pkg.build_requires "rubygem-bundler"
   pkg.build_requires "rubygem-mini_portile2-for-ruby-2.1.0"
   pkg.build_requires "rubygem-nokogiri-for-ruby-2.1.0"
   pkg.build_requires "rubygem-mini_portile2"
@@ -110,9 +109,6 @@ component "pdk-templates" do |pkg, settings, platform|
       end
     end
 
-    # Install bundler into the gem cache
-    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
-
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
       # bump up against MAX_PATH on Windows. Since the 'spec' directory is not required
@@ -176,9 +172,6 @@ component "pdk-templates" do |pkg, settings, platform|
           build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document byebug:#{byebug_version}"
         end
       end
-
-      # Install bundler itself into the gem cache for this ruby
-      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
       local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]

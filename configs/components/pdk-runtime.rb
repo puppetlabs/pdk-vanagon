@@ -7,6 +7,8 @@ component 'pdk-runtime' do |pkg, settings, platform|
   install_commands = ["gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C / -xf -"]
 
   if platform.is_windows?
+    pkg.environment "PATH", settings[:gem_path_env]
+
     # We need to make sure we're setting permissions correctly for the executables
     # in the ruby bindir since preserving permissions in archives in windows is
     # ... weird, and we need to be able to use cygwin environment variable use
@@ -34,11 +36,13 @@ component 'pdk-runtime' do |pkg, settings, platform|
   # TODO: investigate cygwin/rubygems shenanigans that prevent gem uninstall
   #       from working on windows.
   install_commands << "#{settings[:host_gem]} update --system"
-  install_commands << "#{settings[:host_gem]} uninstall --all --executables rubygems-update" unless platform.is_windows?
+  install_commands << "#{settings[:host_gem]} uninstall --all --executables rubygems-update"
+  install_commands << "#{settings[:host_gem]} install --no-document bundler --version 1.16.1"
   settings[:additional_rubies].each do |rubyver, local_settings|
     rubygems_version = rubyver.start_with?('2.1') ? '2.7.10' : ''
     install_commands << "#{local_settings[:host_gem]} update --system #{rubygems_version}"
-    install_commands << "#{local_settings[:host_gem]} uninstall --all --executables rubygems-update" unless platform.is_windows?
+    install_commands << "#{local_settings[:host_gem]} uninstall --all --executables rubygems-update"
+    install_commands << "#{local_settings[:host_gem]} install --no-document bundler --version 1.16.1"
   end
 
   pkg.install do

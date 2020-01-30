@@ -85,8 +85,11 @@ component "puppet-forge-api" do |pkg, settings, platform|
       rubygems_update_commands << "cp #{gem_bins[ruby_api]} #{gem_bins[ruby_api]}.bak" if platform.is_windows?
       rubygems_update_commands << "cp #{bundle_bins[ruby_api]} #{bundle_bins[ruby_api]}.bak" if platform.is_windows?
 
-      # Update gem command on additional rubies to latest to avoid getting pre-release facter gems?
-      rubygems_version = ruby_version =~ /^2\.1/ ? "2.7.9" : "" # PDK-1247 Pin ruby 2.1.9 to latest compatible rubygems.
+      # PDK-1247: Pin ruby 2.1.9 to latest compatible rubygems.
+      # PDK-1590: Pin ruby >= 2.4 to rubygems 3.0.0 due to path-with-spaces
+      #   weirdness on Windows (also deprecation notice spam due to change
+      #   introduced in 3.1.0).
+      rubygems_version = ruby_version =~ /^2\.1\./ ? "2.7.9" : "3.0.0"
       rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
       # ...replace the gem and bundler wrapper batch files file the backups we made.

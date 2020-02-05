@@ -27,6 +27,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
+    pkg.add_source "#{settings[:buildsources_url]}/unf_ext-0.0.7.6-x64-mingw32.gem", sum: '01f67cc50b62605fcb66d9ada23cb478'
   elsif platform.is_linux? && use_plgcc?(platform)
     pkg.build_requires "pl-gcc"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
@@ -68,6 +69,7 @@ component "pdk-templates" do |pkg, settings, platform|
     if platform.is_windows?
       nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
       pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
+      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.6-x64-mingw32.gem"
     end
 
     # Clone this component repo to a bare repo inside the project cachedir.
@@ -197,6 +199,9 @@ component "pdk-templates" do |pkg, settings, platform|
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
 
         pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
+        unless local_settings[:ruby_api].start_with?('2.1.')
+          pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../unf_ext-0.0.7.6-x64-mingw32.gem"
+        end
       end
     end
 

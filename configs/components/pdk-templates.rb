@@ -147,11 +147,6 @@ component "pdk-templates" do |pkg, settings, platform|
       # Generate a new module for this ruby version.
       build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
-      # FIXME (PDK-1610): Remove litmus pin after unf_ext issue on windows is sorted
-      if local_settings[:ruby_version].start_with?('2.5')
-        build_commands << "echo 'gem \"puppet_litmus\", \"0.14.0\", require: false' >> #{local_mod_name}/Gemfile.local"
-      end
-
       # Resolve default gemfile deps
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"
 

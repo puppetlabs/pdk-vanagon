@@ -16,10 +16,18 @@ function pdk {
   # Reset The SSL Environment Variables
   $env:SSL_CERT_FILE  = "$($script:DEVKIT_BASEDIR)\ssl\cert.pem"
   $env:SSL_CERT_DIR   = "$($script:DEVKIT_BASEDIR)\ssl\certs"
-  # Don't use Ansicon under Conemu or Windows Terminal
-  # - ConEmuANSI is set to ON for Conemu
-  # - WT_SESSION is set when using Windows Terminal
-  if (($env:ConEmuANSI -eq 'ON') -or ($null -ne $ENV:WT_SESSION)) {
+
+  # Don't use Ansicon under the following circumstances
+  $skip_ansicon = (
+    # ConEmuANSI is set to ON for Conemu
+    ($env:ConEmuANSI -eq 'ON') -or
+    # WT_SESSION is set when using Windows Terminal
+    ($null -ne $ENV:WT_SESSION) -or
+    # Host.Name is set to ServerRemoteHost for a remote PowerShell session.
+    ($Host.Name -eq 'ServerRemoteHost')
+  )
+
+  if ($skip_ansicon) {
     &$script:RUBY_DIR\bin\ruby -S -- $script:RUBY_DIR\bin\pdk $args
   } else {
     &$script:DEVKIT_BASEDIR\private\tools\bin\ansicon.exe $script:RUBY_DIR\bin\ruby -S -- $script:RUBY_DIR\bin\pdk $args

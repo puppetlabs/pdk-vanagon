@@ -60,11 +60,11 @@ project "pdk" do |proj|
     },
   }.tap { |h| h.default = default_mini_portile2 })
 
-  # Default is 1.10.4 to mitigate against CVE-2019-5477. Ruby 2.1 requires an older version
+  # Default is >= 1.10.8 to mitigate against CVE-2020-7595. Ruby 2.1 requires an older version
   default_nokogiri = {
-    version: '1.10.4',
-    posix_checksum: 'be51f9f1c51148871fa02876a7919685',
-    win_checksum: 'cc4abb26b1f14108822cad322e31dd43',
+    version: '1.10.9',
+    posix_checksum: '2f8f00ede55dccec0cddd340d7100735',
+    win_checksum: '5284a2c3734184ab8ab74963e4476f2c',
   }
 
   proj.setting(:nokogiri_version, {

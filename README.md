@@ -2,25 +2,22 @@
 
 This repo contains all the packaging scripts to build the native PDK packages across various platforms.
 
-* [Internal Packaging Pipelines](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/pdk/)
+* [Internal Packaging Pipelines](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/)
 
 ## Promoting and releasing new packages
 
-1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/master/CONTRIBUTING.md#release-process) to create a public gem release.
+**NOTE: Please refer to the instructions in the [PDK Release Ticket Template](https://github.com/puppetlabs/winston/#pdk-release-tickets) for the most up-to-date instructions on releasing a new version of the PDK**
+
+1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/master/CONTRIBUTING.md#release-process) to create a public gem release. **You can ignore this step if you want to take the latest commit on `master` of the [pdk](https://github.com/puppetlabs/pdk/blob/master) and [pdk-templates](https://github.com/puppetlabs/pdk-templates/blob/master) repos.**
 2. PDK merges to master are automatically promoted into pdk-vanagon with [this jenkins job](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk-vanagon-promotion_pdk-van-promote_master/).
 3. Make sure the correct `ref` and `version` have landed in `configs/components/rubygem-pdk.json`.
-4. Edit `resources/files/windows/PuppetDevelopmentKit/PuppetDevelopmentKit.psd1`. Update the `version` of this Powershell wrapper to the release version.
-5. Edit `configs/components/pdk-templates.json`. Update the `ref` to point to the desired SHA from the [pdk-templates](https://github.com/puppetlabs/pdk-templates).
-6. Commit, PR, and merge these changes.
-7. If you want this to be a long-lived build (e.g. a new release candidate):
-    1. Create a new tag conforming to the scheme `X.Y.Z.N` where X.Y.Z matches the new version of the `pdk` gem, and N is the build number for this package, starting with zero ("0"). For example: `git tag -s 1.2.3.0 -m 'Release 1.2.3.0'`
-    2. Push new tag to upstream puppetlabs/pdk-vanagon repo.
-8. [Trigger a new build](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk_pdk-van-init_master/build?delay=0sec) with default params.
-9. Once the Jenkins jobs are finished, your new packages will appear in [builds.delivery.p.n](http://builds.delivery.puppetlabs.net/pdk/) with either the tag you attached to your new commit or the SHA of your `pdk-vanagon` (not `pdk`) commit.
-10. Optional: If the packages were tagged with a version, use the [S3 ship job](http://jenkins-compose.delivery.puppetlabs.net/job/puppetlabs-pdk_s3-ship/) to sign and ship the packages to S3. The REF parameter receives the pdk-vanagon tag to ship. RE's CGI script (see RE-9094) will need modifications to pick up the new version.
-11. After pushing a release to S3, send out a Release Announcement
-12. Notify symantec about the new version via https://submit.symantec.com/false_positive/ to avoid recurrence of PDK-527
-13. Celebrate
+4. Make sure the correct `ref` has landed in `configs/components/pdk-templates.json`. This will have been bumped to the latest SHA from [pdk-templates](https://github.com/puppetlabs/pdk-templates) by Jenkins.
+5. Create a tag for the RC build: `git tag -a -m x.y.z.0-rc.# x.y.z.0-rc.#` e.g. (`git tag -a -m 1.18.0.0-rc.1 1.18.0.0-rc.1`)
+6. [Trigger a new build](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk_pdk-van-init_master/build?delay=0sec) with default params.
+7. Once the Jenkins jobs are finished, your new packages will appear in [builds.delivery.p.n](http://builds.delivery.puppetlabs.net/pdk/) with either the tag you attached to your new commit or the SHA of your `pdk-vanagon` (not `pdk`) commit.
+8. Optional: If the packages were tagged with a version, use the [S3 ship job](http://jenkins-compose.delivery.puppetlabs.net/job/puppetlabs-pdk_s3-ship/) to sign and ship the packages to S3. The REF parameter receives the pdk-vanagon tag to ship. RE's CGI script (see RE-9094) will need modifications to pick up the new version.
+9. After pushing a release to S3, send out a Release Announcement
+10. Celebrate
 
 ## Promoting changes to puppetlabs/pdk-templates into new packages
 

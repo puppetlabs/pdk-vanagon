@@ -36,7 +36,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
       ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
     end
 
-    # TODO: build this dynamically somehow?
+    # TODO: build this dynamically from puppet_agent_compoents.json?
     puppet_rubyapi_versions = {
       '4.7.1'   => '2.1.0',
       '4.8.2'   => '2.1.0',
@@ -47,18 +47,23 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '5.2.0'   => '2.4.0',
       '5.3.7'   => '2.4.0',
       '5.4.0'   => '2.4.0',
-      '5.5.16'  => '2.4.0',
+      '5.5.20'  => '2.4.0',
       '6.0.10'  => '2.5.0',
       '6.1.0'   => '2.5.0',
       '6.2.0'   => '2.5.0',
       '6.3.0'   => '2.5.0',
-      '6.4.3'   => '2.5.0',
+      '6.4.5'   => '2.5.0',
       '6.5.0'   => '2.5.0',
       '6.6.0'   => '2.5.0',
       '6.7.2'   => '2.5.0',
       '6.8.1'   => '2.5.0',
       '6.9.0'   => '2.5.0',
-      '6.10.0'  => '2.5.0',
+      '6.10.1'  => '2.5.0',
+      '6.11.1'  => '2.5.0',
+      '6.12.0'  => '2.5.0',
+      '6.13.0'  => '2.5.0',
+      '6.14.0'  => '2.5.0',
+      '6.15.0'  => '2.5.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 

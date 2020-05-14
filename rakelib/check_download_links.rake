@@ -4,7 +4,7 @@ require 'uri'
 
 desc "Check that PDK download links point to the correct version"
 task :check_download_links, [:version] do |_task, args|
-  version = args[:version] || `git describe --abbrev=0`
+  version = args[:version] || `git describe --abbrev=0`.strip
   puts "Checking that PDK download links point to #{version}"
   DownloadLinkCheck.new.check_latest(version)
 end

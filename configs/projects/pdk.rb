@@ -36,6 +36,12 @@ project "pdk" do |proj|
       :NextStepLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
       :ManualLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
     })
+
+    module_directory = File.join(proj.datadir.sub(/^.*:\//, ''), 'PowerShell', 'Modules')
+    proj.extra_file_to_sign File.join(module_directory, 'PuppetDevelopmentKit', 'PuppetDevelopmentKit.psm1')
+    proj.signing_hostname 'windowssigning-aio1-prod.delivery.puppetlabs.net'
+    proj.signing_username 'Administrator'
+    proj.signing_command 'pwsh.exe -File pwsh7.ps1 -FilePath'
   else
     # Where to add a link to the pdk executable on non-Windows platforms
     proj.setting(:main_bin, "/usr/local/bin")

@@ -16,6 +16,7 @@ component "pdk-templates" do |pkg, settings, platform|
     platforms_without_plgcc = %w[
       debian-10-amd64
       ubuntu-18.04-amd64
+      ubuntu-20.04-amd64
       el-8-x86_64
     ]
 

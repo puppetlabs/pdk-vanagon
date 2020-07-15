@@ -33,7 +33,7 @@ component "rubygem-hitimes" do |pkg, settings, platform|
         "LDFLAGS='#{settings[:ldflags]}'",
       ]
 
-      install_cmds << "CC=/opt/pl-build-tools/bin/gcc" unless platform.codename == 'bionic'
+      install_cmds << "CC=/opt/pl-build-tools/bin/gcc" unless platform.codename == 'bionic' || platform.codename == 'focal'
 
       install_cmds << "#{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem -- --with-opt-dir=#{settings[:prefix]} --use-system-libraries"
 

@@ -12,23 +12,10 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-forge-api"
 
-  def use_plgcc?(platform)
-    platforms_without_plgcc = %w[
-      debian-10-amd64
-      ubuntu-18.04-amd64
-      el-8-x86_64
-    ]
-
-    return false if platforms_without_plgcc.include?(platform.name)
-    return false if platform.is_fedora? && platform.os_version.to_i >= 26
-
-    true
-  end
-
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
     pkg.add_source "#{settings[:buildsources_url]}/unf_ext-0.0.7.6-x64-mingw32.gem", sum: '01f67cc50b62605fcb66d9ada23cb478'
-  elsif platform.is_linux? && use_plgcc?(platform)
+  elsif platform.is_linux? && settings[:use_pl_build_tools]
     pkg.build_requires "pl-gcc"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
   end

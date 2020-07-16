@@ -111,6 +111,17 @@ project "pdk" do |proj|
     proj.package_override("# Disable build-id generation to avoid conflicts\n%global _build_id_links none")
   end
 
+  def use_plgcc?(platform)
+    return false if platform.is_fedora?
+    return false if platform.is_el? && platform.os_version.to_i >= 8
+    return false if platform.is_debian? && platform.os_version.to_i >= 10
+    return false if platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 18
+
+    true
+  end
+
+  proj.setting(:use_pl_build_tools, use_plgcc?(platform))
+
   # What to build?
   # --------------
 

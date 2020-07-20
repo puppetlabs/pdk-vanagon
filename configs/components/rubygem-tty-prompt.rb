@@ -1,7 +1,11 @@
 component "rubygem-tty-prompt" do |pkg, settings, platform|
-  pkg.version "0.19.0"
-  pkg.md5sum "0f8968795a476b6c5db2570ee4a177b0"
-  pkg.url "#{settings[:buildsources_url]}/tty-prompt-#{pkg.get_version}.gem"
+  pkg.version "0.22.0"
+  pkg.md5sum "7a98f5b7520238a9442e97643ffb564b"
+
+  name = pkg.get_name.gsub('rubygem-', '')
+
+  pkg.url("https://rubygems.org/downloads/#{name}-#{version}.gem")
+  pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 
   pkg.build_requires "pdk-runtime"
 

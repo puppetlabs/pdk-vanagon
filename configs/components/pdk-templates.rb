@@ -5,8 +5,6 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
-  pkg.build_requires "rubygem-mini_portile2-for-ruby-2.1.0"
-  pkg.build_requires "rubygem-nokogiri-for-ruby-2.1.0"
   pkg.build_requires "rubygem-mini_portile2"
   pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
@@ -14,14 +12,15 @@ component "pdk-templates" do |pkg, settings, platform|
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
-    pkg.add_source "#{settings[:buildsources_url]}/unf_ext-0.0.7.6-x64-mingw32.gem", sum: '01f67cc50b62605fcb66d9ada23cb478'
+    pkg.add_source "https://rubygems.org/downloads/unf_ext-0.0.7.7-x64-mingw32.gem", sum: '218e85fd56b9ecd5618cc20a76f45601'
   elsif platform.is_linux? && settings[:use_pl_build_tools]
     pkg.build_requires "pl-gcc"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
   end
 
   pkg.build do
-    git_bin = File.join(settings[:privatedir], 'git', 'bin', 'git')
+    git_bin_path = File.join(settings[:privatedir], 'git', 'bin')
+    git_bin = File.join(git_bin_path, 'git')
     pdk_bin = File.join(settings[:ruby_bindir], 'pdk')
     ruby_cachedir = File.join(settings[:cachedir], 'ruby', settings[:ruby_api])
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
@@ -56,7 +55,7 @@ component "pdk-templates" do |pkg, settings, platform|
     if platform.is_windows?
       nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
       pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.6-x64-mingw32.gem"
+      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
     end
 
     # Clone this component repo to a bare repo inside the project cachedir.
@@ -113,6 +112,10 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
     settings[:additional_rubies]&.each do |rubyver, local_settings|
+      # FIXME: Don't bundle install on Ruby 2.7 for now, waiting on either dropping litmus dependency in
+      # puppet-module-gems for 2.7 or a Bolt gem release that supports Puppet 7.x
+      next if rubyver =~ /^2\.7/
+
       local_ruby_cachedir = File.join(settings[:cachedir], 'ruby', local_settings[:ruby_api])
 
       local_gem_path = [
@@ -142,9 +145,6 @@ component "pdk-templates" do |pkg, settings, platform|
       # Add some additional gems to support experimental features
       build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
-
-      # This pin is needed to ensure Ruby 2.1.9 compat still
-      build_commands << "echo 'gem \"listen\", \"~> 3.0.8\",                       require: false' >> #{local_mod_name}/Gemfile"
 
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
@@ -182,7 +182,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
         pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
         unless local_settings[:ruby_api].start_with?('2.1.')
-          pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../unf_ext-0.0.7.6-x64-mingw32.gem"
+          pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
         end
       end
     end

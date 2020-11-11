@@ -117,7 +117,7 @@ project "pdk" do |proj|
 
   def use_plgcc?(platform)
     return false if platform.is_fedora?
-    return false if platform.is_el? && platform.os_version.to_i >= 8
+    return false if platform.is_el? && platform.os_version.to_i >= 7
     return false if platform.is_debian? && platform.os_version.to_i >= 8
     return false if platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 16
 

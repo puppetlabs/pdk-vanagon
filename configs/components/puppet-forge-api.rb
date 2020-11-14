@@ -62,6 +62,9 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '6.15.0'  => '2.5.0',
       '6.16.0'  => '2.5.0',
       '6.17.0'  => '2.5.0',
+      '6.18.0'  => '2.5.0',
+      '6.19.1'  => '2.5.0',
+      '7.0.0'   => '2.7.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
@@ -71,6 +74,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
       [
         gem_bins[ruby_version],
         'install',
+        '--verbose',
         '--clear-sources',
         "--source #{gem_source}",
         '--no-document',

@@ -6,14 +6,14 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
   pkg.version settings[:nokogiri_version]['default'][:version]
   pkg.md5sum settings[:nokogiri_version]['default'][:posix_checksum]
 
-  pkg.url "http://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
+  pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires 'rubygem-mini_portile2'
 
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]
-    pkg.url "#{settings[:buildsources_url]}/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
+    pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
     pkg.md5sum settings[:nokogiri_version]['default'][:win_checksum]
 
     pkg.install do

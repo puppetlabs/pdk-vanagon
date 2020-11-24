@@ -1,6 +1,6 @@
 component "rubygem-bundler" do |pkg, settings, platform|
   pkg.version settings[:bundler_version]
-  pkg.md5sum "250ac082e64245f439c76b2c641e85b5"
+  pkg.md5sum "050e5b444129ba2516d9756657755c61"
   pkg.url "#{settings[:rubygems_url]}/bundler-#{pkg.get_version}.gem"
 
   pkg.build_requires "pdk-runtime"

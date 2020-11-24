@@ -51,8 +51,11 @@ project "pdk" do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
 
-  proj.setting(:bundler_version, "1.16.1")
-  proj.setting(:byebug_version, {'2.1.0' => ['9.0.6']}.tap { |h| h.default = ['9.0.6', '11.0.1'] })
+  proj.setting(:bundler_version, "2.1.4")
+  proj.setting(:byebug_version, {
+    '2.1.0' => ['9.0.6'],
+    '2.7.0' => ['11.1.3'],
+  }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
 
   default_mini_portile2 = {
     version: '2.4.0',
@@ -60,25 +63,26 @@ project "pdk" do |proj|
   }
 
   proj.setting(:mini_portile2_version, {
-    '2.1.0' => {
-      version: '2.3.0',
-      checksum: '3dca7ae71a5ac1ce2b33b5ac92ae647c',
-    },
+    #'2.1.0' => {
+    #  version: '2.3.0',
+    #  checksum: '3dca7ae71a5ac1ce2b33b5ac92ae647c',
+    #},
   }.tap { |h| h.default = default_mini_portile2 })
 
-  # Default is >= 1.10.8 to mitigate against CVE-2020-7595. Ruby 2.1 requires an older version
+  # Default is >= 1.10.8 to mitigate against CVE-2020-7595.
   default_nokogiri = {
-    version: '1.10.9',
-    posix_checksum: '2f8f00ede55dccec0cddd340d7100735',
-    win_checksum: '5284a2c3734184ab8ab74963e4476f2c',
+    version: '1.10.10',
+    posix_checksum: '51fabf2fab8036031579d3cb1d56500a',
+    win_checksum: '949abe78f08be16cb827cee0bcbaa661',
   }
 
   proj.setting(:nokogiri_version, {
-    '2.1.0' => {
-      version: '1.8.5',
-      posix_checksum: 'a8ee8d3da2a686dd27bd9c2786eb2216',
-      win_checksum: '2e7c07baa7db36b31f33d5a0656db649',  # Checksum of nokogiri (x64-mingw32) 1.8.5 on https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources
-    },
+    # if you need to override nokogiri for a specific Ruby version:
+    #'2.1.0' => {
+    #  version: '1.8.5',
+    #  posix_checksum: 'a8ee8d3da2a686dd27bd9c2786eb2216',
+    #  win_checksum: '2e7c07baa7db36b31f33d5a0656db649',  # Checksum of nokogiri (x64-mingw32) 1.8.5 on https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources
+    #},
   }.tap { |h| h.default = default_nokogiri })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
@@ -113,9 +117,9 @@ project "pdk" do |proj|
 
   def use_plgcc?(platform)
     return false if platform.is_fedora?
-    return false if platform.is_el? && platform.os_version.to_i >= 8
-    return false if platform.is_debian? && platform.os_version.to_i >= 10
-    return false if platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 18
+    return false if platform.is_el? && platform.os_version.to_i >= 7
+    return false if platform.is_debian? && platform.os_version.to_i >= 8
+    return false if platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 16
 
     true
   end
@@ -171,10 +175,8 @@ project "pdk" do |proj|
   proj.component "rubygem-minitar"
 
   # nokogiri and deps
-  proj.component 'rubygem-mini_portile2-for-ruby-2.1.0'
-  proj.component 'rubygem-nokogiri-for-ruby-2.1.0'
-  proj.component 'rubygem-mini_portile2'
-  proj.component 'rubygem-nokogiri'
+  proj.component "rubygem-mini_portile2"
+  proj.component "rubygem-nokogiri"
 
   # PDK
   proj.component "rubygem-pdk"

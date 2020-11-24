@@ -28,6 +28,9 @@ component "pdk-create-ruby-tarballs" do |pkg, settings, platform|
 
       settings[:additional_rubies].each do |_, local_settings|
         dirs = ["private/puppet/ruby/#{local_settings[:ruby_api]}", "share/cache/ruby/#{local_settings[:ruby_api]}", "private/ruby/#{local_settings[:ruby_version]}"]
+
+        build_commands << "mkdir -p #{dirs.join(" ")}"
+
         # Tar up the rest. This will include the ruby runtime as well
         build_commands << "#{platform.tar} --create --gzip --file share/install-tarballs/ruby-#{local_settings[:ruby_version]}.tgz --directory=. " + dirs.join(" ")
         delete_dirs.concat(dirs)

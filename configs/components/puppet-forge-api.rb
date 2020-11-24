@@ -1,6 +1,6 @@
 component "puppet-forge-api" do |pkg, settings, platform|
-  pkg.ref "master"
   pkg.url "git@github.com:puppetlabs/puppet-forge-api.git"
+  pkg.ref "main"
 
   pkg.build_requires "pdk-runtime"
 
@@ -38,10 +38,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     # TODO: build this dynamically from puppet_agent_compoents.json?
     puppet_rubyapi_versions = {
-      '4.7.1'   => '2.1.0',
-      '4.8.2'   => '2.1.0',
-      '4.9.4'   => '2.1.0',
-      '4.10.12' => '2.1.0',
       '5.0.1'   => '2.4.0',
       '5.1.0'   => '2.4.0',
       '5.2.0'   => '2.4.0',
@@ -66,6 +62,9 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '6.15.0'  => '2.5.0',
       '6.16.0'  => '2.5.0',
       '6.17.0'  => '2.5.0',
+      '6.18.0'  => '2.5.0',
+      '6.19.1'  => '2.5.0',
+      '7.0.0'   => '2.7.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
@@ -75,6 +74,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
       [
         gem_bins[ruby_version],
         'install',
+        '--verbose',
         '--clear-sources',
         "--source #{gem_source}",
         '--no-document',
@@ -92,11 +92,10 @@ component "puppet-forge-api" do |pkg, settings, platform|
       rubygems_update_commands << "cp #{gem_bins[ruby_api]} #{gem_bins[ruby_api]}.bak" if platform.is_windows?
       rubygems_update_commands << "cp #{bundle_bins[ruby_api]} #{bundle_bins[ruby_api]}.bak" if platform.is_windows?
 
-      # PDK-1247: Pin ruby 2.1.9 to latest compatible rubygems.
-      # PDK-1590: Pin ruby >= 2.4 to rubygems 3.0.0 due to path-with-spaces
+      # PDK-1590: Pin rubygems 3.0.0 due to path-with-spaces
       #   weirdness on Windows (also deprecation notice spam due to change
       #   introduced in 3.1.0).
-      rubygems_version = ruby_version =~ /^2\.1\./ ? "2.7.9" : "3.0.0"
+      rubygems_version = "3.1.4"
       rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
       # ...replace the gem and bundler wrapper batch files file the backups we made.
@@ -118,7 +117,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     # Install "puppet" gem versions into appropriate Ruby installations.
     build_commands += puppet_rubyapi_versions.collect do |pupver, rubyapi|
-      gem_install.call(rubyapi, 'puppet', pupver)
+      gem_install.call(rubyapi, 'puppet', pupver) if gem_bins[rubyapi]
     end
 
     if platform.is_windows?
@@ -152,8 +151,10 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
         # Add the remaining beaker dependencies that have been natively compiled
         # and repackaged.
-        build_commands += beaker_native_deps.collect do |gem, ver|
-          gem_install.call(rubyapi, gem, ver)
+        unless rubyapi =~ /^2\.7/
+          build_commands += beaker_native_deps.collect do |gem, ver|
+            gem_install.call(rubyapi, gem, ver)
+          end
         end
 
         build_commands << gem_install.call(rubyapi, 'rb-readline', '0.5.5')

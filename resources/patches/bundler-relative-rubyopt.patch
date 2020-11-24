@@ -1,0 +1,16 @@
+diff --git a/bundler/lib/bundler/shared_helpers.rb b/bundler/lib/bundler/shared_helpers.rb
+index a56a3bff4..5bff94114 100644
+--- a/bundler/lib/bundler/shared_helpers.rb
++++ b/bundler/lib/bundler/shared_helpers.rb
+@@ -303,9 +303,8 @@ def set_path
+ 
+     def set_rubyopt
+       rubyopt = [ENV["RUBYOPT"]].compact
+-      setup_require = "-r#{File.expand_path("setup", __dir__)}"
+-      return if !rubyopt.empty? && rubyopt.first =~ /#{setup_require}/
+-      rubyopt.unshift setup_require
++      return if !rubyopt.empty? && rubyopt.first =~ %r{-rbundler/setup}
++      rubyopt.unshift %(-rbundler/setup)
+       Bundler::SharedHelpers.set_env "RUBYOPT", rubyopt.join(" ")
+     end
+ 

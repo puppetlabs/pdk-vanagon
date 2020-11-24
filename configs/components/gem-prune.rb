@@ -17,7 +17,7 @@ component 'gem-prune' do |pkg, settings, platform|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
     end
 
-    pdk_ruby_versions = ['2.1.0', '2.4.0', '2.5.0']
+    pdk_ruby_versions = ['2.4.0', '2.5.0']
 
     pdk_ruby_versions.map do |rubyapi|
       gem_paths = [
@@ -34,7 +34,7 @@ component 'gem-prune' do |pkg, settings, platform|
         path_sep = File::PATH_SEPARATOR
       end
 
-      "GEM_PATH=\"#{gem_paths.join(path_sep)}\" RUBYOPT=\"-Irubygems-prune\" #{gem_bins[rubyapi]} prune"
+      "GEM_PATH=\"#{gem_paths.join(path_sep)}\" RUBYOPT=\"-Irubygems-prune\" #{gem_bins[rubyapi]} prune" if gem_bins[rubyapi]
     end
   end
 end

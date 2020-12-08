@@ -114,10 +114,6 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
     settings[:additional_rubies]&.each do |rubyver, local_settings|
-      # FIXME: Don't bundle install on Ruby 2.7 for now, waiting on either dropping litmus dependency in
-      # puppet-module-gems for 2.7 or a Bolt gem release that supports Puppet 7.x
-      next if rubyver =~ /^2\.7/
-
       local_ruby_cachedir = File.join(settings[:cachedir], 'ruby', local_settings[:ruby_api])
 
       local_gem_path = [

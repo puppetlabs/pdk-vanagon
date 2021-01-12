@@ -4,8 +4,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
 
-  pkg.add_source('file://resources/files/windows/ruby_gem_wrapper.bat') if platform.is_windows?
-
   # We need a few different things that come from the Forge API codebase so we do it all in this component.
 
   if platform.is_windows?
@@ -16,7 +14,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
     # Cache specific versions of the puppet gem
     gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
-    rubies_dir = File.join(settings[:privatedir], 'ruby')
 
     gem_bins = {
       settings[:ruby_api] => settings[:host_gem],
@@ -38,11 +35,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
 
     # TODO: build this dynamically from puppet_agent_compoents.json?
     puppet_rubyapi_versions = {
-      '5.0.1'   => '2.4.0',
-      '5.1.0'   => '2.4.0',
-      '5.2.0'   => '2.4.0',
-      '5.3.7'   => '2.4.0',
-      '5.4.0'   => '2.4.0',
       '5.5.21'  => '2.4.0',
       '6.0.10'  => '2.5.0',
       '6.1.0'   => '2.5.0',
@@ -65,6 +57,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '6.18.0'  => '2.5.0',
       '6.19.1'  => '2.5.0',
       '7.0.0'   => '2.7.0',
+      '7.1.0'   => '2.7.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
@@ -121,10 +114,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
     end
 
     if platform.is_windows?
-      wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
-      build_commands << "/usr/bin/find #{puppet_cachedir} -name '*.bat' -exec cp #{wrapper_path} {} \\;"
-      build_commands << "/usr/bin/find #{rubies_dir} -type f -name '*.bat' -exec cp #{wrapper_path} {} \\;"
-
       # Add beaker dependencies
       beaker_native_deps = {
         'oga':     '2.15',

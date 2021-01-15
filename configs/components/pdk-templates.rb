@@ -26,7 +26,6 @@ component "pdk-templates" do |pkg, settings, platform|
     pdk_bin = File.join(settings[:ruby_bindir], 'pdk')
     ruby_cachedir = File.join(settings[:cachedir], 'ruby', settings[:ruby_api])
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
-    gem_wrapper_path = File.join('..', 'ruby_gem_wrapper.bat')
 
     gem_path_with_puppet_cache = [
       File.join(settings[:privatedir], 'ruby', settings[:ruby_version], 'lib', 'ruby', 'gems', settings[:ruby_api]),
@@ -108,8 +107,6 @@ component "pdk-templates" do |pkg, settings, platform|
       # bump up against MAX_PATH on Windows. Since the 'spec' directory is not required
       # at runtime, we just purge it before attempting to package.
       build_commands << "/usr/bin/find #{ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
-
-      build_commands << "/usr/bin/find #{ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
     end
 
     # Bundle install for each additional ruby version as well, in case we need different versions for a different ruby.
@@ -176,7 +173,6 @@ component "pdk-templates" do |pkg, settings, platform|
         # bump up against MAX_PATH on Windows. Since the 'spec' directory is not required
         # at runtime, we just purge it before attempting to package.
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
-        build_commands << "/usr/bin/find #{local_ruby_cachedir} -name '*.bat' -exec cp #{gem_wrapper_path} {} \\;"
 
         pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
         unless local_settings[:ruby_api].start_with?('2.1.')

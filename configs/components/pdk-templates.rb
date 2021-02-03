@@ -121,7 +121,6 @@ component "pdk-templates" do |pkg, settings, platform|
       local_gem_env = [
         "GEM_PATH=\"#{local_gem_path}\"",
         "GEM_HOME=\"#{local_ruby_cachedir}\"",
-        "BUNDLE_WITHOUT=\"system_tests\"",
       ]
 
       local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]

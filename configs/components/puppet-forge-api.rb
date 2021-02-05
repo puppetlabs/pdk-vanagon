@@ -56,8 +56,10 @@ component "puppet-forge-api" do |pkg, settings, platform|
       '6.17.0'  => '2.5.0',
       '6.18.0'  => '2.5.0',
       '6.19.1'  => '2.5.0',
+      '6.20.0'  => '2.5.0',
       '7.0.0'   => '2.7.0',
       '7.1.0'   => '2.7.0',
+      '7.3.0'   => '2.7.0',
     }
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 

@@ -1,7 +1,7 @@
 component 'gem-prune' do |pkg, settings, platform|
   pkg.build_requires 'pdk-runtime'
   pkg.build_requires 'pdk-templates'
-  pkg.build_requires 'puppet-forge-api'
+  pkg.build_requires 'puppet-versions'
 
   pkg.add_source('file://resources/rubygems-prune')
 

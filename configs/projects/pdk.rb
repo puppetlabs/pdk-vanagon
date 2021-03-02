@@ -49,7 +49,7 @@ project "pdk" do |proj|
 
   # Internal rubygems mirror
   # TODO: Migrate more components to use this
-  proj.setting(:rubygems_url, "#{proj.artifactory_url}/rubygems/gems")
+  proj.setting(:rubygems_url, "#{proj.artifactory_url}/api/gems/rubygems")
 
   proj.setting(:bundler_version, "2.1.4")
   proj.setting(:byebug_version, {
@@ -181,12 +181,12 @@ project "pdk" do |proj|
   # PDK
   proj.component "rubygem-pdk"
 
-  # Batteries included copies of module template and required gems
-  proj.component "pdk-templates"
-
   # Cache puppet gems, task metadata schema, etc.
   proj.component "puppet-specifications"
-  proj.component "puppet-forge-api"
+  proj.component "puppet-versions"
+
+  # Batteries included copies of module template and required gems
+  proj.component "pdk-templates"
 
   proj.component "gem-prune"
 

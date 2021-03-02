@@ -8,7 +8,7 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-mini_portile2"
   pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
-  pkg.build_requires "puppet-forge-api"
+  pkg.build_requires "puppet-versions"
 
   pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
 

@@ -1,0 +1,3 @@
+This directory needs to be here so vanagon has something to copy for the `puppet-versions`
+component. However that component has no source code so this directory is functionally
+empty.

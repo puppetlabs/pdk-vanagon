@@ -18,6 +18,8 @@ gem 'csv', '3.1.5' if Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('2.5
 
 gem 'rake', '~> 12.0'
 
+gem 'gems' # Rubygems API
+
 #gem 'rubocop', "~> 0.34.2"
 group :ci do
   # in the ci pipeline, we calculate required ressources for TEST_TARGETS with bhg

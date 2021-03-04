@@ -1,18 +1,71 @@
-component "puppet-forge-api" do |pkg, settings, platform|
-  pkg.url "git@github.com:puppetlabs/puppet-forge-api.git"
-  pkg.ref "main"
+component 'puppet-versions' do |pkg, settings, platform|
+  # Install all the various versions of the puppet gem and dependencies that we
+  # package with PDK.
 
-  pkg.build_requires "pdk-runtime"
+  pkg.build_requires 'pdk-runtime'
 
-  # We need a few different things that come from the Forge API codebase so we do it all in this component.
+  pkg.add_source('file://resources/puppet-versions')
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
   end
 
+  # We use various Gem::* classes to test versions and ranges
+  require 'rubygems'
+
+  # Return all available puppet gem versions (from rubygems.org) matching a range
+  def available_puppet_gem_versions(range)
+    require 'gems'
+
+    @_puppet_all ||= Gems.versions 'puppet'
+    @_puppet_in_range ||= {}
+
+    @_puppet_in_range[range] ||= begin
+      requirement = Gem::Requirement.create(range.split(' '))
+
+      @_puppet_all.collect do |v|
+        pupver = Gem::Version.new(v['number'])
+        next unless requirement.satisfied_by?(pupver)
+        pupver
+      end.compact.uniq.sort
+    end
+  end
+
+  # Filter a list of gem versions to only the latest .Z release of each .Y release
+  def latest_z_releases(versions)
+    latest = {}
+
+    versions.each do |ver|
+      major, minor, _ = ver.segments
+
+      latest[major] ||= {}
+      latest[major][minor] ||= nil
+
+      next unless latest[major][minor].nil? || ver > latest[major][minor]
+
+      latest[major][minor] = ver
+    end
+
+    latest.values.collect { |major| major.values }.flatten
+  end
+
+  def ruby_for_puppet(version)
+    # TODO: calculate this based on settings
+    ruby_mappings = {
+      '2.4.0' => Gem::Requirement.create('< 6.0.0'),
+      '2.5.0' => Gem::Requirement.create(['>= 6.0.0', '< 7.0.0']),
+      '2.7.0' => Gem::Requirement.create(['>= 7.0.0', '< 8.0.0']),
+    }
+
+    ruby_mappings.each do |rubyver, pup_range|
+      return rubyver if pup_range.satisfied_by?(version)
+    end
+
+    raise "Could not determine Ruby API version for Puppet gem version: #{version.to_s}"
+  end
+
   pkg.build do
     # Cache specific versions of the puppet gem
-    gem_source = "https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems"
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
 
     gem_bins = {
@@ -33,36 +86,9 @@ component "puppet-forge-api" do |pkg, settings, platform|
       ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
     end
 
-    # TODO: build this dynamically from puppet_agent_compoents.json?
-    puppet_rubyapi_versions = {
-      '5.5.21'  => '2.4.0',
-      '6.0.10'  => '2.5.0',
-      '6.1.0'   => '2.5.0',
-      '6.2.0'   => '2.5.0',
-      '6.3.0'   => '2.5.0',
-      '6.4.5'   => '2.5.0',
-      '6.5.0'   => '2.5.0',
-      '6.6.0'   => '2.5.0',
-      '6.7.2'   => '2.5.0',
-      '6.8.1'   => '2.5.0',
-      '6.9.0'   => '2.5.0',
-      '6.10.1'  => '2.5.0',
-      '6.11.1'  => '2.5.0',
-      '6.12.0'  => '2.5.0',
-      '6.13.0'  => '2.5.0',
-      '6.14.0'  => '2.5.0',
-      '6.15.0'  => '2.5.0',
-      '6.16.0'  => '2.5.0',
-      '6.17.0'  => '2.5.0',
-      '6.18.0'  => '2.5.0',
-      '6.19.1'  => '2.5.0',
-      '6.20.0'  => '2.5.0',
-      '6.21.1'  => '2.5.0',
-      '7.0.0'   => '2.7.0',
-      '7.1.0'   => '2.7.0',
-      '7.3.0'   => '2.7.0',
-      '7.4.1'   => '2.7.0',
-    }
+    recent_puppets = available_puppet_gem_versions('>=5.5.21 <8.0.0')
+    latest_puppets = latest_z_releases(recent_puppets)
+    puppet_rubyapi_versions = Hash[latest_puppets.collect { |pupver| [pupver.version, ruby_for_puppet(pupver)] }]
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
     puppet_gem_platform = platform.is_windows? ? 'x64-mingw32' : 'ruby'
@@ -73,7 +99,7 @@ component "puppet-forge-api" do |pkg, settings, platform|
         'install',
         '--verbose',
         '--clear-sources',
-        "--source #{gem_source}",
+        "--source #{settings[:rubygems_url]}",
         '--no-document',
         "--install-dir #{File.join(puppet_cachedir, ruby_version)}",
         "#{gem}:#{version}",
@@ -89,9 +115,6 @@ component "puppet-forge-api" do |pkg, settings, platform|
       rubygems_update_commands << "cp #{gem_bins[ruby_api]} #{gem_bins[ruby_api]}.bak" if platform.is_windows?
       rubygems_update_commands << "cp #{bundle_bins[ruby_api]} #{bundle_bins[ruby_api]}.bak" if platform.is_windows?
 
-      # PDK-1590: Pin rubygems 3.0.0 due to path-with-spaces
-      #   weirdness on Windows (also deprecation notice spam due to change
-      #   introduced in 3.1.0).
       rubygems_version = "3.1.4"
       rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
@@ -154,9 +177,15 @@ component "puppet-forge-api" do |pkg, settings, platform|
       end
     end
 
+    # Download the PE version mapping file from the Forge API and save it into this
+    # component's working directory. Later, during the install step, this will be
+    # copied into the PDK cachedir.
+    build_commands << "curl https://forgeapi.puppet.com/private/versions/pe > pe_versions.json"
+
     build_commands
   end
 
   # Cache the PE to puppet version mapping.
-  pkg.install_file('lib/pe_versions.json', File.join(settings[:cachedir], 'pe_versions.json'))
+  pkg.install_file('pe_versions.json', File.join(settings[:cachedir], 'pe_versions.json'))
 end
+

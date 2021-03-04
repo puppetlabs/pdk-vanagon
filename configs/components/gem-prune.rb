@@ -1,7 +1,7 @@
 component 'gem-prune' do |pkg, settings, platform|
   pkg.build_requires 'pdk-runtime'
   pkg.build_requires 'pdk-templates'
-  pkg.build_requires 'puppet-forge-api'
+  pkg.build_requires 'puppet-versions'
 
   pkg.add_source('file://resources/rubygems-prune')
 
@@ -17,7 +17,7 @@ component 'gem-prune' do |pkg, settings, platform|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
     end
 
-    pdk_ruby_versions = ['2.4.0', '2.5.0']
+    pdk_ruby_versions = ['2.4.0', '2.5.0', '2.7.0']
 
     pdk_ruby_versions.map do |rubyapi|
       gem_paths = [

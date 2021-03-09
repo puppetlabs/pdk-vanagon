@@ -23,6 +23,8 @@ function pdk {
     ($env:ConEmuANSI -eq 'ON') -or
     # WT_SESSION is set when using Windows Terminal
     ($null -ne $ENV:WT_SESSION) -or
+    # TERM_PROGRAM is set when using VS Code intergrated terminal
+    ($null -ne $ENV:TERM_PROGRAM) -or
     # Host.Name is set to ServerRemoteHost for a remote PowerShell session.
     ($Host.Name -eq 'ServerRemoteHost')
   )

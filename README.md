@@ -8,8 +8,8 @@ This repo contains all the packaging scripts to build the native PDK packages ac
 
 **NOTE: Please refer to the instructions in the [PDK Release Ticket Template](https://github.com/puppetlabs/winston/#pdk-release-tickets) for the most up-to-date instructions on releasing a new version of the PDK**
 
-1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/master/CONTRIBUTING.md#release-process) to create a public gem release. **You can ignore this step if you want to take the latest commit on `master` of the [pdk](https://github.com/puppetlabs/pdk/blob/master) and [pdk-templates](https://github.com/puppetlabs/pdk-templates/blob/master) repos.**
-2. PDK merges to master are automatically promoted into pdk-vanagon with [this jenkins job](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk-vanagon-promotion_pdk-van-promote_master/).
+1. Choose the upstream pdk SHA that you want to release. Optionally, follow the pdk's [release process](https://github.com/puppetlabs/pdk/blob/main/CONTRIBUTING.md#release-process) to create a public gem release. **You can ignore this step if you want to take the latest commit on `main` of the [pdk](https://github.com/puppetlabs/pdk) and [pdk-templates](https://github.com/puppetlabs/pdk-templates) repos.**
+2. PDK merges to main are automatically promoted into pdk-vanagon with [this jenkins job](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/job/platform_pdk-vanagon-promotion_pdk-van-promote_master/).
 3. Make sure the correct `ref` and `version` have landed in `configs/components/rubygem-pdk.json`.
 4. Make sure the correct `ref` has landed in `configs/components/pdk-templates.json`. This will have been bumped to the latest SHA from [pdk-templates](https://github.com/puppetlabs/pdk-templates) by Jenkins.
 5. Create a tag for the RC build: `git tag -a -m x.y.z.0-rc.# x.y.z.0-rc.#` e.g. (`git tag -a -m 1.18.0.0-rc.1 1.18.0.0-rc.1`)

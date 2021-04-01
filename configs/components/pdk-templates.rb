@@ -5,6 +5,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
+  pkg.build_requires "rubygem-mini_portile2-for-ruby-2.4.0"
+  pkg.build_requires "rubygem-nokogiri-for-ruby-2.4.0"
   pkg.build_requires "rubygem-mini_portile2"
   pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"

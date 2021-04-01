@@ -67,6 +67,10 @@ project "pdk" do |proj|
     #  version: '2.3.0',
     #  checksum: '3dca7ae71a5ac1ce2b33b5ac92ae647c',
     #},
+    '2.4.0' => {
+      version: '2.4.0',
+      checksum: '6bb790b78b70beb3a7f9076791ecf225',
+    },
   }.tap { |h| h.default = default_mini_portile2 })
 
   # Default is >= 1.10.8 to mitigate against CVE-2020-7595.
@@ -83,6 +87,11 @@ project "pdk" do |proj|
     #  posix_checksum: 'a8ee8d3da2a686dd27bd9c2786eb2216',
     #  win_checksum: '2e7c07baa7db36b31f33d5a0656db649',  # Checksum of nokogiri (x64-mingw32) 1.8.5 on https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources
     #},
+    '2.4.0' => {
+      version: '1.10.10',
+      posix_checksum: '51fabf2fab8036031579d3cb1d56500a',
+      win_checksum: '949abe78f08be16cb827cee0bcbaa661',
+    },
   }.tap { |h| h.default = default_nokogiri })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
@@ -175,6 +184,8 @@ project "pdk" do |proj|
   proj.component "rubygem-minitar"
 
   # nokogiri and deps
+  proj.component 'rubygem-mini_portile2-for-ruby-2.4.0'
+  proj.component 'rubygem-nokogiri-for-ruby-2.4.0'
   proj.component "rubygem-racc"
   proj.component "rubygem-mini_portile2"
   proj.component "rubygem-nokogiri"

@@ -51,7 +51,7 @@ project "pdk" do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/api/gems/rubygems")
 
-  proj.setting(:bundler_version, "2.1.4")
+  proj.setting(:bundler_version, "2.2.10")
   proj.setting(:byebug_version, {
     '2.1.0' => ['9.0.6'],
     '2.7.0' => ['11.1.3'],

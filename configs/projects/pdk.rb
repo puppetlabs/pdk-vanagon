@@ -71,9 +71,9 @@ project "pdk" do |proj|
 
   # Default is >= 1.10.8 to mitigate against CVE-2020-7595.
   default_nokogiri = {
-    version: '1.10.10',
-    posix_checksum: '51fabf2fab8036031579d3cb1d56500a',
-    win_checksum: '949abe78f08be16cb827cee0bcbaa661',
+    version: '1.11.0',
+    posix_checksum: 'befc7adba88a6e1d1da5b0df0a26cac7',
+    win_checksum: '618fedaa2477cc16a53b64ebdb700467',
   }
 
   proj.setting(:nokogiri_version, {

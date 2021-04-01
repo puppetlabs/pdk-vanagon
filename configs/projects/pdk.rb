@@ -58,8 +58,8 @@ project "pdk" do |proj|
   }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
 
   default_mini_portile2 = {
-    version: '2.4.0',
-    checksum: '6bb790b78b70beb3a7f9076791ecf225',
+    version: '2.5.0',
+    checksum: '996b17722d57f7ce20c6cafc64a2e60a',
   }
 
   proj.setting(:mini_portile2_version, {

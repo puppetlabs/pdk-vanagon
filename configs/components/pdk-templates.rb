@@ -182,9 +182,9 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Patch bundler RUBYOPT config so that it doesn't explode on paths that include spaces
-    abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
+    abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.2.10'
+    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.2.10/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
+    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.2.10/lib/bundler/shared_helpers.rb.orig\" -delete"
 
     # Fix permissions
     chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"

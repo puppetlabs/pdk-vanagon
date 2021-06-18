@@ -1,6 +1,6 @@
 component "rubygem-diff-lcs" do |pkg, settings, platform|
-  pkg.version "1.3"
-  pkg.md5sum "9b1664d1bdf336f4309343c2a640d9e8"
+  pkg.version "1.4.4"
+  pkg.md5sum "62ee6015ca28466dbb8dd02655257a7c"
   pkg.url "#{settings[:buildsources_url]}/diff-lcs-#{pkg.get_version}.gem"
 
   pkg.build_requires 'pdk-runtime'

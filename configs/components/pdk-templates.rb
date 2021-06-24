@@ -65,7 +65,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Use previously installed pdk gem to generate a new module using the
     # cached module template.
-    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
@@ -130,7 +130,7 @@ component "pdk-templates" do |pkg, settings, platform|
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
       # Generate a new module for this ruby version.
-      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
       # Resolve default gemfile deps
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"

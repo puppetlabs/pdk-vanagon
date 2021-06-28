@@ -10,7 +10,7 @@ def location_for(place)
   end
 end
 
-gem 'vanagon', git: 'https://github.com/puppetlabs/vanagon', ref: 'main'
+gem 'vanagon', *location_for(ENV['VANAGON_LOCATION'] || '~> 0.21.2')
 gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '>= 0.99.76')
 
 # csv > 3.1.5 requires 'stringio' which the latest version of requires Ruby >= 2.5.0
@@ -25,5 +25,3 @@ group :ci do
   # in the ci pipeline, we calculate required ressources for TEST_TARGETS with bhg
   gem 'beaker-hostgenerator', '~> 1.2'
 end
-
-gem 'pry'

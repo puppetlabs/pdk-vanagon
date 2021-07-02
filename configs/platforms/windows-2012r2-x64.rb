@@ -1,5 +1,5 @@
-platform "windows-2019-x64" do |plat|
-  plat.vmpooler_template "win-2019-x86_64"
+platform "windows-2012r2-x64" do |plat|
+  plat.vmpooler_template "win-2012r2-x86_64"
 
   plat.servicetype "windows"
   visual_studio_version = '2017'

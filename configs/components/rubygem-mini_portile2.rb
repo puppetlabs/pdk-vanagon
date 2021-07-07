@@ -10,6 +10,9 @@ component 'rubygem-mini_portile2' do |pkg, settings, platform|
   end
 
   pkg.install do
-    "#{settings[:gem_install]} mini_portile2-#{pkg.get_version}.gem"
+    # For Ruby versions > 2.4.0 of this component we only need
+    # vanagon to stage the .gem, not install anything. The gem will
+    # actually be installed in the pdk-templates component.
+    "echo no-op"
   end
 end

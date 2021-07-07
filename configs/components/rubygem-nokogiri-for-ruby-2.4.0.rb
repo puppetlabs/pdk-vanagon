@@ -1,10 +1,10 @@
-component 'rubygem-nokogiri' do |pkg, settings, platform|
-  gemname = pkg.get_name.gsub('rubygem-', '')
+component 'rubygem-nokogiri-for-ruby-2.4.0' do |pkg, settings, platform|
+  gemname = 'nokogiri'
 
   # We don't know exactly what Ruby API PDK is built against so just use the 'default'
   # See /configs/projects/pdk.rb for the actual version used:  `proj.setting(:nokogiri_version) = ...`
-  pkg.version settings[:nokogiri_version]['default'][:version]
-  pkg.md5sum settings[:nokogiri_version]['default'][:posix_checksum]
+  pkg.version settings[:nokogiri_version]['2.4.0'][:version]
+  pkg.md5sum settings[:nokogiri_version]['2.4.0'][:posix_checksum]
 
   pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}.gem"
 
@@ -14,7 +14,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
   if platform.is_windows?
     pkg.environment 'PATH', settings[:gem_path_env]
     pkg.url "https://rubygems.org/downloads/#{gemname}-#{pkg.get_version}-x64-mingw32.gem"
-    pkg.md5sum settings[:nokogiri_version]['default'][:win_checksum]
+    pkg.md5sum settings[:nokogiri_version]['2.4.0'][:win_checksum]
 
     pkg.install do
       ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}-x64-mingw32.gem"]
@@ -40,10 +40,7 @@ component 'rubygem-nokogiri' do |pkg, settings, platform|
     end
 
     pkg.install do
-      # For Ruby versions > 2.4.0 of this component we only need
-      # vanagon to stage the .gem, not install anything. The gem will
-      # actually be installed in the pdk-templates component.
-      "echo no-op"
+      ["#{settings[:gem_install]} #{gemname}-#{pkg.get_version}.gem"]
     end
   end
 end

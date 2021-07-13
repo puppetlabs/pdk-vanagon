@@ -62,6 +62,17 @@ project "pdk" do |proj|
     checksum: '6bb790b78b70beb3a7f9076791ecf225',
   }
 
+  proj.setting(:json_pure_component, {
+    'default' => {
+      version: "2.1.0",
+      md5sum: "611938ea90a941ca220e1025262b0561"
+    },
+    '2.7.0' => {
+      version: "2.5.1",
+      md5sum: "7fc7ca1c52797b1b55800d0e87c543b0"
+    }
+  })
+
   proj.setting(:mini_portile2_version, {
     #'2.1.0' => {
     #  version: '2.3.0',
@@ -167,7 +178,10 @@ project "pdk" do |proj|
   # Other deps
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
+
   proj.component "rubygem-json_pure"
+  proj.component "rubygem-json_pure_r27"
+
   proj.component "rubygem-tty-which"
   proj.component "rubygem-diff-lcs"
   proj.component "rubygem-pathspec"

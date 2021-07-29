@@ -1,8 +1,7 @@
 component "rubygem-json_pure" do |pkg, settings, platform|
-  pkg.version "2.1.0"
-  pkg.md5sum "611938ea90a941ca220e1025262b0561"
+  pkg.version settings[:json_pure_component]['default'][:version]
+  pkg.md5sum settings[:json_pure_component]['default'][:md5sum]
   pkg.url "#{settings[:buildsources_url]}/json_pure-#{pkg.get_version}.gem"
-
   pkg.build_requires "pdk-runtime"
 
   if platform.is_windows?
@@ -10,6 +9,9 @@ component "rubygem-json_pure" do |pkg, settings, platform|
   end
 
   pkg.install do
-    "#{settings[:gem_install]} json_pure-#{pkg.get_version}.gem"
+    [
+      "#{settings[:gem_install]} json_pure-#{pkg.get_version}.gem",
+      "#{settings[:additional_rubies]['2.5.9'][:gem_install]} json_pure-#{pkg.get_version}.gem"
+    ]
   end
 end

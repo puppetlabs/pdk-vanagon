@@ -11,7 +11,6 @@ component "rubygem-json_pure" do |pkg, settings, platform|
   pkg.install do
     [
       "#{settings[:gem_install]} json_pure-#{pkg.get_version}.gem",
-      "#{settings[:additional_rubies]['2.5.9'][:gem_install]} json_pure-#{pkg.get_version}.gem"
     ]
   end
 end

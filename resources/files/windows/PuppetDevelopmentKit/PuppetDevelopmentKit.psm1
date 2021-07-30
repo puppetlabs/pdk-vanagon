@@ -2,8 +2,8 @@ $fso = New-Object -ComObject Scripting.FileSystemObject
 
 $script:DEVKIT_BASEDIR = (Get-ItemProperty -Path "HKLM:\Software\Puppet Labs\DevelopmentKit").RememberedInstallDir64
 # Windows API GetShortPathName requires inline C#, so use COM instead
-$script:DEVKIT_BASEDIR = $fso.GetFolder($script:DEVKIT_BASEDIR).ShortPath
-$script:RUBY_DIR       = "$($script:DEVKIT_BASEDIR)\private\ruby\2.4.10"
+$script:DEVKIT_BASEDIR_SHORT = $fso.GetFolder($script:DEVKIT_BASEDIR).ShortPath
+$script:RUBY_DIR       = "$($script:DEVKIT_BASEDIR)\private\ruby\2.5.9"
 
 function pdk {
   if ($Host.Name -eq 'Windows PowerShell ISE Host') {
@@ -32,7 +32,7 @@ function pdk {
   if ($skip_ansicon) {
     &$script:RUBY_DIR\bin\ruby -S -- $script:RUBY_DIR\bin\pdk $args
   } else {
-    &$script:DEVKIT_BASEDIR\private\tools\bin\ansicon.exe $script:RUBY_DIR\bin\ruby -S -- $script:RUBY_DIR\bin\pdk $args
+    &$script:DEVKIT_BASEDIR_SHORT\private\tools\bin\ansicon.exe $script:RUBY_DIR\bin\ruby -S -- $script:RUBY_DIR\bin\pdk $args
   }
 }
 

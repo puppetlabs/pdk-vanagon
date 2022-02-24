@@ -36,3 +36,4 @@ swix_staging_server: 'weth.delivery.puppetlabs.net'
 msi_staging_server: 'weth.delivery.puppetlabs.net'
 apt_signing_server: 'weth.delivery.puppetlabs.net'
 yum_staging_server: 'weth.delivery.puppetlabs.net'
+notarize_osx: FALSE

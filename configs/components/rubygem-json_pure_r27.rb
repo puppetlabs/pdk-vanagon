@@ -9,6 +9,6 @@ component "rubygem-json_pure_r27" do |pkg, settings, platform|
   end
 
   pkg.install do
-    "#{settings[:additional_rubies]['2.7.3'][:gem_install]} json_pure-#{pkg.get_version}.gem"
+    "#{settings[:additional_rubies]['2.7.5'][:gem_install]} json_pure-#{pkg.get_version}.gem"
   end
 end

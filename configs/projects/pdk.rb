@@ -2,7 +2,7 @@ project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
   runtime_config = JSON.parse(File.read(File.join(__dir__, '..', 'components', 'puppet-runtime.json')))
   proj.setting(:pdk_runtime_version, runtime_config["version"])
-  proj.inherit_settings 'pdk-runtime', 'git://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
+  proj.inherit_settings 'pdk-runtime', 'https://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
   proj.version_from_git
@@ -130,6 +130,7 @@ project "pdk" do |proj|
     return false if platform.is_el? && platform.os_version.to_i >= 7
     return false if platform.is_debian? && platform.os_version.to_i >= 8
     return false if platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 16
+    return false if platform.is_sles? && platform.os_version.to_i >= 15
 
     true
   end

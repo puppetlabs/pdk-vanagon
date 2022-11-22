@@ -6,11 +6,11 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
   pkg.build_requires "rubygem-mini_portile2"
-  pkg.build_requires "rubygem-nokogiri"
+  # pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-versions"
 
-  pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
+  # pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
@@ -53,11 +53,11 @@ component "pdk-templates" do |pkg, settings, platform|
     mini_portile2_version = settings[:mini_portile2_version][settings[:ruby_api]][:version]
     pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{mini_portile2_version}.gem"
 
-    if platform.is_windows?
-      nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
-    end
+    # if platform.is_windows?
+    #   nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
+    #   pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
+    #   pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
+    # end
 
     # Clone this component repo to a bare repo inside the project cachedir.
     # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
@@ -65,7 +65,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Use previously installed pdk gem to generate a new module using the
     # cached module template.
-    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-ref=2.5.0 --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
@@ -77,10 +77,10 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
     # Add some additional gems to support experimental features
-    build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
+    # build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"guard\",                                      require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"listen\",                                     require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
+    # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
 
     # Add some Beaker dependencies for Linux
@@ -100,7 +100,7 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Install bundler into the gem cache
-    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"
 
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -123,14 +123,14 @@ component "pdk-templates" do |pkg, settings, platform|
         "GEM_HOME=\"#{local_ruby_cachedir}\"",
       ]
 
-      local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
+      # local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
 
       local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
 
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
       # Generate a new module for this ruby version.
-      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-ref=2.5.0 --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
       # Resolve default gemfile deps
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"
@@ -138,13 +138,13 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
 
       # Add some additional gems to support experimental features
-      build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
 
-      build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
 
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
@@ -162,7 +162,7 @@ component "pdk-templates" do |pkg, settings, platform|
       end
 
       # Install bundler itself into the gem cache for this ruby
-      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"
 
       # Prepend native gem installation commands for this ruby
       local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]
@@ -174,7 +174,7 @@ component "pdk-templates" do |pkg, settings, platform|
         # at runtime, we just purge it before attempting to package.
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
 
-        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
+        # pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
         unless local_settings[:ruby_api].start_with?('2.1.')
           pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
         end
@@ -182,9 +182,9 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Patch bundler RUBYOPT config so that it doesn't explode on paths that include spaces
-    abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
+    # abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
+    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
+    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
 
     # Fix permissions
     chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"

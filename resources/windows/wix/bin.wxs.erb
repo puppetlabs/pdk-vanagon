@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi' xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <!-- Puppet Development Kit Pnoowershell Module -->
+  <Fragment>
+    <ComponentGroup Id="PDKBinComponentGroup">
+      <Component
+        Id="PDK.bat"
+        Directory="INSTALLDIR"
+        Guid="e134be66-18cc-4950-8b1a-bc3195cc137d">
+        <File
+          Id="PDK.bat"
+          Source="$(var.AppSourcePath)\bin\pdk.bat"
+          KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

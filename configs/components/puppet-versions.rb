@@ -52,7 +52,6 @@ component 'puppet-versions' do |pkg, settings, platform|
   def ruby_for_puppet(version)
     # TODO: calculate this based on settings
     ruby_mappings = {
-      '2.4.0' => Gem::Requirement.create('< 6.0.0'),
       '2.5.0' => Gem::Requirement.create(['>= 6.0.0', '< 7.0.0']),
       '2.7.0' => Gem::Requirement.create(['>= 7.0.0', '< 8.0.0']),
     }
@@ -61,7 +60,7 @@ component 'puppet-versions' do |pkg, settings, platform|
       return rubyver if pup_range.satisfied_by?(version)
     end
 
-    raise "Could not determine Ruby API version for Puppet gem version: #{version.to_s}"
+    raise "Could not determine Ruby API version for Puppet gem version: #{version}"
   end
 
   pkg.build do
@@ -80,13 +79,13 @@ component 'puppet-versions' do |pkg, settings, platform|
       settings[:ruby_api] => settings[:ruby_dir],
     }
 
-    settings[:additional_rubies]&.each do |rubyver, local_settings|
+    settings[:additional_rubies]&.each do |_rubyver, local_settings|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
       bundle_bins[local_settings[:ruby_api]] = local_settings[:host_bundle]
       ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
     end
 
-    recent_puppets = available_puppet_gem_versions('>=5.5.21 <8.0.0')
+    recent_puppets = [Gem::Version.create('6.28.0'), Gem::Version.create('7.20.0')]
     latest_puppets = latest_z_releases(recent_puppets)
     puppet_rubyapi_versions = Hash[latest_puppets.collect { |pupver| [pupver.version, ruby_for_puppet(pupver)] }]
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
@@ -108,7 +107,7 @@ component 'puppet-versions' do |pkg, settings, platform|
       ].join(' ')
     end
 
-    rubygems_update = lambda do |ruby_version, ruby_api|
+    rubygems_update = lambda do |_ruby_version, ruby_api|
       rubygems_update_commands = []
 
       # Make backups of the gem and bundler wrapper batch files...
@@ -118,7 +117,7 @@ component 'puppet-versions' do |pkg, settings, platform|
       rubygems_version = "3.1.4"
       rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
-      # ...replace the gem and bundler wrapper batch files file the backups we made.
+      # ...replace the gem and bundler wrapper batch files with the backups we made.
       rubygems_update_commands << "mv #{gem_bins[ruby_api]}.bak #{gem_bins[ruby_api]}" if platform.is_windows?
       rubygems_update_commands << "mv #{bundle_bins[ruby_api]}.bak #{bundle_bins[ruby_api]}" if platform.is_windows?
 
@@ -148,31 +147,6 @@ component 'puppet-versions' do |pkg, settings, platform|
       }
 
       pdk_ruby_versions.each do |rubyapi|
-        settings[:byebug_version][rubyapi].each do |byebug_version|
-          build_commands << gem_install.call(
-            rubyapi,
-            'byebug',
-            byebug_version,
-            '--',
-            "--with-ruby-include=#{File.join(ruby_dirs[rubyapi], 'include', "ruby-#{rubyapi}")}",
-            "--with-ruby-lib=#{File.join(ruby_dirs[rubyapi], 'lib')}",
-          )
-
-          # Byebug 9.x requires special treatment b/c the cross compiled into a fat gem
-          if byebug_version.start_with?('9.')
-            byebug_libdir = File.join(puppet_cachedir, rubyapi, "gems", "byebug-#{byebug_version}-x64-mingw32", "lib", "byebug")
-            build_commands << "cp #{File.join(byebug_libdir, rubyapi.split('.')[0..1].join('.'), "byebug.so")} #{File.join(byebug_libdir, "byebug.so")}"
-          end
-        end
-
-        # Add the remaining beaker dependencies that have been natively compiled
-        # and repackaged.
-        unless rubyapi =~ /^2\.7/
-          build_commands += beaker_native_deps.collect do |gem, ver|
-            gem_install.call(rubyapi, gem, ver)
-          end
-        end
-
         build_commands << gem_install.call(rubyapi, 'rb-readline', '0.5.5')
       end
     end

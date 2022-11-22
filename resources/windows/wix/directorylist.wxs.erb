@@ -5,16 +5,17 @@
       <Directory Id="<%= settings[:base_dir] %>" >
         <Directory Id="<%= settings[:company_id] %>" Name="<%= settings[:pl_company_name] %>">
           <Directory Id='INSTALLDIR' Name="<%= settings[:product_id] %>">
-          <%= @platform.generate_service_bin_dirs(self.get_services, self) %>
-          </Directory>
-        </Directory>
-
-        <Directory Id="PowerShellDir" Name="WindowsPowerShell">
-          <Directory Id="PowerShellModuleDir" Name="Modules">
-            <Directory Id="PowerShellPDKModuleDir" Name="PuppetDevelopmentKit" />
+            <Component Id="cmp<%= settings[:base_dir] %>" Guid="e9c4a394-1ae7-4b64-94c1-9ce5321ed922">
+              <RegistryValue Root="<%= settings[:registry_root] %>" Key="Software\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>\PuppetLabs" Name="Uninstall" Type="integer" Value="1" KeyPath="yes" />
+              <RemoveFolder Id="<%= settings[:company_id] %>" Directory="<%= settings[:company_id] %>" On="uninstall" />
+              <RemoveFolder Id="<%= settings[:product_id] %>" Directory="INSTALLDIR" On="uninstall" />
+            </Component>
           </Directory>
         </Directory>
       </Directory>
     </DirectoryRef>
+    <Feature Id="RemovePDKInstallFolderFeature" Level="1">
+      <ComponentRef Id="cmp<%= settings[:base_dir] %>" />
+    </Feature>
   </Fragment>
 </Wix>

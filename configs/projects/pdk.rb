@@ -2,11 +2,11 @@ project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
   runtime_config = JSON.parse(File.read(File.join(__dir__, '..', 'components', 'puppet-runtime.json')))
   proj.setting(:pdk_runtime_version, runtime_config["version"])
+
   proj.inherit_settings 'pdk-runtime', 'https://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
   proj.version_from_git
-  proj.write_version_file File.join(proj.prefix, 'PDK_VERSION')
   proj.license "See components"
   proj.vendor "Puppet, Inc. <info@puppet.com>"
   proj.homepage "https://www.puppet.com"
@@ -25,6 +25,8 @@ project "pdk" do |proj|
     proj.setting(:product_name, "Puppet Development Kit")
     proj.setting(:shortcut_name, "Puppet Development Kit")
     proj.setting(:upgrade_code, "2F79F42E-955C-4E69-AB87-DB4ED9EDF2D9")
+    proj.setting(:install_scope, "perUser") # Set this to 'perMachine' or 'perUser'
+    proj.setting(:registry_root, proj.install_scope == 'perUser' ? 'HKCU' : 'HKLM')
     proj.setting(:win64, "yes")
     proj.setting(:RememberedInstallDirRegKey, "RememberedInstallDir64")
     proj.setting(:LicenseRTF, "wix/license/LICENSE.rtf")
@@ -36,8 +38,7 @@ project "pdk" do |proj|
       :ManualLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
     })
 
-    module_directory = File.join(proj.datadir.sub(/^.*:\//, ''), 'PowerShell', 'Modules')
-    proj.extra_file_to_sign File.join(module_directory, 'PuppetDevelopmentKit', 'PuppetDevelopmentKit.psm1')
+    proj.extra_file_to_sign File.join(proj.bindir, 'pdk.bat')
     proj.signing_hostname 'mozart.delivery.puppetlabs.net'
     proj.signing_username 'jenkins'
     proj.signing_command 'source /usr/local/rvm/scripts/rvm; rvm use 2.7.5; /var/lib/jenkins/bin/extra_file_signer'
@@ -46,31 +47,26 @@ project "pdk" do |proj|
     proj.setting(:main_bin, "/usr/local/bin")
   end
 
+
+  proj.write_version_file File.join(proj.prefix, 'PDK_VERSION')
   # Internal rubygems mirror
   # TODO: Migrate more components to use this
-  proj.setting(:rubygems_url, "#{proj.artifactory_url}/api/gems/rubygems")
+  proj.setting(:rubygems_url, "https://rubygems.org/")
 
-  proj.setting(:bundler_version, "2.1.4")
+  proj.setting(:bundler, {
+    'version': '2.3.26',
+    'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
+  })
+
   proj.setting(:byebug_version, {
-    '2.1.0' => ['9.0.6'],
+    '2.5.0' => ['11.1.3'],
     '2.7.0' => ['11.1.3'],
-  }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
+  })
 
   default_mini_portile2 = {
-    version: '2.4.0',
-    checksum: '6bb790b78b70beb3a7f9076791ecf225',
+    version: '2.8.0',
+    sha256sum: '1e06b286ff19b73cfc9193cb3dd2bd80416f8262443564b25b23baea74a05765',
   }
-
-  proj.setting(:json_pure_component, {
-    'default' => {
-      version: "2.1.0",
-      md5sum: "611938ea90a941ca220e1025262b0561"
-    },
-    '2.7.0' => {
-      version: "2.5.1",
-      md5sum: "7fc7ca1c52797b1b55800d0e87c543b0"
-    }
-  })
 
   proj.setting(:mini_portile2_version, {
     #'2.1.0' => {
@@ -78,22 +74,6 @@ project "pdk" do |proj|
     #  checksum: '3dca7ae71a5ac1ce2b33b5ac92ae647c',
     #},
   }.tap { |h| h.default = default_mini_portile2 })
-
-  # Default is >= 1.10.8 to mitigate against CVE-2020-7595.
-  default_nokogiri = {
-    version: '1.10.10',
-    posix_checksum: '51fabf2fab8036031579d3cb1d56500a',
-    win_checksum: '949abe78f08be16cb827cee0bcbaa661',
-  }
-
-  proj.setting(:nokogiri_version, {
-    # if you need to override nokogiri for a specific Ruby version:
-    #'2.1.0' => {
-    #  version: '1.8.5',
-    #  posix_checksum: 'a8ee8d3da2a686dd27bd9c2786eb2216',
-    #  win_checksum: '2e7c07baa7db36b31f33d5a0656db649',  # Checksum of nokogiri (x64-mingw32) 1.8.5 on https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources
-    #},
-  }.tap { |h| h.default = default_nokogiri })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
 
@@ -147,16 +127,13 @@ project "pdk" do |proj|
   proj.component "pdk-runtime"
 
   # Cri and deps
-  proj.component "rubygem-colored"
   proj.component "rubygem-cri"
 
   # Childprocess and deps
   proj.component "rubygem-childprocess"
 
   # tty-prompt and deps
-  proj.component "rubygem-necromancer"
   proj.component "rubygem-tty-color"
-  proj.component "rubygem-equatable"
   proj.component "rubygem-pastel"
   proj.component "rubygem-wisper"
   proj.component "rubygem-tty-cursor"
@@ -172,16 +149,15 @@ project "pdk" do |proj|
 
   # Analytics deps
   proj.component "rubygem-concurrent-ruby"
+  proj.component "rubygem-thor"
+  proj.component "rubygem-hocon"
   proj.component "rubygem-facter"
   proj.component "rubygem-httpclient"
 
   # Other deps
   proj.component "rubygem-deep_merge"
   proj.component "rubygem-tty-spinner"
-
   proj.component "rubygem-json_pure"
-  proj.component "rubygem-json_pure_r27"
-
   proj.component "rubygem-tty-which"
   proj.component "rubygem-diff-lcs"
   proj.component "rubygem-pathspec"
@@ -190,7 +166,6 @@ project "pdk" do |proj|
 
   # nokogiri and deps
   proj.component "rubygem-mini_portile2"
-  proj.component "rubygem-nokogiri"
 
   # PDK
   proj.component "rubygem-pdk"
@@ -215,10 +190,4 @@ project "pdk" do |proj|
   proj.directory proj.link_bindir unless platform.is_windows?
 
   proj.timeout 7200 if platform.is_windows?
-
-  # Here we rewrite public http urls to use our internal source host instead.
-  # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
-  # rewritten as
-  # https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/openssl-1.0.0r.tar.gz
-  proj.register_rewrite_rule 'http', proj.buildsources_url
 end

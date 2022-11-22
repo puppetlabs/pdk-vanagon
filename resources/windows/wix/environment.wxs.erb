@@ -15,8 +15,8 @@
         Permanent="yes"
         Part="last"
         Action="set"
-        System="yes" />
+        System="<%= settings[:install_scope] == 'perUser' ? 'no' : 'yes' %>" />
       </Component>
     </ComponentGroup>
   </Fragment>
-</Wix>
+  </Wix>

@@ -12,7 +12,7 @@
         Win64="no">
 
         <RegistryKey
-          Root="HKLM"
+          Root="<%= settings[:registry_root] %>"
           Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>">
           <!-- This is the default (aka 'unnamed') key value of this path -->
           <RegistryValue
@@ -35,7 +35,7 @@
         Permanent="yes">
 
         <RegistryKey
-          Root="HKLM"
+          Root="<%= settings[:registry_root] %>"
           Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
           ForceCreateOnInstall="yes" >
 

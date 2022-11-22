@@ -17,7 +17,7 @@ component 'gem-prune' do |pkg, settings, platform|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
     end
 
-    pdk_ruby_versions = ['2.4.0', '2.5.0', '2.7.0']
+    pdk_ruby_versions = ['2.5.0', '2.7.0']
 
     pdk_ruby_versions.map do |rubyapi|
       gem_paths = [

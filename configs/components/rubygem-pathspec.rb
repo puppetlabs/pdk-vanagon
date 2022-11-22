@@ -1,15 +1,6 @@
 component "rubygem-pathspec" do |pkg, settings, platform|
-  pkg.version "0.2.1"
-  pkg.md5sum "7d7460f6ed1f832e13ca578ba0316d15"
-  pkg.url "#{settings[:buildsources_url]}/pathspec-#{pkg.get_version}.gem"
+  pkg.version "1.1.3"
+  pkg.sha256sum 'c4e7ff4c4019499488874e21c37a1e2473d5123cfce6f13ecb07f42c0f8c5d23'
 
-  pkg.build_requires 'pdk-runtime'
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} pathspec-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

@@ -1,15 +1,6 @@
 component "rubygem-concurrent-ruby" do |pkg, settings, platform|
-  pkg.version "1.1.5"
-  pkg.md5sum "4409c2d6925d8448cb34a947eacaa29b"
-  pkg.url "#{settings[:buildsources_url]}/concurrent-ruby-#{pkg.get_version}.gem"
+  pkg.version "1.1.10"
+  pkg.sha256sum "244cb1ca0d91ec2c15ca2209507c39fb163336994428e16fbd3f465c87bd8e68"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} concurrent-ruby-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

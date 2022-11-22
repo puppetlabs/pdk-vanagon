@@ -1,15 +1,6 @@
 component "rubygem-public_suffix" do |pkg, settings, platform|
-  pkg.version "3.0.0"
-  pkg.md5sum "787a298cfb1e4d9f39aa43a415d53e6f"
-  pkg.url "#{settings[:buildsources_url]}/public_suffix-#{pkg.get_version}.gem"
+  pkg.version "5.0.0"
+  pkg.sha256sum '26ee4fbce33ada25eb117ac71f2c24bf4d8b3414ab6b34f05b4708a3e90f1c6b'
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} public_suffix-#{pkg.get_version}.gem"
-  end
-end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
+ end

@@ -14,12 +14,13 @@ component 'pdk-runtime' do |pkg, settings, platform|
     runtime_path = pkg.get_version
   end
 
-  pkg.sha1sum "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz.sha1"
-  pkg.url "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz"
+  pkg_name = settings[:install_scope] == 'perUser' ? 'pdk-runtime-user' : 'pdk-runtime-system'
+  pkg.sha1sum "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg_name}-#{pkg.get_version}.#{platform.name}.tar.gz.sha1"
+  pkg.url "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg_name}-#{pkg.get_version}.#{platform.name}.tar.gz"
 
   pkg.install_only true
 
-  install_commands = ["gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C / -xf -"]
+  install_commands = ["gunzip -c #{pkg_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C / -xf -"]
 
   if platform.is_windows?
     # We need to make sure we're setting permissions correctly for the executables
@@ -27,24 +28,31 @@ component 'pdk-runtime' do |pkg, settings, platform|
     # ... weird, and we need to be able to use cygwin environment variable use
     # so cmd.exe was not working as expected.
     install_commands = [
-      "gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C /cygdrive/c/ -xf -",
+      "gunzip -c #{pkg_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C /cygdrive/c/ -xf -",
       "chmod 755 #{settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     ]
 
-    settings[:additional_rubies].each do |rubyver, local_settings|
+    settings[:additional_rubies].each do |_rubyver, local_settings|
       install_commands << "chmod 755 #{local_settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     end
   end
 
   # Clean up uneccesary files.
-  install_commands << "rm -rf /opt/puppetlabs/pdk/bin/*"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/share/vim"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/share/aclocal"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/share/man"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/share/doc"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/share/augeas"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/misc"
-  install_commands << "rm -rf /opt/puppetlabs/pdk/ssl/man"
+  files = [
+    'bin/*',
+    'share/vim',
+    'share/aclocal',
+    'share/man',
+    'share/doc',
+    'share/augeas',
+    'ssl/misc',
+    'ssl/man',
+  ]
+
+  bin_dir = platform.is_windows? ? settings[:prefix].sub(/C:/, '/cygdrive/c') : settings[:prefix]
+  files.each do |file|
+    install_commands << "rm -rf #{bin_dir}/#{file}"
+  end
 
   pkg.install do
     install_commands

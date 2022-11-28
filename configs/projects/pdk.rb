@@ -39,11 +39,6 @@ project "pdk" do |proj|
       :NextStepLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
       :ManualLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
     })
-
-    proj.extra_file_to_sign File.join(proj.bindir, 'pdk.bat')
-    proj.signing_hostname 'mozart.delivery.puppetlabs.net'
-    proj.signing_username 'jenkins'
-    proj.signing_command 'source /usr/local/rvm/scripts/rvm; rvm use 2.7.5; /var/lib/jenkins/bin/extra_file_signer'
   else
     # Where to add a link to the pdk executable on non-Windows platforms
     proj.setting(:main_bin, "/usr/local/bin")

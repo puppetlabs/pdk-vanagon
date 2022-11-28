@@ -1,9 +1,11 @@
 project "pdk" do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  runtime_config = JSON.parse(File.read(File.join(__dir__, '..', 'components', 'puppet-runtime.json')))
-  proj.setting(:pdk_runtime_version, runtime_config["version"])
+  runtime_config_path = proj.settings[:runtime_config_path] || File.join(File.dirname(__FILE__), '..', 'components', 'puppet-runtime.json')
+  runtime_config = JSON.parse(File.read(runtime_config_path))
+  runtime_project = proj.settings[:runtime_project] || 'pdk-runtime'
 
-  proj.inherit_settings 'pdk-runtime', 'https://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
+  proj.setting(:pdk_runtime_version, runtime_config["version"])
+  proj.inherit_settings runtime_project, 'https://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
 
   proj.description "Puppet Development Kit"
   proj.version_from_git
@@ -25,7 +27,7 @@ project "pdk" do |proj|
     proj.setting(:product_name, "Puppet Development Kit")
     proj.setting(:shortcut_name, "Puppet Development Kit")
     proj.setting(:upgrade_code, "2F79F42E-955C-4E69-AB87-DB4ED9EDF2D9")
-    proj.setting(:install_scope, "perUser") # Set this to 'perMachine' or 'perUser'
+    proj.setting(:install_scope, "perMachine") unless proj.settings[:install_scope] # Set this to 'perMachine' or 'perUser'
     proj.setting(:registry_root, proj.install_scope == 'perUser' ? 'HKCU' : 'HKLM')
     proj.setting(:win64, "yes")
     proj.setting(:RememberedInstallDirRegKey, "RememberedInstallDir64")

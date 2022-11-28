@@ -185,7 +185,6 @@ project "pdk" do |proj|
   proj.component "shellpath" unless platform.is_windows?
 
   # What to include in package?
-  proj.directory proj.install_root
   proj.directory proj.prefix
   proj.directory proj.link_bindir unless platform.is_windows?
 

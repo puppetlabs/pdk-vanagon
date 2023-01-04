@@ -1,6 +1,6 @@
 component "puppet-specifications" do |pkg, settings, platform|
   pkg.ref "master"
-  pkg.url "git@github.com:puppetlabs/puppet-specifications.git"
+  pkg.url "https://github.com/puppetlabs/puppet-specifications"
 
   pkg.build_requires "pdk-runtime"
 

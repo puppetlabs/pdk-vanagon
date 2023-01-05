@@ -109,8 +109,7 @@ project "pdk" do |proj|
     ].join(':'))
   end
 
-  if (platform.is_fedora? && platform.os_version.to_i >= 28) ||
-      (platform.is_el? && platform.os_version.to_i >= 8)
+  if platform.is_fedora? || (platform.is_el? && platform.os_version.to_i >= 8)
     # Disable shebang mangling for certain paths inside PDK.
     # See https://fedoraproject.org/wiki/Packaging:Guidelines#Shebang_lines
     brp_mangle_shebangs_exclude_from = [
@@ -122,7 +121,9 @@ project "pdk" do |proj|
 
     # Disable build-id generation since it's currently generating conflicts
     # with system libgcc and libstdc++
-    proj.package_override("# Disable build-id generation to avoid conflicts\n%global _build_id_links none")
+    # proj.package_override("# Disable build-id generation to avoid conflicts\n%global _build_id_links none")
+    proj.package_override("# Disable the removal of la files, they are still required\n%global __brp_remove_la_files %{nil}")
+    proj.package_override("# Disable check-rpaths since /opt/* is not a valid path\n%global __brp_check_rpaths %{nil}")
   end
 
   def use_plgcc?(platform)

@@ -27,6 +27,9 @@ component "pdk-templates" do |pkg, settings, platform|
     ruby_cachedir = File.join(settings[:cachedir], 'ruby', settings[:ruby_api])
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
 
+    # Work is needed here. This should account for the presence of the SHA or version.
+    template_ref = pkg.get_version == 'unknown' || pkg.get_version.nil? ? 'main' : pkg.get_version
+
     gem_path_with_puppet_cache = [
       File.join(settings[:privatedir], 'ruby', settings[:ruby_version], 'lib', 'ruby', 'gems', settings[:ruby_api]),
       File.join(puppet_cachedir, settings[:ruby_api]),
@@ -65,7 +68,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     # Use previously installed pdk gem to generate a new module using the
     # cached module template.
-    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+    build_commands << "#{pdk_bin} new module #{mod_name} --skip-interview --template-ref=#{template_ref} --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
     # Run 'bundle lock' in the generated module and cache the Gemfile.lock
     # inside the project cachedir. We add the private/puppet paths to
@@ -130,7 +133,7 @@ component "pdk-templates" do |pkg, settings, platform|
       local_mod_name = "vanagon_module_#{local_settings[:ruby_version].gsub(/[^0-9]/, '')}"
 
       # Generate a new module for this ruby version.
-      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-ref=main --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
+      build_commands << "#{pdk_bin} new module #{local_mod_name} --skip-interview --template-ref=#{template_ref} --template-url=file:///#{File.join(settings[:cachedir], 'pdk-templates.git')} --skip-bundle-install"
 
       # Resolve default gemfile deps
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"

@@ -38,7 +38,7 @@ project "pdk" do |proj|
 
     module_directory = File.join(proj.datadir.sub(/^.*:\//, ''), 'PowerShell', 'Modules')
     proj.extra_file_to_sign File.join(module_directory, 'PuppetDevelopmentKit', 'PuppetDevelopmentKit.psm1')
-    proj.signing_hostname 'mozart.delivery.puppetlabs.net'
+    proj.signing_hostname 'composer-deb-prod-2.delivery.puppetlabs.net'
     proj.signing_username 'jenkins'
     proj.signing_command 'source /usr/local/rvm/scripts/rvm; rvm use 2.7.5; /var/lib/jenkins/bin/extra_file_signer'
   else

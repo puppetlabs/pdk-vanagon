@@ -56,9 +56,15 @@ project "pdk" do |proj|
     '2.7.0' => ['11.1.3'],
   }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
 
+  # default_mini_portile2 = {
+  #   version: '2.4.0',
+  #   checksum: '6bb790b78b70beb3a7f9076791ecf225',
+  # }
+  #
+
   default_mini_portile2 = {
-    version: '2.4.0',
-    checksum: '6bb790b78b70beb3a7f9076791ecf225',
+    version: '2.6.1',
+    checksum: '385fd7a2f3cda0ea5a0cb85551a936da941d7580fc9037a75dea820843aa7dd3'
   }
 
   proj.setting(:json_pure_component, {
@@ -81,9 +87,9 @@ project "pdk" do |proj|
 
   # Default is >= 1.10.8 to mitigate against CVE-2020-7595.
   default_nokogiri = {
-    version: '1.10.10',
-    posix_checksum: '51fabf2fab8036031579d3cb1d56500a',
-    win_checksum: '949abe78f08be16cb827cee0bcbaa661',
+    version: '1.12.5',
+    posix_checksum: '2b20905942acc580697c8c496d0d1672ab617facb9d30d156b3c7676e67902ec',
+    win_checksum: '218dcc6edd1b49cc6244b5f88afb978739bb2f3f166c271557fe5f51e4bc713c',
   }
 
   proj.setting(:nokogiri_version, {
@@ -189,6 +195,7 @@ project "pdk" do |proj|
   proj.component "rubygem-minitar"
 
   # nokogiri and deps
+  proj.component "rubygem-racc"
   proj.component "rubygem-mini_portile2"
   proj.component "rubygem-nokogiri"
 

@@ -1,5 +1,9 @@
 platform 'fedora-36-x86_64' do |plat|
-  # There's an issue with the version of binutils (2.37) in Fedora 36's repos
+  plat.servicedir '/usr/lib/systemd/system'
+  plat.defaultdir '/etc/sysconfig'
+  plat.servicetype 'systemd'
+  plat.dist 'fc36' # There's an issue with the version of binutils (2.37) in Fedora 36's repos
+
   # We temporarily use a newer version from rawhide. See PA-4448
   plat.provision_with('/usr/bin/dnf install -y fedora-repos-rawhide')
   plat.provision_with('/usr/bin/dnf install -y --enablerepo rawhide binutils')

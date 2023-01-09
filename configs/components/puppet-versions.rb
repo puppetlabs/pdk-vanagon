@@ -86,7 +86,7 @@ component 'puppet-versions' do |pkg, settings, platform|
       ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
     end
 
-    recent_puppets = available_puppet_gem_versions('>=5.5.21 <8.0.0')
+    recent_puppets = available_puppet_gem_versions('>=6.0.10 <8.0.0')
     latest_puppets = latest_z_releases(recent_puppets)
     puppet_rubyapi_versions = Hash[latest_puppets.collect { |pupver| [pupver.version, ruby_for_puppet(pupver)] }]
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
@@ -129,6 +129,7 @@ component 'puppet-versions' do |pkg, settings, platform|
 
     # Update rubygems on "primary" Ruby
     build_commands += rubygems_update.call(settings[:ruby_version], settings[:ruby_api])
+
 
     # Update rubygems on "additional" rubies
     settings[:additional_rubies]&.each do |rubyver, local_settings|

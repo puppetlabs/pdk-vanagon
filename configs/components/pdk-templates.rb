@@ -5,8 +5,8 @@ component "pdk-templates" do |pkg, settings, platform|
 
   pkg.build_requires "pdk-runtime"
   pkg.build_requires "rubygem-bundler"
-  pkg.build_requires "rubygem-mini_portile2"
-  pkg.build_requires "rubygem-nokogiri"
+  # pkg.build_requires "rubygem-mini_portile2"
+  # pkg.build_requires "rubygem-nokogiri"
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-versions"
 
@@ -53,14 +53,15 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands = []
 
     # Pre-install some native gems.
-    mini_portile2_version = settings[:mini_portile2_version][settings[:ruby_api]][:version]
-    pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{mini_portile2_version}.gem"
+    # mini_portile2_version = settings[:mini_portile2_version][settings[:ruby_api]][:version]
+    # pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../mini_portile2-#{mini_portile2_version}.gem"
+    #
 
-    if platform.is_windows?
-      nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
-      pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
-    end
+    # if platform.is_windows?
+    #   nokogiri_version = settings[:nokogiri_version][settings[:ruby_api]][:version]
+    #   pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../nokogiri-#{nokogiri_version}-x64-mingw32.gem"
+    #   pre_build_commands << "#{gem_env.join(' ')} #{settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
+    # end
 
     # Clone this component repo to a bare repo inside the project cachedir.
     # Need --no-hardlinks because this is a local clone and hardlinks mess up packaging later.
@@ -126,7 +127,7 @@ component "pdk-templates" do |pkg, settings, platform|
         "GEM_HOME=\"#{local_ruby_cachedir}\"",
       ]
 
-      local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
+      # local_nokogiri_version = settings[:nokogiri_version][local_settings[:ruby_api]][:version]
 
       local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
 
@@ -147,7 +148,7 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
 
       # Add some Beaker dependencies for Linux
       unless platform.is_windows?
@@ -168,8 +169,8 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
 
       # Prepend native gem installation commands for this ruby
-      local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]
-      pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{local_mini_portile2_version}.gem"
+      # local_mini_portile2_version = settings[:mini_portile2_version][local_settings[:ruby_api]][:version]
+      # pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../mini_portile2-#{local_mini_portile2_version}.gem"
 
       if platform.is_windows?
         # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -177,7 +178,7 @@ component "pdk-templates" do |pkg, settings, platform|
         # at runtime, we just purge it before attempting to package.
         build_commands << "/usr/bin/find #{local_ruby_cachedir} -regextype posix-extended -regex '.*/puppet-[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+[^/]*/spec/.*' -delete"
 
-        pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
+        # pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../nokogiri-#{local_nokogiri_version}-x64-mingw32.gem"
         unless local_settings[:ruby_api].start_with?('2.1.')
           pre_build_commands << "#{local_gem_env.join(' ')} #{local_settings[:gem_install]} ../unf_ext-0.0.7.7-x64-mingw32.gem"
         end

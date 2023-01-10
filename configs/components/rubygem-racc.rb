@@ -1,6 +1,6 @@
 component "rubygem-racc" do |pkg, settings, platform|
-  pkg.version "1.6.2"
-  pkg.sha256sum "58d26b3666382396fea84d33dc0639b7ee8d704156a52f8f22681f07b2f94f26"
+  pkg.version "1.4.16"
+  pkg.sha256sum "60e0533d33dd087cde78b613856321ec9c80c17962eaf4bfe62d22a6ca4c8bfa"
   pkg.url "#{settings[:buildsources_url]}/racc-#{pkg.get_version}.gem"
 
   if platform.is_windows?

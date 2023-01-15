@@ -81,10 +81,10 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
     # Add some additional gems to support experimental features
-    build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
+    # build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"guard\",                                      require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"listen\",                                     require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
+    # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
 
     # Add some Beaker dependencies for Linux
@@ -142,11 +142,11 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
 
       # Add some additional gems to support experimental features
-      build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
 
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
+      # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
       # build_commands << "echo 'gem \"nokogiri\", \"<= #{local_nokogiri_version}\", require: false' >> #{local_mod_name}/Gemfile"
 

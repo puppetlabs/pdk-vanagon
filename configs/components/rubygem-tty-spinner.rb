@@ -1,15 +1,6 @@
 component "rubygem-tty-spinner" do |pkg, settings, platform|
-  pkg.version "0.9.1"
-  pkg.md5sum "ba5df1e9795700f6109a1a06cbecd355"
-  pkg.url "#{settings[:buildsources_url]}/tty-spinner-#{pkg.get_version}.gem"
+  pkg.version "0.9.3"
+  pkg.sha256sum "0e036f047b4ffb61f2aa45f5a770ec00b4d04130531558a94bfc5b192b570542"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} tty-spinner-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

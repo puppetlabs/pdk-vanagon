@@ -1,15 +1,6 @@
 component "rubygem-deep_merge" do |pkg, settings, platform|
-  pkg.version "1.2.1"
-  pkg.md5sum "8d8396705375ac646454b1d64ad1239a"
-  pkg.url "#{settings[:buildsources_url]}/deep_merge-#{pkg.get_version}.gem"
+  pkg.version "1.2.2"
+  pkg.sha256sum "83ced3a3d7f95f67de958d2ce41b1874e83c8d94fe2ddbff50c8b4b82323563a"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} deep_merge-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

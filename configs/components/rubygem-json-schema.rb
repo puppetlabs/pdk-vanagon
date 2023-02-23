@@ -1,15 +1,6 @@
 component "rubygem-json-schema" do |pkg, settings, platform|
   pkg.version "2.8.0"
-  pkg.md5sum "075b4034f57ee8ab900a92a8da45054a"
-  pkg.url "#{settings[:buildsources_url]}/json-schema-#{pkg.get_version}.gem"
+  pkg.sha256sum "bf7a949c1b9629097af506900668d4c463f5321b6eefed80c57599aa3c46b185"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} json-schema-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

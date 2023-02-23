@@ -50,22 +50,18 @@ project "pdk" do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/api/gems/rubygems")
 
-  proj.setting(:bundler_version, "2.1.4")
+  # This is here because we need to reference the bundler version in
+  # multiple components
+  # TODO: See if there is a way to directly reference a component from another.
+  proj.setting(:bundler, {
+    'version': '2.3.26',
+    'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
+  })
+
   proj.setting(:byebug_version, {
     '2.1.0' => ['9.0.6'],
     '2.7.0' => ['11.1.3'],
   }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
-
-  proj.setting(:json_pure_component, {
-    'default' => {
-      version: "2.1.0",
-      md5sum: "611938ea90a941ca220e1025262b0561"
-    },
-    '2.7.0' => {
-      version: "2.5.1",
-      md5sum: "7fc7ca1c52797b1b55800d0e87c543b0"
-    }
-  })
 
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
 
@@ -120,23 +116,27 @@ project "pdk" do |proj|
   proj.component "pdk-runtime"
 
   # Cri and deps
-  proj.component "rubygem-colored"
   proj.component "rubygem-cri"
 
   # Childprocess and deps
   proj.component "rubygem-childprocess"
 
-  # tty-prompt and deps
-  proj.component "rubygem-necromancer"
-  proj.component "rubygem-tty-color"
-  proj.component "rubygem-equatable"
-  proj.component "rubygem-pastel"
-  proj.component "rubygem-wisper"
-  proj.component "rubygem-tty-cursor"
   proj.component "rubygem-hitimes"
+
+  ## tty-reader and deps
   proj.component "rubygem-tty-screen"
+  proj.component "rubygem-tty-cursor"
+  proj.component "rubygem-wisper"
   proj.component "rubygem-tty-reader"
+
+  ## pastel and deps
+  proj.component "rubygem-tty-color"
+  proj.component "rubygem-pastel"
+
+  ## root tty gems
   proj.component "rubygem-tty-prompt"
+  proj.component "rubygem-tty-spinner"
+  proj.component "rubygem-tty-which"
 
   # json-schema and deps
   proj.component "rubygem-public_suffix"
@@ -145,17 +145,14 @@ project "pdk" do |proj|
 
   # Analytics deps
   proj.component "rubygem-concurrent-ruby"
+  proj.component "rubygem-thor"
+  proj.component "rubygem-hocon"
   proj.component "rubygem-facter"
   proj.component "rubygem-httpclient"
 
   # Other deps
   proj.component "rubygem-deep_merge"
-  proj.component "rubygem-tty-spinner"
-
   proj.component "rubygem-json_pure"
-  proj.component "rubygem-json_pure_r27"
-
-  proj.component "rubygem-tty-which"
   proj.component "rubygem-diff-lcs"
   proj.component "rubygem-pathspec"
   proj.component "rubygem-hitimes"

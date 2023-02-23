@@ -1,16 +1,6 @@
 component "rubygem-hitimes" do |pkg, settings, platform|
-  gemname = 'hitimes'
   pkg.version "2.0.0"
-  pkg.md5sum "5ca6bf1112e126de0f6e2a39231dc281"
-  pkg.url "#{settings[:buildsources_url]}/hitimes-#{pkg.get_version}.gem"
+  pkg.sha256sum "0e8bc5829251bb43be3a44e5510dfd4d5cc4fae5112bf1d1b091679dd3cda947"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-     pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} hitimes-#{pkg.get_version}.gem"
-  end
-end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
+ end

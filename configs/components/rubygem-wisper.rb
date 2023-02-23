@@ -1,15 +1,6 @@
 component "rubygem-wisper" do |pkg, settings, platform|
-  pkg.version "2.0.0"
-  pkg.md5sum "80deda8b4226106e88285373a8159f20"
-  pkg.url "#{settings[:buildsources_url]}/wisper-#{pkg.get_version}.gem"
+  pkg.version "2.0.1"
+  pkg.sha256sum "ce17bc5c3a166f241a2e6613848b025c8146fce2defba505920c1d1f3f88fae6"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} wisper-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

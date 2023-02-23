@@ -8,7 +8,7 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-versions"
 
-  pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
+  # pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
 
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
@@ -91,7 +91,7 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Install bundler into the gem cache
-    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+    build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"
 
     if platform.is_windows?
       # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -149,7 +149,7 @@ component "pdk-templates" do |pkg, settings, platform|
       end
 
       # Install bundler itself into the gem cache for this ruby
-      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler_version]}.gem"
+      build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"
 
       if platform.is_windows?
         # The puppet gem has files in it's 'spec' directory with very long paths which
@@ -164,9 +164,9 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Patch bundler RUBYOPT config so that it doesn't explode on paths that include spaces
-    abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
-    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
+    # abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
+    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
+    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
 
     # Fix permissions
     chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"

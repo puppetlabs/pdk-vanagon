@@ -1,15 +1,6 @@
 component "rubygem-tty-which" do |pkg, settings, platform|
-  pkg.version "0.4.1"
-  pkg.md5sum "f4afca72a52f8f64601cf6a41593eaad"
-  pkg.url "#{settings[:buildsources_url]}/tty-which-#{pkg.get_version}.gem"
+  pkg.version "0.5.0"
+  pkg.sha256sum "5824055f0d6744c97e7c4426544f01d519c40d1806ef2ef47d9854477993f466"
 
-  pkg.build_requires "pdk-runtime"
-
-  if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-  end
-
-  pkg.install do
-    "#{settings[:gem_install]} tty-which-#{pkg.get_version}.gem"
-  end
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 end

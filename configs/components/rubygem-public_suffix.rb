@@ -1,6 +1,6 @@
 component "rubygem-public_suffix" do |pkg, settings, platform|
-  pkg.version "5.0.0"
-  pkg.sha256sum '26ee4fbce33ada25eb117ac71f2c24bf4d8b3414ab6b34f05b4708a3e90f1c6b'
+  pkg.version "4.0.7"
+  pkg.sha256sum '8be161e2421f8d45b0098c042c06486789731ea93dc3a896d30554ee38b573b8'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
  end

@@ -58,11 +58,6 @@ project "pdk" do |proj|
     'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
   })
 
-  proj.setting(:byebug_version, {
-    '2.1.0' => ['9.0.6'],
-    '2.7.0' => ['11.1.3'],
-  }.tap { |h| h.default = ['9.0.6', '11.1.3'] })
-
   proj.setting(:cachedir, File.join(proj.datadir, "cache"))
 
   if platform.is_windows?

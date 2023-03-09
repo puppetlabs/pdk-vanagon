@@ -147,23 +147,6 @@ component 'puppet-versions' do |pkg, settings, platform|
       }
 
       pdk_ruby_versions.each do |rubyapi|
-        settings[:byebug_version][rubyapi].each do |byebug_version|
-          build_commands << gem_install.call(
-            rubyapi,
-            'byebug',
-            byebug_version,
-            '--',
-            "--with-ruby-include=#{File.join(ruby_dirs[rubyapi], 'include', "ruby-#{rubyapi}")}",
-            "--with-ruby-lib=#{File.join(ruby_dirs[rubyapi], 'lib')}",
-          )
-
-          # Byebug 9.x requires special treatment b/c the cross compiled into a fat gem
-          if byebug_version.start_with?('9.')
-            byebug_libdir = File.join(puppet_cachedir, rubyapi, "gems", "byebug-#{byebug_version}-x64-mingw32", "lib", "byebug")
-            build_commands << "cp #{File.join(byebug_libdir, rubyapi.split('.')[0..1].join('.'), "byebug.so")} #{File.join(byebug_libdir, "byebug.so")}"
-          end
-        end
-
         # Add the remaining beaker dependencies that have been natively compiled
         # and repackaged.
         unless rubyapi =~ /^2\.7/

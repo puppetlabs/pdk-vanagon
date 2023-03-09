@@ -84,12 +84,6 @@ component "pdk-templates" do |pkg, settings, platform|
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
 
-    unless platform.is_windows?
-      settings[:byebug_version][settings[:ruby_api]].each do |byebug_version|
-        build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document byebug:#{byebug_version}"
-      end
-    end
-
     # Install bundler into the gem cache
     build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"
 
@@ -141,12 +135,6 @@ component "pdk-templates" do |pkg, settings, platform|
 
       # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} install && popd"
-
-      unless platform.is_windows?
-        settings[:byebug_version][local_settings[:ruby_api]].each do |byebug_version|
-          build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document byebug:#{byebug_version}"
-        end
-      end
 
       # Install bundler itself into the gem cache for this ruby
       build_commands << "#{local_gem_env.join(' ')} #{local_settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-#{settings[:bundler][:version]}.gem"

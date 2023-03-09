@@ -140,21 +140,7 @@ component 'puppet-versions' do |pkg, settings, platform|
     end
 
     if platform.is_windows?
-      # Add beaker dependencies
-      beaker_native_deps = {
-        'oga':     '2.15',
-        'ruby-ll': '2.1.2',
-      }
-
       pdk_ruby_versions.each do |rubyapi|
-        # Add the remaining beaker dependencies that have been natively compiled
-        # and repackaged.
-        unless rubyapi =~ /^2\.7/
-          build_commands += beaker_native_deps.collect do |gem, ver|
-            gem_install.call(rubyapi, gem, ver)
-          end
-        end
-
         build_commands << gem_install.call(rubyapi, 'rb-readline', '0.5.5')
       end
     end

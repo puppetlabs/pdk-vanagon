@@ -74,12 +74,6 @@ component "pdk-templates" do |pkg, settings, platform|
     # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
     build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
 
-    # Add some Beaker dependencies for Linux
-    unless platform.is_windows?
-      build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{mod_name}/Gemfile"
-      build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{mod_name}/Gemfile"
-    end
-
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
@@ -126,12 +120,6 @@ component "pdk-templates" do |pkg, settings, platform|
 
       build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
       build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
-
-      # Add some Beaker dependencies for Linux
-      unless platform.is_windows?
-        build_commands << "echo 'gem \"ruby-ll\", \"2.1.2\",                         require: false' >> #{local_mod_name}/Gemfile"
-        build_commands << "echo 'gem \"oga\", \"2.15\",                              require: false' >> #{local_mod_name}/Gemfile"
-      end
 
       # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} install && popd"

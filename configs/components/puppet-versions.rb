@@ -98,7 +98,6 @@ component 'puppet-versions' do |pkg, settings, platform|
         'install',
         '--verbose',
         '--clear-sources',
-        "--source #{settings[:rubygems_url]}",
         '--no-document',
         "--install-dir #{File.join(puppet_cachedir, ruby_version)}",
         "#{gem}:#{version}",

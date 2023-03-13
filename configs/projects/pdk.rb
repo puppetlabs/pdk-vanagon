@@ -32,8 +32,8 @@ project "pdk" do |proj|
       :HelpLink => "http://puppet.com/services/customer-support",
       :CommunityLink => "https://puppet.com/community",
       :ForgeLink => "http://forge.puppet.com",
-      :NextStepLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
-      :ManualLink => "https://puppet.com/docs/pdk/1.x/pdk.html",
+      :NextStepLink => "https://puppet.com/docs/pdk/latest/pdk.html",
+      :ManualLink => "https://puppet.com/docs/pdk/latest/pdk.html",
     })
 
     module_directory = File.join(proj.datadir.sub(/^.*:\//, ''), 'PowerShell', 'Modules')

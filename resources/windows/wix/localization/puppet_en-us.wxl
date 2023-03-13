@@ -89,7 +89,7 @@
     <String Id="FatalError_Title" Overridable="yes"><!-- _locID_text="FatalError_Title" _locComment="FatalError_Title" -->[ProductName] Setup</String>
     <String Id="FatalErrorBitmap" Overridable="yes"><!-- _locID_text="FatalErrorBitmap" _locComment="FatalErrorBitmap" -->WixUI_Bmp_Dialog</String>
     <String Id="FatalErrorTitle" Overridable="yes"><!-- _locID_text="FatalErrorTitle" _locComment="FatalErrorTitle" -->{\WixUI_Font_Bigger}[ProductName] Setup Wizard ended prematurely</String>
-    <String Id="FatalErrorDescription1" Overridable="yes"><!-- _locID_text="FatalErrorDescription1" _locComment="FatalErrorDescription1" -->The [ProductName] installer has encountered an error from which it cannot recover.  Please visit our windows installer support page: https://puppet.com/docs/pdk/1.x/pdk_install.html#ariaid-title8</String>
+    <String Id="FatalErrorDescription1" Overridable="yes"><!-- _locID_text="FatalErrorDescription1" _locComment="FatalErrorDescription1" -->The [ProductName] installer has encountered an error from which it cannot recover.  Please visit our windows installer support page: https://puppet.com/docs/pdk/latest/pdk_install.html#ariaid-title8</String>
     <String Id="FatalErrorDescription2" Overridable="yes"><!-- _locID_text="FatalErrorDescription2" _locComment="FatalErrorDescription2" -->Click the Finish button to exit the Setup Wizard.</String>
 
     <String Id="FeaturesDlg_Title" Overridable="yes"><!-- _locID_text="FeaturesDlg_Title" _locComment="FeaturesDlg_Title" -->[ProductName] Setup</String>
@@ -262,7 +262,7 @@
 This wizard will install the Puppet Development Kit version [VersionUIString].
 </String>
     <String Id="WelcomeDlgDescriptionLink" Overridable="yes"><!-- _locID_text="WelcomeDlgDescription" _locComment="WelcomeDlgDescriptionLink" -->
-<![CDATA[<a href="https://puppet.com/docs/pdk/1.x/pdk.html">Read more</a> about the Puppet Development Kit.]]>
+<![CDATA[<a href="https://puppet.com/docs/pdk/latest/pdk.html">Read more</a> about the Puppet Development Kit.]]>
     </String>
     <String Id="WelcomeUpdateDlgDescriptionUpdate" Overridable="yes"><!-- _locID_text="WelcomeUpdateDlgDescriptionUpdate" _locComment="WelcomeUpdateDlgDescriptionUpdate" -->This will update [ProductName] to version [VersionUIString].</String>
     <String Id="WelcomeDlgTitle" Overridable="yes"><!-- _locID_text="WelcomeDlgTitle" _locComment="WelcomeDlgTitle" -->{\WixUI_Font_Bigger}Welcome to the [ProductName] Setup Wizard</String>

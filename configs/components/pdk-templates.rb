@@ -8,7 +8,7 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-versions"
   pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
-i
+
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
     pkg.add_source "https://rubygems.org/downloads/unf_ext-0.0.7.7-x64-mingw32.gem", sum: '218e85fd56b9ecd5618cc20a76f45601'

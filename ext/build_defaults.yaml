@@ -20,13 +20,7 @@ osx_signing_keychain: "/Users/jenkins/Library/Keychains/signing.keychain"
 osx_signing_server: 'osx-signer.delivery.puppetlabs.net'
 vanagon_project: TRUE
 repo_name: 'puppet-enterprise-tools'
-
-# (eric.griswold) There is an unfortunate symlink vs. directory
-# condition that arises when we use 'puppet-nightly' for
-# nonfinal_repo_name and add a new platform. Until we solve that, this
-# will need to get updated every time we have a new puppet major
-# release.
-nonfinal_repo_name: 'puppet6-nightly'
+nonfinal_repo_name: 'puppet-nightly'
 build_tar: FALSE
 staging_server: 'weth.delivery.puppetlabs.net'
 msi_staging_server: 'weth.delivery.puppetlabs.com'

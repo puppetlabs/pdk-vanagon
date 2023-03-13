@@ -7,9 +7,8 @@ component "pdk-templates" do |pkg, settings, platform|
   pkg.build_requires "rubygem-bundler"
   pkg.build_requires "rubygem-pdk"
   pkg.build_requires "puppet-versions"
-
-  # pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
-
+  pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
+i
   if platform.is_windows?
     pkg.environment "PATH", settings[:gem_path_env]
     pkg.add_source "https://rubygems.org/downloads/unf_ext-0.0.7.7-x64-mingw32.gem", sum: '218e85fd56b9ecd5618cc20a76f45601'
@@ -140,9 +139,9 @@ component "pdk-templates" do |pkg, settings, platform|
     end
 
     # Patch bundler RUBYOPT config so that it doesn't explode on paths that include spaces
-    # abort "Check if set_rubyopt patch is still needed for this bundler version!" if settings[:bundler_version] != '2.1.4'
-    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
-    # build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler-2.1.4/lib/bundler/shared_helpers.rb.orig\" -delete"
+    # This still appears to be an issue as of bundler 2.3.26
+    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler*/lib/bundler/shared_helpers.rb\" -print0 | xargs -0 -n 1 -I {} patch {} ../bundler-relative-rubyopt.patch"
+    build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler*/lib/bundler/shared_helpers.rb.orig\" -delete"
 
     # Fix permissions
     chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"

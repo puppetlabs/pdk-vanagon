@@ -10,7 +10,7 @@ def location_for(place)
   end
 end
 
-gem 'vanagon', *location_for(ENV['VANAGON_LOCATION'] || '~> 0.31.0')
+gem 'vanagon', *location_for(ENV['VANAGON_LOCATION'] || '~> 0.35.1')
 gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '>= 0.109.5')
 
 # csv > 3.1.5 requires 'stringio' which the latest version of requires Ruby >= 2.5.0

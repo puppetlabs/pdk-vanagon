@@ -66,13 +66,6 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{settings[:ruby_version]}.lock"
     build_commands << "cp #{mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile.lock"
 
-    # Add some additional gems to support experimental features
-    # build_commands << "echo 'gem \"puppet-debugger\",                            require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"guard\",                                      require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"listen\",                                     require: false' >> #{mod_name}/Gemfile"
-    # build_commands << "echo 'gem \"codecov\",                                    require: false' >> #{mod_name}/Gemfile"
-    build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{mod_name}/Gemfile"
-
     # Run 'bundle install' in the generated module to cache the gems
     # inside the project cachedir.
     build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
@@ -113,12 +106,6 @@ component "pdk-templates" do |pkg, settings, platform|
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} update && popd"
 
       build_commands << "mv #{local_mod_name}/Gemfile.lock #{settings[:cachedir]}/Gemfile-#{rubyver}.lock"
-
-      # Add some additional gems to support experimental features
-      build_commands << "echo 'gem \"guard\",                                      require: false' >> #{local_mod_name}/Gemfile"
-
-      build_commands << "echo 'gem \"puppet-strings\",                             require: false' >> #{local_mod_name}/Gemfile"
-      build_commands << "echo 'gem \"license_finder\",                             require: false' >> #{local_mod_name}/Gemfile"
 
       # Install all the deps into the package cachedir.
       build_commands << "pushd #{local_mod_name} && #{local_gem_env.join(' ')} #{local_settings[:host_bundle]} install && popd"

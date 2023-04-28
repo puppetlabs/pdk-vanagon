@@ -7,7 +7,7 @@ component 'puppet-versions' do |pkg, settings, platform|
   pkg.add_source('file://resources/puppet-versions')
 
   if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
+    pkg.environment 'PATH', settings[:gem_path_env]
   end
 
   # We use various Gem::* classes to test versions and ranges
@@ -35,14 +35,14 @@ component 'puppet-versions' do |pkg, settings, platform|
     # TODO: calculate this based on settings
     ruby_mappings = {
       '2.7.0' => Gem::Requirement.create(['~> 7.0']),
-      '3.2.0' => Gem::Requirement.create(['~> 8.0']),
+      '3.2.0' => Gem::Requirement.create(['~> 8.0'])
     }
 
     ruby_mappings.each do |rubyver, pup_range|
       return rubyver if pup_range.satisfied_by?(version)
     end
 
-    raise "Could not determine Ruby API version for Puppet gem version: #{version.to_s}"
+    raise "Could not determine Ruby API version for Puppet gem version: #{version}"
   end
 
   pkg.build do
@@ -50,18 +50,18 @@ component 'puppet-versions' do |pkg, settings, platform|
     puppet_cachedir = File.join(settings[:privatedir], 'puppet', 'ruby')
 
     gem_bins = {
-      settings[:ruby_api] => settings[:host_gem],
+      settings[:ruby_api] => settings[:host_gem]
     }
 
     bundle_bins = {
-      settings[:ruby_api] => settings[:host_bundle],
+      settings[:ruby_api] => settings[:host_bundle]
     }
 
     ruby_dirs = {
-      settings[:ruby_api] => settings[:ruby_dir],
+      settings[:ruby_api] => settings[:ruby_dir]
     }
 
-    settings[:additional_rubies]&.each do |rubyver, local_settings|
+    settings[:additional_rubies]&.each do |_rubyver, local_settings|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
       bundle_bins[local_settings[:ruby_api]] = local_settings[:host_bundle]
       ruby_dirs[local_settings[:ruby_api]] = local_settings[:ruby_dir]
@@ -86,18 +86,18 @@ component 'puppet-versions' do |pkg, settings, platform|
         "--install-dir #{File.join(puppet_cachedir, ruby_version)}",
         "#{gem}:#{version}",
         "--platform #{puppet_gem_platform}",
-        *args,
+        *args
       ].join(' ')
     end
 
-    rubygems_update = lambda do |ruby_version, ruby_api|
+    rubygems_update = lambda do |_ruby_version, ruby_api|
       rubygems_update_commands = []
 
       # Make backups of the gem and bundler wrapper batch files...
       rubygems_update_commands << "cp #{gem_bins[ruby_api]} #{gem_bins[ruby_api]}.bak" if platform.is_windows?
       rubygems_update_commands << "cp #{bundle_bins[ruby_api]} #{bundle_bins[ruby_api]}.bak" if platform.is_windows?
 
-      rubygems_version = "3.4.12"
+      rubygems_version = '3.4.1'
       rubygems_update_commands << "#{gem_bins[ruby_api]} update --system #{rubygems_version} --no-document"
 
       # ...replace the gem and bundler wrapper batch files file the backups we made.

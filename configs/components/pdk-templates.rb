@@ -1,20 +1,20 @@
-component "pdk-templates" do |pkg, settings, platform|
+component 'pdk-templates' do |pkg, settings, platform|
   # Set url and ref from json file so it's easy for jenkins
   # to promote new template versions.
   pkg.load_from_json('configs/components/pdk-templates.json')
 
-  pkg.build_requires "pdk-runtime"
-  pkg.build_requires "rubygem-bundler"
-  pkg.build_requires "rubygem-pdk"
-  pkg.build_requires "puppet-versions"
-  pkg.add_source("file://resources/patches/bundler-relative-rubyopt.patch")
+  pkg.build_requires 'pdk-runtime'
+  pkg.build_requires 'rubygem-bundler'
+  pkg.build_requires 'rubygem-pdk'
+  pkg.build_requires 'puppet-versions'
+  pkg.add_source('file://resources/patches/bundler-relative-rubyopt.patch')
 
   if platform.is_windows?
-    pkg.environment "PATH", settings[:gem_path_env]
-    pkg.add_source "https://rubygems.org/downloads/unf_ext-0.0.7.7-x64-mingw32.gem", sum: '218e85fd56b9ecd5618cc20a76f45601'
+    pkg.environment 'PATH', settings[:gem_path_env]
+    pkg.add_source 'https://rubygems.org/downloads/unf_ext-0.0.7.7-x64-mingw32.gem', sum: '218e85fd56b9ecd5618cc20a76f45601'
   elsif platform.is_linux? && settings[:use_pl_build_tools]
-    pkg.build_requires "pl-gcc"
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+    pkg.build_requires 'pl-gcc'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH)'
   end
 
   pkg.build do
@@ -39,7 +39,7 @@ component "pdk-templates" do |pkg, settings, platform|
 
     gem_env = [
       "GEM_PATH=\"#{gem_path_with_puppet_cache}\"",
-      "GEM_HOME=\"#{ruby_cachedir}\"",
+      "GEM_HOME=\"#{ruby_cachedir}\""
     ]
 
     gem_env << "PUPPET_GEM_VERSION=\"#{settings[:latest_puppet]}\"" if settings[:latest_puppet]
@@ -86,14 +86,13 @@ component "pdk-templates" do |pkg, settings, platform|
 
       local_gem_path = [
         File.join(settings[:privatedir], 'ruby', local_settings[:ruby_version], 'lib', 'ruby', 'gems', local_settings[:ruby_api]),
-        File.join(puppet_cachedir, local_settings[:ruby_api]),
+        File.join(puppet_cachedir, local_settings[:ruby_api])
       ].join(platform.is_windows? ? ';' : ':')
 
       local_gem_env = [
         "GEM_PATH=\"#{local_gem_path}\"",
-        "GEM_HOME=\"#{local_ruby_cachedir}\"",
+        "GEM_HOME=\"#{local_ruby_cachedir}\""
       ]
-
 
       local_gem_env << "PUPPET_GEM_VERSION=\"#{local_settings[:latest_puppet]}\"" if local_settings[:latest_puppet]
 
@@ -131,7 +130,7 @@ component "pdk-templates" do |pkg, settings, platform|
     build_commands << "/usr/bin/find #{settings[:prefix]} -path \"*/bundler*/lib/bundler/shared_helpers.rb.orig\" -delete"
 
     # Fix permissions
-    chmod_changes_flag = platform.is_macos? ? "-vv" : "--changes"
+    chmod_changes_flag = platform.is_macos? ? '-vv' : '--changes'
     build_commands << "chmod -R #{chmod_changes_flag} ugo+rX #{File.join(settings[:cachedir], 'ruby')} #{File.join(settings[:privatedir], 'puppet', 'ruby')} #{File.join(settings[:privatedir], 'ruby')}"
 
     pre_build_commands + build_commands

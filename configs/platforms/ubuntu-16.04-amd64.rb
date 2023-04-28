@@ -1,3 +1,3 @@
-platform "ubuntu-16.04-amd64" do |plat|
+platform 'ubuntu-16.04-amd64' do |plat|
   plat.inherit_from_default
 end

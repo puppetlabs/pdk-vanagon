@@ -10,10 +10,10 @@ component 'gem-prune' do |pkg, settings, platform|
     ruby_cachedir = File.join(settings[:cachedir], 'ruby')
 
     gem_bins = {
-      settings[:ruby_api] => settings[:host_gem],
+      settings[:ruby_api] => settings[:host_gem]
     }
 
-    settings[:additional_rubies]&.each do |rubyver, local_settings|
+    settings[:additional_rubies]&.each do |_rubyver, local_settings|
       gem_bins[local_settings[:ruby_api]] = local_settings[:host_gem]
     end
 
@@ -22,14 +22,14 @@ component 'gem-prune' do |pkg, settings, platform|
     pdk_ruby_versions.map do |rubyapi|
       gem_paths = [
         File.join(puppet_cachedir, rubyapi),
-        File.join(ruby_cachedir, rubyapi),
+        File.join(ruby_cachedir, rubyapi)
       ]
 
       # This code is evaluated on the host where vanagon is
       # running, so we can't depend on the PATH_SEPARATOR constant
       # being correct for the target platform.
       if platform.is_windows?
-        path_sep = ";"
+        path_sep = ';'
       else
         path_sep = File::PATH_SEPARATOR
       end

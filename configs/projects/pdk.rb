@@ -31,14 +31,8 @@ project 'pdk' do |proj|
       :CommunityLink => 'https://puppet.com/community',
       :ForgeLink => 'http://forge.puppet.com',
       :NextStepLink => 'https://puppet.com/docs/pdk/latest/pdk.html',
-      :ManualLink =>'"https://puppet.com/docs/pdk/latest/pdk.html',
+      :ManualLink =>'https://puppet.com/docs/pdk/latest/pdk.html',
     })
-
-    module_directory = File.join(proj.datadir.sub(/^.*:\//, ''), 'PowerShell', 'Modules')
-    proj.extra_file_to_sign File.join(module_directory, 'PuppetDevelopmentKit', 'PuppetDevelopmentKit.psm1')
-    proj.signing_hostname 'composer-deb-prod-2.delivery.puppetlabs.net'
-    proj.signing_username 'jenkins'
-    proj.signing_command 'source /usr/local/rvm/scripts/rvm; rvm use 2.7.5; /var/lib/jenkins/bin/extra_file_signer'
   else
     # Where to add a link to the pdk executable on non-Windows platforms
     proj.setting(:main_bin, '/usr/local/bin')
@@ -51,10 +45,10 @@ project 'pdk' do |proj|
   # This is here because we need to reference the bundler version in
   # multiple components
   # TODO: See if there is a way to directly reference a component from another.
-  proj.setting(:bundler, {
-    'version': '2.3.26',
-    'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
-  })
+  # proj.setting(:bundler, {
+  #   'version': '2.3.26',
+  #   'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
+  # })
 
   proj.setting(:cachedir, File.join(proj.datadir, 'cache'))
 
@@ -101,7 +95,6 @@ project 'pdk' do |proj|
 
   # What to build?
   # --------------
-
   proj.component 'pdk-runtime'
   proj.component 'rubygem-pdk'
   proj.component 'puppet-versions'
@@ -113,6 +106,7 @@ project 'pdk' do |proj|
   proj.component 'shellpath' unless platform.is_windows?
 
   # What to include in package?
+  proj.directory proj.install_root
   proj.directory proj.prefix
   proj.directory proj.link_bindir unless platform.is_windows?
 

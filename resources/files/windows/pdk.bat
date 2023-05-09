@@ -1,13 +1,16 @@
 @ECHO OFF
-REM Get the short path of the installation folder
-SET PDK_ROOT=%~dps0..
+SET PDK_BASEDIR=%~dp0..
+SET PDK_BASEDIR=%PDK_BASEDIR:\private\ruby\@@@RUBY_VERSION@@@\bin\..=%
 
-REM Set the path to the default Ruby
-SET RUBY_BIN_PATH="%PDK_ROOT%\private\ruby\@@@RUBY_VERSION@@@\bin"
+SET PATH=%PDK_BASEDIR%\private\ruby\@@@RUBY_VERSION@@@\bin;%PATH%
 
-REM Set our SSL variables to keep Ruby happy
-SET SSL_CERT_FILE="%PDK_ROOT%\ssl\cert.pem"
-SET SSL_CERT_DIR="%PDK_ROOT%\ssl\certs"
+SET RUBYLIB=%PDK_BASEDIR%\lib;%RUBYLIB%
 
-REM Execute PDK
-CALL %RUBY_BIN_PATH%\ruby.exe %RUBY_BIN_PATH%\pdk %*
+SET RUBYLIB=%RUBYLIB:\=/%
+
+SET SSL_CERT_FILE=%PDK_BASEDIR%\ssl\cert.pem
+SET SSL_CERT_DIR=%PDK_BASEDIR%\ssl\certs
+SET OPENSSL_CONF=%PDK_BASEDIR%\ssl\openssl.cnf
+
+ruby -S -- pdk %*
+

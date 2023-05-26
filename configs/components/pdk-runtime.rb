@@ -47,6 +47,8 @@ component 'pdk-runtime' do |pkg, settings, platform|
     'ssl/man'
   ]
 
+  files << 'bin/*' unless platform.is_windows?
+
   bin_dir = platform.is_windows? ? settings[:prefix].sub(/C:/, '/cygdrive/c') : settings[:prefix]
   files.each do |file|
     install_commands << "rm -rf #{bin_dir}/#{file}"

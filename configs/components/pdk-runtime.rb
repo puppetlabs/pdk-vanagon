@@ -4,7 +4,8 @@ component 'pdk-runtime' do |pkg, settings, platform|
     git_sha = settings[:pdk_runtime_version]
 
     require 'open-uri'
-    build_metadata = JSON.parse(open("http://builds.delivery.puppetlabs.net/puppet-runtime/#{git_sha}/artifacts/#{git_sha}.build_metadata.json").read)
+    require 'uri'
+    build_metadata = JSON.parse(URI.open("http://builds.delivery.puppetlabs.net/puppet-runtime/#{git_sha}/artifacts/#{git_sha}.build_metadata.json").read)
 
     pkg.version build_metadata['version']
     runtime_path = git_sha
@@ -48,7 +49,6 @@ component 'pdk-runtime' do |pkg, settings, platform|
   ]
 
   files << 'bin/*' unless platform.is_windows?
-
   bin_dir = platform.is_windows? ? settings[:prefix].sub(/C:/, '/cygdrive/c') : settings[:prefix]
   files.each do |file|
     install_commands << "rm -rf #{bin_dir}/#{file}"

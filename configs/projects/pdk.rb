@@ -48,14 +48,6 @@ project 'pdk' do |proj|
   # TODO: Migrate more components to use this
   proj.setting(:rubygems_url, "#{proj.artifactory_url}/api/gems/rubygems")
 
-  # This is here because we need to reference the bundler version in
-  # multiple components
-  # TODO: See if there is a way to directly reference a component from another.
-  # proj.setting(:bundler, {
-  #   'version': '2.3.26',
-  #   'sha256sum': '1ee53cdf61e728ad82c6dbff06cfcd8551d5422e88e86203f0e2dbe9ae999e09'
-  # })
-
   proj.setting(:cachedir, File.join(proj.datadir, 'cache'))
 
   if platform.is_windows?

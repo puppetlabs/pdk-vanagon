@@ -6,21 +6,21 @@
 
 name = pkg.get_name.gsub('rubygem-', '')
 unless name && !name.empty?
-  raise "Rubygem component files that instance_eval _base-rubygem must be named rubygem-<gem-name>.rb"
+  raise 'Rubygem component files that instance_eval _base-rubygem must be named rubygem-<gem-name>.rb'
 end
 
 version = pkg.get_version
 unless version && !version.empty?
-  raise "You must set the `pkg.version` in your rubygem component before instance_eval'ing _base_rubygem.rb"
+  raise 'You must set the `pkg.version` in your rubygem component before instance_evaling _base_rubygem.rb'
 end
 
 pkg.url("https://rubygems.org/downloads/#{name}-#{version}.gem")
 pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 
-pkg.build_requires "pdk-runtime"
+pkg.build_requires 'pdk-runtime'
 
 if platform.is_windows?
-  pkg.environment "PATH", settings[:gem_path_env]
+  pkg.environment 'PATH', settings[:gem_path_env]
 end
 
 pkg.install do

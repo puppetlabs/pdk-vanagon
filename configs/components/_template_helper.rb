@@ -31,13 +31,12 @@ def build_module(settings, pdk_bin, cachedir, privatedir, template_ref, is_windo
 
   # Copy generated Gemfile.lock into cachedir.
   build_commands << "cp #{mod_name}/Gemfile.lock #{cachedir}/Gemfile-#{settings[:ruby_version]}.lock"
-  build_commands << "cp #{mod_name}/Gemfile.lock #{cachedir}/Gemfile.lock"
+  build_commands << "cp #{mod_name}/Gemfile.lock #{cachedir}/Gemfile.lock" if settings[:rub_api] == '3.2.0'
 
   # Run 'bundle install' in the generated module to cache the gems
   # inside the project cachedir.
   build_commands << "pushd #{mod_name} && #{gem_env.join(' ')} #{settings[:host_bundle]} install && popd"
 
-  # Install bundler into the gem cache
   build_commands << "#{gem_env.join(' ')} #{settings[:host_gem]} install --no-document --local --bindir /tmp ../bundler-2.4.13.gem"
 
   return build_commands unless is_windows

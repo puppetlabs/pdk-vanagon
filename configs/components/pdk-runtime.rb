@@ -32,6 +32,10 @@ component 'pdk-runtime' do |pkg, settings, platform|
       "chmod 755 #{settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     ]
 
+    if settings[:install_scope] == 'perUser'
+      install_commands << 'mv /cygdrive/c/ProgramFiles64Folder /cygdrive/c/LocalAppDataFolder'
+    end
+
     settings[:additional_rubies].each do |_rubyver, local_settings|
       install_commands << "chmod 755 #{local_settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     end

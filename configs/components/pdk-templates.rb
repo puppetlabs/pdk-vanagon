@@ -41,6 +41,7 @@ component 'pdk-templates' do |pkg, settings, platform|
     build_commands << build_module(settings, pdk_bin ,settings[:cachedir], settings[:privatedir], template_ref, platform.is_windows?)
 
     settings[:additional_rubies]&.each do |_rubyver, local_settings|
+      require 'pry'; binding.pry
       build_commands << build_module(local_settings, pdk_bin, settings[:cachedir], settings[:privatedir], template_ref, platform.is_windows?)
     end
 

@@ -1,8 +1,35 @@
+
+
 project 'pdk' do |proj|
   # Inherit a bunch of shared settings from pdk-runtime config
-  runtime_config = JSON.parse(File.read(File.join(__dir__, '..', 'components', 'puppet-runtime.json')))
+  runtime_config = JSON.parse(File.read('configs/components/puppet-runtime.json'))
   proj.setting(:pdk_runtime_version, runtime_config['version'])
   proj.inherit_settings 'pdk-runtime', 'https://github.com/puppetlabs/puppet-runtime', proj.pdk_runtime_version
+
+  # This is a mess and needs to be refactored.
+  # In order to build a user MSI we need to override the default path in all of the settings
+  # from pdk-runtime.
+  def update_hash(proj, s)
+    s.each do |key, value|
+      if value.is_a?(String) && value.include?('ProgramFiles64Folder')
+        proj.setting(key, value.gsub(/ProgramFiles64Folder/, 'LocalAppDataFolder'))
+      elsif key == :additional_rubies
+        updated_additional_rubies = {}
+        value.each do |rubyver, settings|
+          updated_settings = {}
+          settings.each do |key, value|
+            if value.is_a?(String) && value.include?('ProgramFiles64Folder')
+              updated_settings[key] = value.gsub(/ProgramFiles64Folder/, 'LocalAppDataFolder')
+            end
+          end
+          updated_additional_rubies[rubyver] = settings.merge!(updated_settings)
+        end
+        proj.setting(:additional_rubies, updated_additional_rubies)
+      end
+    end
+  end
+
+  update_hash(proj, settings) if settings[:install_scope] == 'perUser'
 
   proj.description 'Puppet Development Kit'
   proj.version_from_git
@@ -23,6 +50,8 @@ project 'pdk' do |proj|
     proj.setting(:product_name, 'Puppet Development Kit')
     proj.setting(:shortcut_name, 'Puppet Development Kit')
     proj.setting(:upgrade_code, '2F79F42E-955C-4E69-AB87-DB4ED9EDF2D9')
+    proj.setting(:install_scope, "perMachine") unless proj.settings[:install_scope] # Set this to 'perMachine' or 'perUser'
+    proj.setting(:registry_root, proj.install_scope == 'perUser' ? 'HKCU' : 'HKLM')
     proj.setting(:win64, 'yes')
     proj.setting(:RememberedInstallDirRegKey, 'RememberedInstallDir64')
     proj.setting(:LicenseRTF, 'wix/license/LICENSE.rtf')

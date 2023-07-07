@@ -39,7 +39,7 @@
     <Property Id="INSTALLDIR">
       <RegistrySearch
         Id="RecallInstallDir"
-        Root="HKLM"
+        Root="<%= settings[:registry_root] %>"
         Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
         Name="<%= settings[:RememberedInstallDirRegKey] %>"
         Type="raw"
@@ -49,7 +49,7 @@
     <Property Id="INSTALLDIR_X86" >
       <RegistrySearch
         Id="RecallInstallDirx86"
-        Root="HKLM"
+        Root="<%= settings[:registry_root] %>"
         Key="SOFTWARE\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>"
         Name="<%= settings[:RememberedInstallDirRegKey] %>"
         Type="raw"

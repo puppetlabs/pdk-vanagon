@@ -1,10 +1,25 @@
 # Puppet Development Kit (PDK) Packaging
 
-This repo contains all the packaging scripts to build the native PDK packages across various platforms.
+## Table of contents
+
+1.  [Description](#description)
+2.  [Usage](#usage)
+    i.  [Promoting and releasing new packages](#promoting-and-releasing-new-packages)
+    ii. [Promoting changes to puppetlabs/pdk-templates into new packages](#promoting-changes-to-puppetlabspdk-templates-into-new-packages)
+    iii.[Building new local packages for any other changes](#building-new-local-packages-for-any-other-changes)
+3.  [Development](#development)
+
+
+## Description
+
+The purpose of this tool is to enable PDK native package building across all of our supported platforms. 
+
+This repository contains all the necessary scripts to build these packages and push them into our internal Jenkins pipelines.
 
 * [Internal Packaging Pipelines](https://jenkins-master-prod-1.delivery.puppetlabs.net/view/PDK/)
 
-## Promoting and releasing new packages
+## Usage
+### Promoting and releasing new packages
 
 **NOTE: Please refer to the instructions in the [PDK Release Ticket Template](https://github.com/puppetlabs/winston/#pdk-release-tickets) for the most up-to-date instructions on releasing a new version of the PDK**
 
@@ -19,15 +34,13 @@ This repo contains all the packaging scripts to build the native PDK packages ac
 9. After pushing a release to S3, send out a Release Announcement
 10. Celebrate
 
-## Promoting changes to puppetlabs/pdk-templates into new packages
+### Promoting changes to puppetlabs/pdk-templates into new packages
 
 1. Edit `configs/components/pdk-templates.json`. Update the `ref` to point to the desired SHA from the [pdk-templates](https://github.com/puppetlabs/pdk-templates).
 
 See https://tickets.puppetlabs.com/browse/PDK-578
 
-## Building new packages for any other changes
-
-### Local package build
+### Building new local packages for any other changes
 
 * Clone this repo
 * Change the `configs/components/rubygem-pdk.json` to point to the SHA or ref and version you want to test/build.
@@ -37,3 +50,10 @@ See https://tickets.puppetlabs.com/browse/PDK-578
 
 For more info see https://github.com/puppetlabs/vanagon
 
+## Development
+
+This tool is owned by DevX, part of the Content and Tooling (CAT) team.
+
+This is an open-source project and, as such, Issue reports and Pull Requests are always welcome in our GitHub repository.
+
+If you have any questions, or simply want to contact us regarding open-source contributions, you can find us in the official community Slack server. We host an office hours (Q&A) session biweekly on Tuesdays at 15:00 (BST).

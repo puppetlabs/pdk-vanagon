@@ -1,5 +1,8 @@
 # Puppet Development Kit (PDK) Packaging
 
+[![Code Owners](https://img.shields.io/badge/owners-DevX--team-blue)](https://github.com/puppetlabs/pdk/blob/main/CODEOWNERS)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/puppetlabs/pdk-vanagon)
+
 ## Table of contents
 
 1.  [Description](#description)
@@ -8,7 +11,6 @@
     ii. [Promoting changes to puppetlabs/pdk-templates into new packages](#promoting-changes-to-puppetlabspdk-templates-into-new-packages)
     iii.[Building new local packages for any other changes](#building-new-local-packages-for-any-other-changes)
 3.  [Development](#development)
-
 
 ## Description
 

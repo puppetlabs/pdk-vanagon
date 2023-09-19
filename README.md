@@ -1,6 +1,6 @@
 # Puppet Development Kit (PDK) Packaging
 
-[![Code Owners](https://img.shields.io/badge/owners-DevX--team-blue)](https://github.com/puppetlabs/provision/blob/main/CODEOWNERS)
+[![Code Owners](https://img.shields.io/badge/owners-DevX--team-blue)](https://github.com/puppetlabs/pdk-vanagon/blob/main/CODEOWNERS)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/puppetlabs/pdk-vanagon)
 
 ## Table of contents

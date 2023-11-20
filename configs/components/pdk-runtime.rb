@@ -1,26 +1,15 @@
 component 'pdk-runtime' do |pkg, settings, platform|
-  if settings[:pdk_runtime_version].length > 9
-    # git sha version
-    git_sha = settings[:pdk_runtime_version]
-
-    require 'open-uri'
-    require 'uri'
-    build_metadata = JSON.parse(URI.open("http://builds.delivery.puppetlabs.net/puppet-runtime/#{git_sha}/artifacts/#{git_sha}.build_metadata.json").read)
-
-    pkg.version build_metadata['version']
-    runtime_path = git_sha
-  else
-    # date-based tag
-    pkg.version settings[:pdk_runtime_version]
-    runtime_path = pkg.get_version
+  unless settings[:pdk_runtime_version] && settings[:pdk_runtime_location] && settings[:pdk_runtime_basename]
+    raise "Expected to find :pdk_runtime_version, :pdk_runtime_location, and :pdk_runtime_basename settings; Please set these in your project file before including pdk-runtime as a component."
   end
 
-  pkg.sha1sum "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz.sha1"
-  pkg.url "http://builds.delivery.puppetlabs.net/puppet-runtime/#{runtime_path}/artifacts/#{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz"
+  tarball_name = "#{settings[:pdk_runtime_basename]}.tar.gz"
+  pkg.url File.join(settings[:pdk_runtime_location], tarball_name)
+  pkg.sha1sum File.join(settings[:pdk_runtime_location], "#{tarball_name}.sha1")
 
   pkg.install_only true
 
-  install_commands = ["gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C / -xf -"]
+  install_commands = ["gunzip -c #{tarball_name} | tar -C / -xf -"]
 
   if platform.is_windows?
     # We need to make sure we're setting permissions correctly for the executables
@@ -28,7 +17,7 @@ component 'pdk-runtime' do |pkg, settings, platform|
     # ... weird, and we need to be able to use cygwin environment variable use
     # so cmd.exe was not working as expected.
     install_commands = [
-      "gunzip -c #{pkg.get_name}-#{pkg.get_version}.#{platform.name}.tar.gz | tar -C /cygdrive/c/ -xf -",
+      "gunzip -c #{tarball_name} | tar -C /cygdrive/c/ -xf -",
       "chmod 755 #{settings[:ruby_bindir].sub(/C:/, '/cygdrive/c')}/*"
     ]
 

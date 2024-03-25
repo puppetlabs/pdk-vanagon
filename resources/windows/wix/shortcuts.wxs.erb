@@ -8,8 +8,12 @@
     <!-- These shortcuts will be created in the INSTALLDIR/bin directory -->
     <DirectoryRef Id='INSTALLDIR'>
       <Directory Id="ShortCutBinDir" Name="bin">
+        <Component Id="ShortCutBinDir">
+          <RegistryValue Root="<%= settings[:registry_root] %>" Key="Software\<%= settings[:pl_company_name] %>\<%= settings[:product_id] %>\ShortCutBinDir" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+          <RemoveFolder Id="ShortCutBinDir" On="uninstall" />
+        </Component>    
       </Directory>
-    </DirectoryRef>
+   </DirectoryRef>
 
     <!-- Directory Definitions for Start Menu Shortcuts -->
     <DirectoryRef Id='TARGETDIR'>
@@ -43,7 +47,8 @@
           Value="1"
           Type="integer"
           KeyPath="yes" />
-      </Component>
+        </Component>
+      <ComponentRef Id="ShortCutBinDir" />  
     </ComponentGroup>
   </Fragment>
 </Wix>

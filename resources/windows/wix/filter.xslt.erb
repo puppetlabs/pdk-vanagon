@@ -1,0 +1,82 @@
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:wix="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    exclude-result-prefixes="xsl wix">
+
+    <!-- https://ahordijk.wordpress.com/2013/03/26/automatically-add-references-and-content-to-the-wix-installer/ -->
+    <!-- http://www.chriskonces.com/using-xslt-with-heat-exe-wix-to-create-windows-service-installs/ -->
+    <xsl:output method="xml" indent="yes" />
+    <!--<xsl:strip-space elements="*"/>-->
+
+    <xsl:variable name="root" select="/*" />
+
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()" />
+        </xsl:copy>
+    </xsl:template>
+
+    <!--File keypath to no and add registry keypath-->
+    <xsl:template match="wix:Component/wix:File">
+        <xsl:copy>
+            <xsl:apply-templates select="@*" />
+            <xsl:attribute name="KeyPath">
+                <xsl:text>no</xsl:text>
+            </xsl:attribute>
+        </xsl:copy>
+            <wix:RegistryValue Root="<%= settings[:registry_root] %>" Key="Software\<%= settings[:base_dir] %>\<%= settings[:product_id] %>\{../@Id}" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </xsl:template>
+
+    <xsl:template match="wix:ComponentGroup/wix:Component[(@KeyPath='yes')]">
+        <xsl:copy>
+            <xsl:apply-templates select="@*" />
+            <xsl:attribute name="KeyPath">
+                <xsl:text>no</xsl:text>
+            </xsl:attribute>
+            <xsl:apply-templates select="node()" />
+            <wix:RegistryValue Root="<%= settings[:registry_root] %>" Key="Software\<%= settings[:base_dir] %>\<%= settings[:product_id] %>\cmp_{generate-id(@Id)}" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="wix:DirectoryRef">
+        <xsl:copy>
+        <xsl:apply-templates select="@*|node()"/>
+         <Component Id="cmp_{generate-id(@Id)}">
+            <xsl:for-each select=".//wix:Directory[@Id]">
+                <RemoveFolder Id="{@Id}" Directory="{@Id}" On="uninstall" />
+            </xsl:for-each>
+            <wix:RegistryValue Root="<%= settings[:registry_root] %>" Key="Software\<%= settings[:base_dir] %>\<%= settings[:product_id] %>\cmp_{generate-id(@Id)}" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        </Component>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="wix:Component[contains(@Id,'cmp_')]">
+      <xsl:element name="Component">
+        <xsl:copy-of select="@*"/>
+      </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="wix:ComponentGroup[@Id='AppComponentGroup']">
+      <xsl:copy>
+        <xsl:apply-templates select="@*|node()"/>
+        <xsl:for-each select="$root//wix:Fragment/wix:DirectoryRef[1]">
+            <ComponentRef Id="cmp_{generate-id(@Id)}" />
+        </xsl:for-each>
+      </xsl:copy>
+    </xsl:template>
+  <!-- Filter out all Service File Executables from the Harvest (heat) run as these are specified in the transformed service.components.wxs file -->
+  <!-- The list of component service files are collected in an array so that a set of unique names can be extracted -->
+  <!-- we have to substitue the SourceDir\\etc. etc. for $(var.ProjectSourcePath) in order to facilitate heat -->
+  <!--   being run in two different places, specifically it no longer runs from SourceDir so we needed to pass -->
+  <!--   in ProjectSourcePath to the heat runs. Thus when this filter does its work the source attribute will -->
+  <!--   look like $(var.ProjectSourcePath)/puppet/bin/rubyw.exe for example, not  -->
+  <!--   SourceDir/Program64FilesFolder/Puppet/puppet/bin/ruby.exe -->
+  <%- service_files = Array.new -%>
+  <%- get_services.each do |service| -%>
+    <%- service_files << service.service_file.sub("SourceDir\\#{self.settings[:base_dir]}\\#{self.settings[:company_id]}\\#{self.settings[:product_id]}", "$(var.AppSourcePath)") -%>
+  <%- end -%>
+  <%- service_files.uniq.each do |service_file| -%>
+    <xsl:template match="wix:Component[wix:File[@Source='<%= service_file %>']]" />
+  <%- end -%>
+</xsl:stylesheet>

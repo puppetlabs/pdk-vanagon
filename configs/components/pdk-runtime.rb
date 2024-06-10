@@ -32,7 +32,6 @@ component 'pdk-runtime' do |pkg, settings, platform|
     'share/aclocal',
     'share/man',
     'share/doc',
-    'share/augeas',
     'ssl/misc',
     'ssl/man'
   ]

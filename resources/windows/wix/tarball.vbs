@@ -17,7 +17,8 @@ Const IDABORT = 3
 
 Dim wshShell : Set wshShell = CreateObject("WScript.Shell")
 Dim fso : Set fso = CreateObject("Scripting.FileSystemObject")
-Dim comspec : comspec = wshShell.ExpandEnvironmentStrings("%comspec%")
+Dim systemPath : systemPath = fso.getSpecialFolder(1)
+Dim comspec : comspec = systemPath & "\cmd.exe"
 
 Sub Log (Message, IsError)
   ' Logs through cscript
@@ -44,8 +45,10 @@ Function ExecuteCommand(Command)
   Dim output: output = ""
   Log "Executing Command : " & Command, False
 
-  Dim tempFilePath : tempFilePath = wshShell.ExpandEnvironmentStrings("%TEMP%\" + fso.GetTempName())
-  Dim tempBatFile : tempBatFile = wshShell.ExpandEnvironmentStrings("%TEMP%\" + fso.GetTempName() + ".bat")
+
+  Dim winPath : winPath = fso.getSpecialFolder(0)
+  Dim tempFilePath : tempFilePath = winPath & "\Installer\" & fso.GetTempName()
+  Dim tempBatFile : tempBatFile = winPath & "\Installer\" & fso.GetTempName() + ".bat"
   ' Open the temp .bat file for writing
   ' Unfortunately due to the strange double quoting behaviour in wshShell.Run we create a temporary
   ' Batch file with the command we want, and then call the batch file.  Note that we explicitly call

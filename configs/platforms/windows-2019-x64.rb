@@ -6,7 +6,7 @@ platform "windows-2019-x64" do |plat|
   visual_studio_sdk_version = 'win8.1'
 
   # We need to ensure we install chocolatey prior to adding any nuget repos. Otherwise, everything will fall over
-  plat.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/windows/chocolatey/install-chocolatey-1.4.0.ps1"
+  plat.add_build_repository "https://community.chocolatey.org/install.ps1"
   plat.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/nuget"
 
   # C:\tools is likely added by mingw, however because we also want to use that

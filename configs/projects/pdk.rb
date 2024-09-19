@@ -73,13 +73,33 @@ project 'pdk' do |proj|
       '.*/opt/puppetlabs/pdk/share/cache/ruby/.*'
     ].join('|')
 
-    proj.package_override("# Disable shebang mangling of embedded Ruby stuff\n%global __brp_mangle_shebangs_exclude_from ^(#{brp_mangle_shebangs_exclude_from})$")
+    proj.package_override <<~SHEBANG_MANGLE
+      # Disable shebang mangling of embedded Ruby stuff (pdk.rb override)
+      %global __brp_mangle_shebangs_exclude_from ^(#{brp_mangle_shebangs_exclude_from})$
+    SHEBANG_MANGLE
 
     # Disable build-id generation since it's currently generating conflicts
     # with system libgcc and libstdc++
-    proj.package_override("# Disable build-id generation to avoid conflicts\n%global _build_id_links none")
-    proj.package_override("# Disable the removal of la files, they are still required\n%global __brp_remove_la_files %{nil}")
-    proj.package_override("# Disable check-rpaths since /opt/* is not a valid path\n%global __brp_check_rpaths %{nil}")
+    proj.package_override <<~BUILD_ID
+      # Disable build-id generation to avoid conflicts (pdk.rb override)
+      %global _build_id_links none
+    BUILD_ID
+
+    proj.package_override <<~LA_FILES
+      # Disable the removal of la files, they are still required (pdk.rb override)
+      %global __brp_remove_la_files %{nil}
+    LA_FILES
+
+    proj.package_override <<~CHECK_RPATHS
+      # Disable check-rpaths since /opt/* is not a valid path (pdk.rb override)
+      %global __brp_check_rpaths %{nil}
+    CHECK_RPATHS
+
+    # __debug_package uglyness
+    proj.package_override <<~DEBUG_PACKAGE
+      # Disable __debug_package (pdk.rb override)
+      %undefine __debug_package
+    DEBUG_PACKAGE
   end
 
   def use_plgcc?(platform)

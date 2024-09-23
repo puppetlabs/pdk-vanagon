@@ -30,7 +30,7 @@
       VBScriptCall="ExtractTarballs"
       Execute="deferred"
       Return="check"
-      Impersonate="no" />
+      Impersonate="yes" />
 
     <!-- INSTALLDIR is not available for Deferred Custom Actions.  So we need to save it for later user -->
     <CustomAction Id="SetPropertyForRemoveTarballs" Property="RemoveTarballs" Value="[INSTALLDIR]" />
@@ -40,7 +40,7 @@
       VBScriptCall="RemoveTarballs"
       Execute="deferred"
       Return="check"
-      Impersonate="no" />
+      Impersonate="yes" />
 
     <%- if @platform.architecture == "x86" -%>
     <!-- If these fail, we don't want to fail the installer -->

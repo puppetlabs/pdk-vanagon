@@ -13,7 +13,7 @@ foss_platforms:
   - windows-2012-x64
 gpg_name: 'info@puppetlabs.com'
 deb_targets: 'trusty-amd64 xenial-amd64'
-rpm_targets: 'el-6-x86_64 el-7-x86_64 sles-11-x86_64 sles-12-x86_64'
+rpm_targets: 'amazon-2023-x86_64 el-6-x86_64 el-7-x86_64 sles-11-x86_64 sles-12-x86_64'
 sign_tar: FALSE
 osx_signing_cert: "Developer ID Installer: PUPPET LABS, INC. (VKGLGN2B6Y)"
 osx_signing_keychain: "/Users/jenkins/Library/Keychains/signing.keychain"

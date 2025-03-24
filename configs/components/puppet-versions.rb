@@ -34,7 +34,6 @@ component 'puppet-versions' do |pkg, settings, platform|
   def ruby_for_puppet(version)
     # TODO: calculate this based on settings
     ruby_mappings = {
-      '2.7.0' => Gem::Requirement.create(['~> 7.0']),
       '3.2.0' => Gem::Requirement.create(['~> 8.0'])
     }
 
@@ -68,9 +67,9 @@ component 'puppet-versions' do |pkg, settings, platform|
     end
 
     latest_puppet8 = latest_puppet_gem('~>8.0')
-    latest_puppet7 = latest_puppet_gem('~>7.0')
+    # latest_puppet7 = latest_puppet_gem('~>7.0')
 
-    latest_puppets = [latest_puppet8, latest_puppet7].compact
+    latest_puppets = [latest_puppet8].compact
     puppet_rubyapi_versions = Hash[latest_puppets.collect { |pupver| [pupver.version, ruby_for_puppet(pupver)] }]
     pdk_ruby_versions = puppet_rubyapi_versions.values.uniq
 
